@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dev Hub</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side noprint">
+    <div class="brand"><span class="logo">▲</span> Dev Hub</div>
+    <nav id="nav">
+      <a href="#/dashboard" data-view="dashboard">Dashboard</a>
+      <a href="#/tests" data-view="tests">CAF Practice</a>
+      <a href="#/roadmap" data-view="roadmap">Roadmap</a>
+      <a href="#/projects" data-view="projects">Projects</a>
+      <a href="#/playbook" data-view="playbook">Playbook</a>
+      <a href="#/resume" data-view="resume">Resume</a>
+    </nav>
+    <div class="side-foot">
+      <div id="saveState" class="save-state">Saved locally</div>
+      <button class="btn small" id="exportBtn">Export backup</button>
+      <button class="btn small ghost" id="importBtn">Import</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+  </aside>
+  <main id="view" class="main"><noscript>This app needs JavaScript.</noscript></main>
+</div>
+
+<!-- Data (edit these files to change content; no code changes needed) -->
+<script src="data/roadmap.js"></script>
+<script src="data/playbook.js"></script>
+<script src="data/projects.js"></script>
+<!-- App (plain scripts: works from file://) -->
+<script src="js/core.js"></script>
+<script src="js/tests.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/roadmap.js"></script>
+<script src="js/projects.js"></script>
+<script src="js/playbook.js"></script>
+<script src="js/resume.js"></script>
+<script src="js/main.js"></script>
+<!-- Question banks q1.js, q2.js, ... are discovered automatically by js/core.js -->
+</body>
+</html>

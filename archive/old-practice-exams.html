@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CCAR-F Practice Exams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF9F5; --surface:#FFFFFF; --surface-2:#F0EEE6; --text:#262624; --muted:#6B6A64;
+  --border:#E3E0D5; --accent:#C96442; --accent-soft:#F5E3DA; --ok:#2F7D4F; --ok-soft:#E1F0E5;
+  --bad:#B3402F; --bad-soft:#F7E0DB; --flag:#B7791F; --flag-soft:#F8EBD3;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1F1E1C; --surface:#2A2926; --surface-2:#33322E; --text:#ECEAE3; --muted:#A3A198;
+    --border:#3E3C37; --accent:#E07A57; --accent-soft:#4A3127; --ok:#6BC28D; --ok-soft:#21392A;
+    --bad:#EE8573; --bad-soft:#47271F; --flag:#E2A64A; --flag-soft:#463719; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1F1E1C; --surface:#2A2926; --surface-2:#33322E; --text:#ECEAE3; --muted:#A3A198;
+  --border:#3E3C37; --accent:#E07A57; --accent-soft:#4A3127; --ok:#6BC28D; --ok-soft:#21392A;
+  --bad:#EE8573; --bad-soft:#47271F; --flag:#E2A64A; --flag-soft:#463719; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:860px;margin:0 auto;padding:32px 16px 96px}
+.pill{display:inline-flex;align-items:center;gap:10px;background:var(--surface-2);border-radius:10px;padding:8px 14px;font-weight:500;font-size:14px}
+.pill .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6vw,52px);line-height:1.1;letter-spacing:-.01em;margin:28px 0 14px}
+h2{font-family:var(--serif);font-weight:600;font-size:22px;margin:0 0 6px}
+.lead{font-family:var(--serif);font-size:19px;color:var(--muted);margin:0 0 28px}
+hr{border:0;border-top:1px solid var(--border);margin:28px 0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+
+/* Cards */
+.cards{display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.test-card{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:12px;background:var(--surface-2);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.btn{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:500;transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(.95)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:8px 14px;border-radius:8px;font-weight:500;color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.history{font-size:13px;color:var(--muted);margin-top:6px}
+
+/* Exam */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--border)}
+.topbar .inner{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.timer{font-variant-numeric:tabular-nums;font-weight:600;padding:6px 10px;border-radius:8px;background:var(--surface-2)}
+.timer.low{background:var(--bad-soft);color:var(--bad)}
+.progress{height:4px;background:var(--surface-2);border-radius:4px;overflow:hidden;margin-top:2px}
+.progress > div{height:100%;background:var(--accent);transition:width .2s}
+.scenario{background:var(--surface-2);border-radius:12px;padding:14px 16px;margin:20px 0 18px}
+.scenario summary{cursor:pointer;font-weight:600;font-size:14px;list-style:none}
+.scenario summary::-webkit-details-marker{display:none}
+.scenario summary::before{content:"▸ ";color:var(--muted)}
+.scenario[open] summary::before{content:"▾ "}
+.scenario p{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.qmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:8px}
+.qtext{font-family:var(--serif);font-size:20px;line-height:1.5;margin:0 0 6px}
+.instr{font-size:13px;font-weight:600;color:var(--accent);margin:0 0 16px;text-transform:uppercase;letter-spacing:.04em}
+.opts{display:grid;gap:10px}
+.opt{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;text-align:left;width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.5}
+.opt:hover:not(:disabled){border-color:var(--muted)}
+.opt .key{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--surface-2);font-weight:600;font-size:13px}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .key{background:var(--accent);color:#fff}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .key{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .key{background:var(--bad);color:#fff}
+.opt:disabled{cursor:default}
+.explain{margin-top:16px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 10px 10px 0;padding:14px 16px;font-size:15px}
+.explain .verdict{font-weight:600;margin-bottom:4px}
+.verdict.ok{color:var(--ok)} .verdict.bad{color:var(--bad)}
+.navrow{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.flagbtn.on{background:var(--flag-soft);border-color:var(--flag);color:var(--flag)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px;margin-top:12px}
+.cell{height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:13px;font-weight:500;position:relative}
+.cell.ans{background:var(--surface-2)}
+.cell.cur{outline:2px solid var(--accent);outline-offset:1px}
+.cell.flag::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--flag)}
+.cell.r-ok{background:var(--ok-soft);border-color:var(--ok)}
+.cell.r-bad{background:var(--bad-soft);border-color:var(--bad)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--sw)}
+.kbd{font-size:12px;color:var(--muted);margin-top:18px}
+kbd{font-family:var(--sans);font-size:11px;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--surface)}
+
+/* Results */
+.score{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--serif);font-size:64px;line-height:1}
+.badge{display:inline-block;border-radius:999px;padding:4px 12px;font-weight:600;font-size:14px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)} .badge.bad{background:var(--bad-soft);color:var(--bad)}
+.bars{display:grid;gap:12px;margin-top:8px}
+.bar label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;gap:8px}
+.bar .track{height:8px;background:var(--surface-2);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;border-radius:6px}
+.review-item{border-top:1px solid var(--border);padding:22px 0}
+.review-item .qtext{font-size:18px}
+.mini-opt{display:grid;grid-template-columns:24px 1fr;gap:8px;padding:8px 10px;border-radius:8px;font-size:14.5px;margin:4px 0}
+.mini-opt.correct{background:var(--ok-soft)}
+.mini-opt.wrong{background:var(--bad-soft)}
+.mini-opt b{font-weight:600}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:grid;place-items:center;padding:16px;z-index:20}
+.modal{background:var(--surface);border-radius:16px;padding:24px;max-width:440px;width:100%;border:1px solid var(--border)}
+.modal p{margin:8px 0 20px;color:var(--muted)}
+.hidden{display:none !important}
+@media (max-width:600px){
+  .test-card{grid-template-columns:1fr}
+  .qtext{font-size:18px}
+  .big{font-size:48px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="q1.js"></script>
+<script src="q2.js"></script>
+<script src="q3.js"></script>
+<script>
+(function(){
+const SCENARIOS = {
+  1:{name:"Customer Support Resolution Agent", text:"You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to your backend systems through custom MCP tools (get_customer, lookup_order, process_refund, escalate_to_human). Your target is 80%+ first-contact resolution while knowing when to escalate."},
+  2:{name:"Code Generation with Claude Code", text:"You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution."},
+  3:{name:"Multi-Agent Research System", text:"You are building a multi-agent research system using the Claude Agent SDK. A coordinator agent delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings, and one generates reports. The system researches topics and produces comprehensive, cited reports."},
+  4:{name:"Developer Productivity with Claude", text:"You are building developer productivity tools using the Claude Agent SDK. The agent helps engineers explore unfamiliar codebases, understand legacy systems, generate boilerplate code, and automate repetitive tasks. It uses the built-in tools (Read, Write, Bash, Grep, Glob) and integrates with MCP servers."},
+  5:{name:"Claude Code for Continuous Integration", text:"You are integrating Claude Code into your CI/CD pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need to design prompts that provide actionable feedback and minimize false positives."},
+  6:{name:"Structured Data Extraction", text:"You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates the output using JSON schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems."}
+};
+const DOMAINS = {
+  1:"Agentic Architecture & Orchestration",
+  2:"Tool Design & MCP Integration",
+  3:"Claude Code Configuration & Workflows",
+  4:"Prompt Engineering & Structured Output",
+  5:"Context Management & Reliability"
+};
+const DOMAIN_WEIGHT = {1:27,2:18,3:20,4:20,5:15};
+const EXAM_MINUTES = 120;
+const PASS_SCALED = 720;
+const LETTERS = "ABCDE";
+const KEY = "ccarf-practice-v1";
+const EXAMS = (window.EXAMS||[]).slice().sort((a,b)=>a.id-b.id);
+
+// ---------- storage (best-effort) ----------
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+let store = load();
+store.inProgress = store.inProgress || {};
+store.history = store.history || {};
+store.mode = store.mode || "exam";
+
+// ---------- helpers ----------
+const $ = (s,r=document)=>r.querySelector(s);
+const app = $("#app");
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function fmtTime(sec){ sec=Math.max(0,Math.round(sec)); const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60; return (h?h+":":"")+String(m).padStart(h?2:1,"0")+":"+String(s).padStart(2,"0"); }
+function scaled(pct){ return Math.round(100 + 900*pct); }
+function examById(id){ return EXAMS.find(e=>e.id===id); }
+function sameSet(a,b){ if(a.length!==b.length) return false; const s=new Set(a); return b.every(x=>s.has(x)); }
+
+// ---------- attempt model ----------
+// An attempt stores: question order (indices into exam.questions), and per-question option permutation.
+function newAttempt(exam, mode){
+  // Group by scenario like the real exam; shuffle scenario order and question order within each scenario.
+  const byS = {};
+  exam.questions.forEach((q,i)=>{ (byS[q.s]=byS[q.s]||[]).push(i); });
+  const order = shuffle(Object.keys(byS)).flatMap(s=>shuffle(byS[s]));
+  const perms = {};
+  order.forEach(i=>{ perms[i] = shuffle(exam.questions[i].o.map((_,k)=>k)); });
+  return { examId: exam.id, mode, order, perms, answers:{}, checked:{}, flags:{}, cur:0,
+           remaining: EXAM_MINUTES*60, started: Date.now() };
+}
+function isCorrect(q, ans){ return !!ans && sameSet(ans, q.a); }
+
+// ---------- views ----------
+let timerHandle = null;
+function stopTimer(){ if(timerHandle){ clearInterval(timerHandle); timerHandle=null; } }
+
+function renderHome(){
+  stopTimer();
+  const cards = EXAMS.map(ex=>{
+    const scen = [...new Set(ex.questions.map(q=>q.s))];
+    const hist = store.history[ex.id] || [];
+    const best = hist.length ? Math.max(...hist.map(h=>h.pct)) : null;
+    const last = hist.length ? hist[hist.length-1] : null;
+    const prog = store.inProgress[ex.id];
+    const answered = prog ? Object.keys(prog.answers).length : 0;
+    return `<div class="card test-card">
+      <div>
+        <h2>${esc(ex.title)}</h2>
+        <div class="muted small">${ex.questions.length} questions · ${scen.length} scenarios · ${EXAM_MINUTES} min</div>
+        <div class="tags">${scen.map(s=>`<span class="tag">${esc(SCENARIOS[s].name)}</span>`).join("")}</div>
+        ${hist.length?`<div class="history">Best ${Math.round(best*100)}% (≈${scaled(best)}) · Last ${Math.round(last.pct*100)}% · ${hist.length} attempt${hist.length>1?"s":""}</div>`:""}
+      </div>
+      <div class="row">
+        ${prog?`<button class="btn" data-resume="${ex.id}">Resume (${answered}/${ex.questions.length})</button>`:""}
+        <button class="btn primary" data-start="${ex.id}">${prog?"Restart":"Start"}</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  app.innerHTML = `<div class="wrap">
+    <span class="pill"><span class="dot"></span>CCAR-F · Unofficial practice</span>
+    <h1>Practice exams</h1>
+    <p class="lead">Three full-length, scenario-based practice tests modeled on the CCAR-F exam guide: 60 items each, four scenarios per test, weighted across all five domains. Answer options are length-balanced and shuffled each attempt.</p>
+    <p class="muted small" style="margin:-16px 0 24px">Independent study material written from the public CCAR-F exam guide. Not affiliated with or endorsed by Anthropic, and not actual exam content.</p>
+    <div class="row" style="margin-bottom:18px">
+      <div class="seg" role="tablist">
+        <button data-mode="exam" class="${store.mode==="exam"?"on":""}">Exam mode</button>
+        <button data-mode="study" class="${store.mode==="study"?"on":""}">Study mode</button>
+      </div>
+      <span class="muted small">${store.mode==="exam"
+        ? "120-minute timer, no feedback until you submit — like the real thing."
+        : "Untimed. Check each answer and read the explanation immediately."}</span>
+    </div>
+    <div class="cards">${cards}</div>
+    <hr>
+    <div class="card">
+      <h2>Exam at a glance</h2>
+      <div class="bars" style="margin-top:12px">
+        ${Object.keys(DOMAINS).map(d=>`<div class="bar"><label><span>D${d}. ${esc(DOMAINS[d])}</span><span class="muted">${DOMAIN_WEIGHT[d]}%</span></label>
+          <div class="track"><div class="fill" style="width:${DOMAIN_WEIGHT[d]*3.3}%;background:var(--accent)"></div></div></div>`).join("")}
+      </div>
+      <p class="muted small" style="margin:16px 0 0">Passing is a scaled 720/1000. Scores here show an <em>approximate</em> scaled value (100 + 900 × percent correct); Anthropic's real scaling isn't published, so aim for 75%+ to be safe.</p>
+    </div>
+  </div>`;
+
+  app.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{ store.mode=b.dataset.mode; save(); renderHome(); });
+  app.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>{
+    const ex = examById(+b.dataset.start);
+    store.inProgress[ex.id] = newAttempt(ex, store.mode); save(); renderExam(ex.id);
+  });
+  app.querySelectorAll("[data-resume]").forEach(b=>b.onclick=()=>renderExam(+b.dataset.resume));
+}
+
+function renderExam(examId){
+  const ex = examById(examId);
+  const at = store.inProgress[examId];
+  if(!at){ renderHome(); return; }
+  const study = at.mode === "study";
+  stopTimer();
+
+  app.innerHTML = `
+  <div class="topbar"><div class="inner">
+    <button class="btn ghost" id="home" title="Save and exit">← Exit</button>
+    <strong>${esc(ex.title)}</strong>
+    <span class="muted small">${study?"Study mode":"Exam mode"}</span>
+    <span class="spacer"></span>
+    ${study?"":`<span class="timer" id="timer"></span>`}
+    <button class="btn" id="toggleNav">Questions</button>
+    <button class="btn primary" id="submit">Submit</button>
+  </div>
+  <div style="max-width:860px;margin:0 auto;padding:0 16px 8px"><div class="progress"><div id="prog"></div></div></div>
+  </div>
+  <div class="wrap" style="padding-top:8px">
+    <div id="navPanel" class="card hidden" style="margin-top:16px">
+      <div class="row"><strong>Jump to question</strong><span class="spacer"></span><span class="muted small" id="navCount"></span></div>
+      <div class="grid" id="grid"></div>
+      <div class="legend"><span style="--sw:var(--surface-2)">Answered</span><span style="--sw:var(--flag)">Flagged</span><span style="--sw:var(--accent)">Current</span></div>
+    </div>
+    <div id="qArea"></div>
+    <div class="kbd">Shortcuts: <kbd>A</kbd>–<kbd>E</kbd> select · <kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>F</kbd> flag${study?" · <kbd>Enter</kbd> check":""}</div>
+  </div>`;
+
+  $("#home").onclick = ()=>{ save(); renderHome(); };
+  $("#toggleNav").onclick = ()=>{ $("#navPanel").classList.toggle("hidden"); };
+  $("#submit").onclick = ()=>confirmSubmit(ex, at);
+
+  if(!study){
+    const tick = ()=>{
+      const el = $("#timer"); if(!el) return;
+      el.textContent = "⏱ " + fmtTime(at.remaining);
+      el.classList.toggle("low", at.remaining < 600);
+      if(at.remaining <= 0){ stopTimer(); finish(ex, at, true); }
+    };
+    tick();
+    timerHandle = setInterval(()=>{ at.remaining -= 1; if(at.remaining % 5 === 0) save(); tick(); }, 1000);
+  }
+  drawQuestion(ex, at);
+}
+
+function drawQuestion(ex, at){
+  const study = at.mode === "study";
+  const qi = at.order[at.cur];
+  const q = ex.questions[qi];
+  const perm = at.perms[qi];
+  const multi = q.a.length > 1;
+  const ans = at.answers[qi] || [];
+  const checked = study && at.checked[qi];
+  const prevQ = at.cur>0 ? ex.questions[at.order[at.cur-1]] : null;
+  const firstOfScenario = !prevQ || prevQ.s !== q.s;
+  const answeredCount = Object.keys(at.answers).filter(k=>at.answers[k].length).length;
+
+  $("#prog").style.width = (answeredCount/ex.questions.length*100)+"%";
+
+  const optsHtml = perm.map((orig, pos)=>{
+    let cls = "opt";
+    const selected = ans.includes(orig);
+    if(checked){
+      if(q.a.includes(orig)) cls += " correct";
+      else if(selected) cls += " wrong";
+    } else if(selected) cls += " sel";
+    return `<button class="${cls}" data-orig="${orig}" ${checked?"disabled":""} aria-pressed="${selected}">
+      <span class="key">${LETTERS[pos]}</span><span>${esc(q.o[orig])}</span></button>`;
+  }).join("");
+
+  let explain = "";
+  if(checked){
+    const ok = isCorrect(q, ans);
+    const correctLetters = perm.map((o,p)=>q.a.includes(o)?LETTERS[p]:null).filter(Boolean).join(" & ");
+    explain = `<div class="explain"><div class="verdict ${ok?"ok":"bad"}">${ok?"Correct":"Incorrect — answer: "+correctLetters}</div>${esc(q.e)}</div>`;
+  }
+
+  $("#qArea").innerHTML = `
+    <details class="scenario" ${firstOfScenario?"open":""}>
+      <summary>Scenario: ${esc(SCENARIOS[q.s].name)}</summary>
+      <p>${esc(SCENARIOS[q.s].text)}</p>
+    </details>
+    <div class="qmeta"><span>Question ${at.cur+1} of ${ex.questions.length}</span>${study?`<span>·</span><span>D${q.d} ${esc(DOMAINS[q.d])}</span>`:""}</div>
+    <p class="qtext">${esc(q.q.replace(/\s*\(Select TWO\.\)\s*$/,""))}</p>
+    <p class="instr">${multi?"Select TWO":"Select ONE"}</p>
+    <div class="opts">${optsHtml}</div>
+    ${explain}
+    <div class="navrow">
+      <button class="btn" id="prev" ${at.cur===0?"disabled":""}>← Previous</button>
+      <button class="btn flagbtn ${at.flags[qi]?"on":""}" id="flag">${at.flags[qi]?"⚑ Flagged":"⚐ Flag for review"}</button>
+      <span class="spacer"></span>
+      ${study && !checked ? `<button class="btn primary" id="check" ${ans.length!==q.a.length?"disabled":""}>Check answer</button>` : ""}
+      <button class="btn ${study && !checked ? "" : "primary"}" id="next">${at.cur===ex.questions.length-1?"Finish →":"Next →"}</button>
+    </div>`;
+
+  // option click
+  $("#qArea").querySelectorAll(".opt").forEach(b=>b.onclick=()=>selectOpt(ex, at, +b.dataset.orig));
+  $("#prev").onclick = ()=>go(ex, at, at.cur-1);
+  $("#next").onclick = ()=>{ if(at.cur===ex.questions.length-1) confirmSubmit(ex, at); else go(ex, at, at.cur+1); };
+  $("#flag").onclick = ()=>{ at.flags[qi] = !at.flags[qi]; save(); drawQuestion(ex, at); };
+  const chk = $("#check"); if(chk) chk.onclick = ()=>{ at.checked[qi]=true; save(); drawQuestion(ex, at); };
+
+  drawGrid(ex, at);
+}
+
+function selectOpt(ex, at, orig){
+  const qi = at.order[at.cur], q = ex.questions[qi];
+  if(at.mode==="study" && at.checked[qi]) return;
+  let ans = (at.answers[qi]||[]).slice();
+  if(q.a.length > 1){
+    if(ans.includes(orig)) ans = ans.filter(x=>x!==orig);
+    else { ans.push(orig); if(ans.length > q.a.length) ans.shift(); }
+  } else ans = [orig];
+  at.answers[qi] = ans; save(); drawQuestion(ex, at);
+}
+
+function go(ex, at, idx){
+  if(idx<0 || idx>=ex.questions.length) return;
+  at.cur = idx; save(); drawQuestion(ex, at); window.scrollTo({top:0});
+}
+
+function drawGrid(ex, at){
+  const grid = $("#grid"); if(!grid) return;
+  let answered = 0, flagged = 0;
+  grid.innerHTML = at.order.map((qi,pos)=>{
+    const a = at.answers[qi] && at.answers[qi].length; if(a) answered++;
+    const f = at.flags[qi]; if(f) flagged++;
+    let cls = "cell"; if(a) cls+=" ans"; if(f) cls+=" flag"; if(pos===at.cur) cls+=" cur";
+    if(at.mode==="study" && at.checked[qi]) cls += isCorrect(ex.questions[qi], at.answers[qi]) ? " r-ok" : " r-bad";
+    return `<button class="${cls}" data-pos="${pos}">${pos+1}</button>`;
+  }).join("");
+  $("#navCount").textContent = `${answered}/${ex.questions.length} answered · ${flagged} flagged`;
+  grid.querySelectorAll(".cell").forEach(c=>c.onclick=()=>go(ex, at, +c.dataset.pos));
+}
+
+function modal(title, body, okLabel, onOk){
+  const bg = document.createElement("div");
+  bg.className = "modal-bg";
+  bg.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><h2>${esc(title)}</h2><p>${body}</p>
+    <div class="row" style="justify-content:flex-end"><button class="btn" id="mCancel">Keep going</button><button class="btn primary" id="mOk">${esc(okLabel)}</button></div></div>`;
+  document.body.appendChild(bg);
+  const close = ()=>bg.remove();
+  bg.onclick = e=>{ if(e.target===bg) close(); };
+  $("#mCancel",bg).onclick = close;
+  $("#mOk",bg).onclick = ()=>{ close(); onOk(); };
+  $("#mOk",bg).focus();
+}
+
+function confirmSubmit(ex, at){
+  const total = ex.questions.length;
+  const answered = at.order.filter(qi=>at.answers[qi] && at.answers[qi].length===ex.questions[qi].a.length).length;
+  const flagged = at.order.filter(qi=>at.flags[qi]).length;
+  const unanswered = total - answered;
+  let msg = `You've answered ${answered} of ${total} questions.`;
+  if(unanswered) msg += ` <strong>${unanswered} unanswered</strong> will be marked incorrect.`;
+  if(flagged) msg += ` ${flagged} flagged for review.`;
+  modal("Submit exam?", msg, "Submit", ()=>finish(ex, at, false));
+}
+
+function finish(ex, at, timedOut){
+  stopTimer();
+  const res = { byD:{}, byS:{}, correct:0, total:ex.questions.length };
+  at.order.forEach(qi=>{
+    const q = ex.questions[qi], ok = isCorrect(q, at.answers[qi]);
+    if(ok) res.correct++;
+    (res.byD[q.d] = res.byD[q.d] || {c:0,t:0}); res.byD[q.d].t++; if(ok) res.byD[q.d].c++;
+    (res.byS[q.s] = res.byS[q.s] || {c:0,t:0}); res.byS[q.s].t++; if(ok) res.byS[q.s].c++;
+  });
+  const pct = res.correct / res.total;
+  const used = at.mode==="exam" ? EXAM_MINUTES*60 - at.remaining : null;
+  store.history[ex.id] = store.history[ex.id] || [];
+  store.history[ex.id].push({ pct, date: Date.now(), mode: at.mode });
+  delete store.inProgress[ex.id];
+  save();
+  renderResults(ex, at, res, pct, used, timedOut);
+}
+
+function renderResults(ex, at, res, pct, used, timedOut){
+  const sc = scaled(pct), pass = sc >= PASS_SCALED;
+  const barColor = p => p>=0.8 ? "var(--ok)" : p>=0.65 ? "var(--flag)" : "var(--bad)";
+  const bar = (label, o) => { const p = o.c/o.t; return `<div class="bar"><label><span>${esc(label)}</span><span class="muted">${o.c}/${o.t} · ${Math.round(p*100)}%</span></label><div class="track"><div class="fill" style="width:${p*100}%;background:${barColor(p)}"></div></div></div>`; };
+
+  app.innerHTML = `<div class="wrap">
+    <span class="pill"><span class="dot"></span>${esc(ex.title)} · Results</span>
+    <h1>${pass?"Nice work.":"Keep going."}</h1>
+    ${timedOut?`<p class="lead">Time expired — your exam was submitted automatically.</p>`:""}
+    <div class="card score">
+      <div><div class="big">${Math.round(pct*100)}%</div><div class="muted small">${res.correct} of ${res.total} correct</div></div>
+      <div><div style="font-size:28px;font-family:var(--serif)">≈ ${sc}</div><div class="muted small">approx. scaled score</div></div>
+      <div><span class="badge ${pass?"ok":"bad"}">${pass?"At/above 720 target":"Below 720 target"}</span>
+        ${used!=null?`<div class="muted small" style="margin-top:6px">Time used: ${fmtTime(used)}</div>`:""}</div>
+    </div>
+    <div class="card" style="margin-top:14px"><h2>By domain</h2><div class="bars">
+      ${Object.keys(res.byD).sort().map(d=>bar(`D${d}. ${DOMAINS[d]}`, res.byD[d])).join("")}
+    </div></div>
+    <div class="card" style="margin-top:14px"><h2>By scenario</h2><div class="bars">
+      ${Object.keys(res.byS).map(s=>bar(SCENARIOS[s].name, res.byS[s])).join("")}
+    </div></div>
+    <div class="row" style="margin:22px 0">
+      <button class="btn primary" id="retake">Retake (reshuffled)</button>
+      <button class="btn" id="home">All tests</button>
+      <span class="spacer"></span>
+      <div class="seg" id="filter">
+        <button data-f="wrong" class="on">Incorrect</button><button data-f="flag">Flagged</button><button data-f="all">All</button>
+      </div>
+    </div>
+    <div id="review"></div>
+  </div>`;
+
+  $("#retake").onclick = ()=>{ store.inProgress[ex.id] = newAttempt(ex, at.mode); save(); renderExam(ex.id); };
+  $("#home").onclick = renderHome;
+
+  const drawReview = f=>{
+    const items = at.order.map((qi,pos)=>({qi,pos})).filter(({qi})=>{
+      const ok = isCorrect(ex.questions[qi], at.answers[qi]);
+      return f==="all" || (f==="wrong" && !ok) || (f==="flag" && at.flags[qi]);
+    });
+    $("#review").innerHTML = items.length ? items.map(({qi,pos})=>{
+      const q = ex.questions[qi], ans = at.answers[qi]||[], ok = isCorrect(q, ans), perm = at.perms[qi];
+      return `<div class="review-item">
+        <div class="qmeta"><span>Q${pos+1}</span><span>·</span><span>${esc(SCENARIOS[q.s].name)}</span><span>·</span><span>D${q.d}</span>
+          <span class="badge ${ok?"ok":"bad"}" style="font-size:12px;padding:2px 9px">${ok?"Correct":(ans.length?"Incorrect":"Unanswered")}</span>${at.flags[qi]?`<span class="badge" style="font-size:12px;padding:2px 9px;background:var(--flag-soft);color:var(--flag)">Flagged</span>`:""}</div>
+        <p class="qtext">${esc(q.q)}</p>
+        ${perm.map((o,p)=>{
+          const isC=q.a.includes(o), picked=ans.includes(o);
+          const cls = isC ? "correct" : (picked ? "wrong" : "");
+          return `<div class="mini-opt ${cls}"><b>${LETTERS[p]}</b><span>${esc(q.o[o])}${picked?" <em class='muted'>(your answer)</em>":""}</span></div>`;
+        }).join("")}
+        <div class="explain">${esc(q.e)}</div>
+      </div>`;
+    }).join("") : `<p class="muted">Nothing to show for this filter.</p>`;
+  };
+  $("#filter").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    $("#filter").querySelectorAll("button").forEach(x=>x.classList.toggle("on", x===b)); drawReview(b.dataset.f);
+  });
+  drawReview("wrong");
+  window.scrollTo({top:0});
+}
+
+// ---------- keyboard ----------
+document.addEventListener("keydown", e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  if(document.querySelector(".modal-bg")) return;
+  const qArea = $("#qArea"); if(!qArea) return;
+  const k = e.key.toLowerCase();
+  const opts = [...qArea.querySelectorAll(".opt")];
+  let idx = "abcde".indexOf(k); if(idx<0) idx = "12345".indexOf(k);
+  if(idx>=0 && opts[idx] && !opts[idx].disabled){ opts[idx].click(); e.preventDefault(); return; }
+  if(e.key==="ArrowRight"){ const n=$("#next"); if(n && !/Finish/.test(n.textContent)) n.click(); }
+  else if(e.key==="ArrowLeft"){ const p=$("#prev"); if(p && !p.disabled) p.click(); }
+  else if(k==="f"){ $("#flag") && $("#flag").click(); }
+  else if(e.key==="Enter"){ const c=$("#check"); if(c && !c.disabled){ c.click(); e.preventDefault(); } }
+});
+
+renderHome();
+})();
+</script>
+</body>
+</html>

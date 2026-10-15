@@ -17,7 +17,7 @@ Optional local server (single command): `python3 -m http.server 8000` then open 
 | Section | What it's for |
 |---|---|
 | Dashboard | Today's focus, current sprint, and your stats at a glance. |
-| CAF Practice | Timed/untimed tests with instant feedback and per-domain accuracy that shows what to drill. |
+| CAF Practice | The cream/terracotta exam interface: Exam mode (timed, feedback at submit) or Study mode (instant feedback), question navigator, flagging, results by domain and scenario, plus per-domain accuracy and drills. |
 | Roadmap | The Oct 2026 → Mar 2027 plan as phases and 2-week sprints with checkable milestones. |
 | Projects | Idea → building → shipped pipeline, plus a portfolio page of shipped work. |
 | Playbook | The 2026 AI-engineer path from the Instagram reel, as a checklist. |
@@ -39,7 +39,8 @@ Sidebar → **Export backup** downloads one JSON file with everything (progress,
 
 ```
 index.html          app shell
-css/style.css       styles (dark, print-friendly resume)
+css/style.css       hub styles (dark, print-friendly resume)
+css/exam.css        exam skin used while CAF Practice is open
 js/core.js          storage, router, bank loader, shared helpers
 js/tests.js         practice-test engine + domain accuracy + drills
 js/dashboard.js  roadmap.js  projects.js  playbook.js  resume.js

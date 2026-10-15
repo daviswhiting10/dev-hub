@@ -198,6 +198,7 @@
     current = name;
     Hub.$$("#nav a").forEach(function (a) { a.classList.toggle("on", a.dataset.view === name); });
     var el = Hub.$("#view");
+    document.body.classList.remove("exam-skin");
     el.innerHTML = "";
     el.onclick = el.onchange = el.onsubmit = null;
     Hub.views[name].render(el, params);

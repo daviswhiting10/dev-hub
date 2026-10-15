@@ -16,7 +16,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1p
 
 /* layout */
 .shell{display:grid;grid-template-columns:210px 1fr;min-height:100vh}
-.side{position:sticky;top:0;height:100vh;padding:20px 14px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:18px;background:#0a0c10}
+.side{position:sticky;top:0;height:100vh;padding:20px 14px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:18px;background:var(--side,#0a0c10)}
 .brand{font-weight:700;font-size:17px;letter-spacing:-.01em;padding:0 8px}.logo{color:var(--accent);margin-right:4px}
 #nav{display:flex;flex-direction:column;gap:2px}
 #nav a{color:var(--muted);padding:9px 10px;border-radius:8px;font-weight:500}
@@ -38,7 +38,7 @@ code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1p
 details.card summary{cursor:pointer}
 .btn{font:inherit;font-weight:600;font-size:14px;color:var(--text);background:var(--panel2);border:1px solid var(--line);padding:8px 14px;border-radius:9px;cursor:pointer;display:inline-block}
 .btn:hover{border-color:#3b4252;text-decoration:none} .btn:disabled{opacity:.4;cursor:not-allowed}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#1a0c06} .btn.primary:hover{filter:brightness(1.08)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent,#1a0c06)} .btn.primary:hover{filter:brightness(1.08)}
 .btn.ghost{background:transparent} .btn.small{padding:5px 10px;font-size:13px}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
 .seg button{font:inherit;font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:0;padding:6px 12px;cursor:pointer;text-transform:capitalize}

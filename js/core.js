@@ -56,7 +56,7 @@
     var d = defaults(), s = load();
     Object.keys(d).forEach(function (k) {
       if (s[k] == null) s[k] = d[k];
-      else if (typeof d[k] === "object" && !Array.isArray(d[k]))
+      else if (d[k] && typeof d[k] === "object" && !Array.isArray(d[k]) && s[k] && typeof s[k] === "object")
         Object.keys(d[k]).forEach(function (j) { if (s[k][j] == null) s[k][j] = d[k][j]; });
     });
     return s;

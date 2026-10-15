@@ -83,6 +83,17 @@
   function isAnswered(at, pos) { return !!(at.ans[pos] && at.ans[pos].length === getQ(at.items[pos]).a.length); }
   function isRight(q, ans) { return !!ans && ans.length === q.a.length && ans.every(function (x) { return q.a.indexOf(x) >= 0; }); }
 
+  // Repair (or drop) an in-progress attempt saved by an older version of the app.
+  function sanitizeInProgress() {
+    var t = H.store.tests, at = t.inProgress;
+    if (!at) return;
+    var ok = at && Array.isArray(at.items) && at.items.length && at.perms && at.items.every(function (r, p) { var q = r && getQ(r); return q && at.perms[p] && at.perms[p].length === q.o.length; });
+    if (!ok) { t.inProgress = null; H.save(); return; }
+    at.mode = at.mode || (at.timed === false ? "study" : "exam");
+    at.kind = at.kind || "bank"; at.ans = at.ans || {}; at.checked = at.checked || {}; at.flags = at.flags || {};
+    at.cur = at.cur >= 0 && at.cur < at.items.length ? at.cur : 0; at.remaining = at.remaining || 0; at.deadline = 0;
+  }
+
   var screen = "home", tick = null, kbd = null;
   function stopTimer() {
     if (tick) { clearInterval(tick); tick = null; }
@@ -102,6 +113,7 @@
     render: function (el, params) {
       stopTimer();
       document.body.classList.add("exam-skin");
+      sanitizeInProgress();
       var st = H.store.tests;
       if (params && params.drill != null) { // started from the dashboard link: #/tests?drill=3 | all | missed
         var items, label;

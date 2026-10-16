@@ -4,6 +4,8 @@ window.BRIEFINGS = window.BRIEFINGS || [];
 window.BRIEFINGS.push({
   date: "2026-10-16",
   headline: "Welcome to your AI workspace",
+  tldr: "This is a placeholder briefing. Once the daily agents run, this space holds a short honest summary of the day in AI.",
+  for_you: "Your agents will tie each day's news to your move into AI, your CAF exam prep, and your three projects.",
   meta: { sample: true, generatedBy: "hand-written sample", profileVersion: "seed", strategyVersion: 1 },
   items: [
     { id: "2026-10-16-1", title: "How your daily briefing works",

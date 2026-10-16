@@ -1,15 +1,81 @@
 {
   "_note": "FAKE canned response for --dry-run and tests. Includes hostile data to exercise the sanitizers.",
   "stop_reason": "tool_use",
-  "usage": { "input_tokens": 0, "output_tokens": 0 },
-  "content": [ { "type": "tool_use", "id": "fixture", "name": "submit_briefing", "input": {
-    "headline": "Fixture briefing (dry run)",
-    "items": [
-      { "title": "Fixture agents story", "summary": "A made-up item for tests.", "why": "Shows how a ranked item renders.", "analysis": "Longer text for the deep dive.", "tags": ["agents-mcp"], "confidence": "high",
-        "sources": [ { "title": "Fixture: agents story", "url": "https://example.com/fixture-agents-story" }, { "title": "Not retrieved by the researcher", "url": "https://evil.example.net/phish" }, { "title": "js", "url": "javascript:alert(1)" } ] },
-      { "title": "Fixture labs story", "summary": "Another made-up item.", "why": "Tests ranking.", "tags": ["frontier-labs"], "confidence": "medium",
-        "sources": [ { "title": "Fixture: labs story", "url": "https://example.com/fixture-labs-story" } ] },
-      { "title": "How your daily briefing works", "summary": "Duplicate of a recent title: must be dropped.", "why": "dedupe test", "tags": ["workspace"], "confidence": "high", "sources": [] },
-      { "title": "<img src=x onerror=alert(1)> Unsourced claim", "summary": "<script>alert(2)</script> text", "why": "x", "tags": ["jobs-income"], "confidence": "high", "sources": [] }
-    ] } } ]
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "content": [
+    {
+      "type": "tool_use",
+      "id": "fixture",
+      "name": "submit_briefing",
+      "input": {
+        "headline": "Fixture briefing (dry run)",
+        "items": [
+          {
+            "title": "Fixture agents story",
+            "summary": "A made-up item for tests.",
+            "why": "Shows how a ranked item renders.",
+            "analysis": "Longer text for the deep dive.",
+            "tags": [
+              "agents-mcp"
+            ],
+            "confidence": "high",
+            "sources": [
+              {
+                "title": "Fixture: agents story",
+                "url": "https://example.com/fixture-agents-story"
+              },
+              {
+                "title": "Not retrieved by the researcher",
+                "url": "https://evil.example.net/phish"
+              },
+              {
+                "title": "js",
+                "url": "javascript:alert(1)"
+              }
+            ]
+          },
+          {
+            "title": "Fixture labs story",
+            "summary": "Another made-up item.",
+            "why": "Tests ranking.",
+            "tags": [
+              "frontier-labs"
+            ],
+            "confidence": "medium",
+            "sources": [
+              {
+                "title": "Fixture: labs story",
+                "url": "https://example.com/fixture-labs-story"
+              }
+            ]
+          },
+          {
+            "title": "How your daily briefing works",
+            "summary": "Duplicate of a recent title: must be dropped.",
+            "why": "dedupe test",
+            "tags": [
+              "workspace"
+            ],
+            "confidence": "high",
+            "sources": []
+          },
+          {
+            "title": "<img src=x onerror=alert(1)> Unsourced claim",
+            "summary": "<script>alert(2)</script> text",
+            "why": "x",
+            "tags": [
+              "jobs-income"
+            ],
+            "confidence": "high",
+            "sources": []
+          }
+        ],
+        "tldr": "Fixture tl;dr: a made-up quiet day.",
+        "for_you": "Fixture: ties the news to your transition, exam prep and projects."
+      }
+    }
+  ]
 }

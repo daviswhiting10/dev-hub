@@ -28,6 +28,7 @@ await t("dry run writes a valid briefing, updates index, applies only valid stra
   const r = await main(["--dry-run", "--date", "2026-10-18", "--force"]); // 2026-10-18 is a Sunday -> weekly path too
   const b = loadWindowFile("data/briefings/2026-10-18.js", r.root).BRIEFINGS[0];
   assert.equal(b.date, "2026-10-18");
+  assert.match(b.tldr, /Fixture tl;dr/); assert.match(b.for_you, /transition/);
   const titles = b.items.map((i) => i.title);
   assert.ok(!titles.includes("How your daily briefing works"), "duplicate of a recent title must be dropped");
   const first = b.items[0];

@@ -10,10 +10,12 @@ export const BRIEFING_TOOL = {
   name: "submit_briefing",
   description: "Submit the final ranked daily briefing.",
   input_schema: {
-    type: "object", required: ["headline", "items"],
+    type: "object", required: ["headline", "tldr", "for_you", "items"],
     properties: {
       headline: { type: "string", description: "One-line theme for today, max 100 chars" },
-      items: { type: "array", minItems: 1, maxItems: 8, items: {
+      tldr: { type: "string", description: "2-3 sentence summary of the day. On a quiet day, say so plainly." },
+      for_you: { type: "string", description: "1-2 sentences tying today's news to the reader's career transition, exam prep, or projects" },
+      items: { type: "array", minItems: 1, maxItems: 8, description: "5-8 items; fewer on a quiet news day. Never pad.", items: {
         type: "object", required: ["title", "summary", "why", "tags", "confidence", "sources"],
         properties: {
           title: { type: "string" }, summary: { type: "string", description: "1-2 sentences, plain text" },
@@ -72,7 +74,7 @@ export function cleanBriefing(raw, { date, allowedUrls, limits, recentTitles = [
     if (items.length >= limits.maxItems) break;
   }
   if (!items.length) throw new Error("no valid items after cleaning");
-  return { date, headline: str(raw.headline, 120) || "Your AI briefing", meta, items };
+  return { date, headline: str(raw.headline, 120) || "Your AI briefing", tldr: str(raw.tldr, 500), for_you: str(raw.for_you, 400), meta, items };
 }
 
 // ---- strategy ----

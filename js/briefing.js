@@ -12,6 +12,27 @@
       document.head.appendChild(s);
     });
   }
+  // Accepts the JSON schema documented in data/briefings/FORMAT.md ({stories, tldr, for_davis, ...}) and maps it to the
+  // internal shape. Text is escaped at render time and links must be http(s), so nothing here needs to be trusted.
+  H.normalizeJsonBriefing = function (j) {
+    if (!j || !DATE.test(String(j.date)) || !Array.isArray(j.stories)) return null;
+    return { date: j.date, headline: s(j.headline, 120), tldr: s(j.tldr, 500), for_you: s(j.for_davis || j.for_you, 400), meta: { format: "json" },
+      items: j.stories.slice(0, 12).map(function (st, i) {
+        return { id: j.date + "-" + (i + 1), title: s(st && st.title, 200), summary: s(st && st.summary, 600), why: s(st && st.why_it_matters, 400), analysis: "",
+          tags: Array.isArray(st && st.topics) ? st.topics.slice(0, 5).map(function (t) { return s(t, 30); }) : [], confidence: "medium",
+          sources: st && st.url ? [{ title: s(st.source, 120) || s(st.url, 120), url: st.url }] : [] };
+      }).filter(function (it) { return it.title; }) };
+  };
+  function loadJsonBriefings(v) {
+    if (!/^https?:$/.test(location.protocol) || typeof fetch !== "function") return Promise.resolve(); // file:// can't fetch JSON
+    return fetch("data/briefings/index.json" + v).then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; }).then(function (idx) {
+      var dates = (Array.isArray(idx) ? idx : []).map(function (e) { return e && e.date; }).filter(function (d) { return typeof d === "string" && DATE.test(d); }).slice(0, 14);
+      var have = (window.BRIEFINGS || []).map(function (b) { return b && b.date; });
+      return Promise.all(dates.filter(function (d) { return have.indexOf(d) < 0; }).map(function (d) {
+        return fetch("data/briefings/" + d + ".json" + v).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { var b = H.normalizeJsonBriefing(j); if (b) window.BRIEFINGS.push(b); }).catch(function () {});
+      }));
+    });
+  }
   H.loadBriefings = function () {
     var v = "?v=" + Math.floor(Date.now() / 600000); // refresh at most every 10 minutes
     window.BRIEFINGS = window.BRIEFINGS || [];
@@ -19,7 +40,7 @@
       var idx = (window.BRIEFING_INDEX || []).filter(function (d) { return typeof d === "string" && DATE.test(d); }).slice(0, 14);
       var have = window.BRIEFINGS.map(function (b) { return b && b.date; });
       return Promise.all(idx.filter(function (d) { return have.indexOf(d) < 0; }).map(function (d) { return loadScript("data/briefings/" + d + ".js" + v); }));
-    });
+    }).then(function () { return loadJsonBriefings(v); });
   };
 
   function list() {
@@ -82,6 +103,8 @@
       el.innerHTML = '<div class="page"><div class="row between"><div><div class="eyebrow">Daily briefing</div><h1>' + esc(s(cur.headline, 120) || "Your AI briefing") + '</h1><div class="muted">' + esc(H.fmtDate(cur.date)) + " · " + cur.items.length + " items</div></div>" +
         '<label class="small muted">Archive <select id="bsel">' + all.map(function (b) { return '<option value="' + esc(b.date) + '"' + (b === cur ? " selected" : "") + ">" + esc(b.date) + "</option>"; }).join("") + "</select></label></div>" +
         (sample ? '<div class="card callout"><div class="grow small"><b>Sample briefing.</b> This is placeholder content until the first agent run is set up (see the README). Real briefings replace it automatically each morning.</div></div>' : "") +
+        (cur.tldr ? '<p class="lead brief-tldr">' + esc(s(cur.tldr, 500)) + "</p>" : "") +
+        (cur.for_you ? '<div class="card callout"><div class="grow"><div class="eyebrow">For you</div>' + esc(s(cur.for_you, 400)) + "</div></div>" : "") +
         '<div class="stack">' + cur.items.map(itemHtml).join("") + "</div>" +
         '<div class="card" style="margin-top:16px"><div class="eyebrow">Teach your agents</div><div class="row"><a class="btn" id="fbSend" target="_blank" rel="noopener" href="' + esc(feedbackUrl()) + '">Send feedback</a><span class="small muted" id="fbNote"></span></div></div>' +
         '<details class="card" style="margin-top:12px"><summary><b>Personalize with the poll</b> <span class="muted small">(5 questions)</span></summary>' + H.poll.html() + "</details>" +

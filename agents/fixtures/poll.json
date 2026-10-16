@@ -1,0 +1,11 @@
+{
+  "_note": "FAKE canned response for --dry-run and tests.",
+  "stop_reason": "tool_use",
+  "usage": { "input_tokens": 0, "output_tokens": 0 },
+  "content": [ { "type": "tool_use", "id": "fixture", "name": "submit_poll_update", "input": {
+    "retire": [],
+    "add": [
+      { "id": "a-agent-depth", "type": "single", "text": "Which agent topic should get more depth?", "options": [ { "id": "evals", "label": "Evaluation" }, { "id": "memory", "label": "Memory and state" } ] },
+      { "id": "BAD ID", "type": "single", "text": "invalid id must be rejected", "options": [ { "id": "a", "label": "A" }, { "id": "b", "label": "B" } ] }
+    ] } } ]
+}

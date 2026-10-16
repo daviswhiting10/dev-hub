@@ -31,6 +31,7 @@
         stat("Projects shipped", shipped + " / " + (st.projects || []).length, shipped ? "keep shipping" : "ship the first one") +
         stat("Day streak", H.streak(), H.streak() ? "don’t break it" : "do one thing today") + "</div>" +
 
+        briefCard() +
         '<div class="grid two"><div class="card"><div class="eyebrow">Today’s focus</div>' +
         (b.text ? '<div class="brief">' + esc(b.text).replace(/\n/g, "<br>") + "</div><div class=\"muted small\">" + (stale ? "From " + H.fmtDate(b.date) + " — paste today’s below" : "Pasted " + H.fmtDate(b.date)) + "</div>" : '<div class="muted">Paste your daily briefing from your AI assistant.</div>') +
         '<textarea id="brief" rows="3" placeholder="Paste today’s briefing…"></textarea><div class="row"><button class="btn primary small" id="saveBrief">Save</button>' + (b.text ? '<button class="btn ghost small" id="clearBrief">Clear</button>' : "") + "</div></div>" +
@@ -57,5 +58,10 @@
       };
     }
   };
+  function briefCard() {
+    var b = H.latestBriefing && H.latestBriefing(); if (!b) return "";
+    var items = b.items.slice(0, 3).map(function (it) { return '<li><b>' + esc(String(it.title || "").slice(0, 160)) + '</b><div class="small muted">' + esc(String(it.summary || "").slice(0, 160)) + "</div></li>"; }).join("");
+    return '<div class="card" style="margin:14px 0"><div class="eyebrow">AI briefing · ' + esc(H.fmtDate(b.date)) + (b.meta && b.meta.sample ? " · sample" : "") + '</div><ol class="brief-top">' + items + '</ol><a class="btn small" href="#/briefing">Open full briefing</a></div>';
+  }
   function stat(label, val, sub) { return '<div class="card stat"><div class="sv">' + esc(val) + '</div><div class="sl">' + esc(label) + '</div><div class="muted small">' + esc(sub) + "</div></div>"; }
 })();

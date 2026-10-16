@@ -4,6 +4,7 @@
   var KEY = "davis-dev-hub-v1";
   var Hub = (window.Hub = { views: {}, data: window.HUB_DATA || {}, banks: [], warnings: [] });
 
+  Hub.repo = "daviswhiting10/dev-hub";   // used to build prefilled GitHub Issue links (poll + feedback)
   Hub.$ = function (s, r) { return (r || document).querySelector(s); };
   Hub.$$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   Hub.esc = function (s) {
@@ -44,6 +45,8 @@
       done: {}, days: {}, projects: null, seeded: [],
       briefing: { text: "", date: "" },
       tests: { attempts: [], q: {}, log: [], answered: 0, inProgress: null },
+      feedback: { votes: {}, sent: {}, sentAt: 0 }, // briefing item votes: { itemId: "up" | "down" | "more" }; `sent` = what was already sent
+      poll: { answers: {}, submittedAt: 0 },       // draft/submitted poll answers (see js/poll.js)
       profile: {
         name: "Davis Whiting", headline: "Fitness professional building AI systems with Claude",
         location: "", email: "", links: "",
@@ -166,6 +169,7 @@
     }
     Hub.data.roadmap.sprints.forEach(function (sp) { sp.milestones.forEach(function (m) { consider(m, sp.id + " · " + sp.name); }); });
     Hub.data.playbook.steps.forEach(function (st) { st.items.forEach(function (it) { consider(it, "Playbook · " + st.name); }); });
+    ((Hub.data.learn && Hub.data.learn.steps) || []).forEach(function (st) { st.items.forEach(function (it) { consider(it, "Learn · " + st.name); }); });
     (Hub.store.projects || []).forEach(function (p) {
       if (p.status === "shipped") {
         addSkills(p.skills);

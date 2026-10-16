@@ -1,0 +1,14 @@
+{
+  "_note": "FAKE canned response for --dry-run and tests. Mixes valid and invalid changes.",
+  "stop_reason": "tool_use",
+  "usage": { "input_tokens": 0, "output_tokens": 0 },
+  "content": [ { "type": "tool_use", "id": "fixture", "name": "submit_critique", "input": {
+    "summary": "Fixture critique: broaden agent coverage slightly.", "scores": { "relevance": 4, "novelty": 3, "clarity": 4 },
+    "changes": [
+      { "op": "add_query", "beat": "agents-mcp", "value": "fixture query about agent evaluation", "reason": "Thin coverage on evals." },
+      { "op": "set_weight", "beat": "frontier-labs", "value": "9", "reason": "invalid weight must be rejected" },
+      { "op": "add_query", "beat": "no-such-beat", "value": "x", "reason": "unknown beat must be rejected" },
+      { "op": "add_preferred_source", "value": "../../etc/passwd", "reason": "invalid domain must be rejected" },
+      { "op": "delete_everything", "value": "x", "reason": "unknown op must be rejected" }
+    ] } } ]
+}

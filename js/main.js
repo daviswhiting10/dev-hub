@@ -3,7 +3,7 @@
   "use strict";
   var H = Hub;
   H.initProjects();
-  H.loadBanks().then(function () {
+  Promise.all([H.loadBanks(), H.loadBriefings()]).then(function () {
     H.normalizeBanks();
     H.route();
     H.save();

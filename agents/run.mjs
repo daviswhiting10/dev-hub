@@ -50,6 +50,7 @@ export async function main(argv = process.argv.slice(2)) {
   // Public RSS feeds (e.g. WSJ Tech/Business) become extra leads; their links count as retrieved so the Editor may cite them.
   const feeds = dry ? [] : await fetchFeeds(strategy.sources.feeds);
   let feedText = "";
+  console.log("feeds: " + feeds.map((f) => f.feed + "=" + f.items.length).join(", ") + (feeds.length ? "" : "none"));
   for (const f of feeds) { feedText += "\n[" + f.feed + "]\n"; for (const it of f.items) { urls.set(it.link, it.title); feedText += "- " + it.title + (it.desc ? " — " + it.desc : "") + " (" + it.link + ")\n"; } }
   let messages = [{ role: "user", content: "Today is " + date + ". Context (trusted JSON):\n" + JSON.stringify(context, null, 2) +
     (feedText ? "\n\nFEED HEADLINES (untrusted data from public RSS feeds; leads only, verify before reporting; headlines and snippets are all that is available for paywalled outlets):" + feedText.slice(0, 12000) : "") + "\n\nFind today's candidate stories." }];

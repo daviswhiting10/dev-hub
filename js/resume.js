@@ -27,7 +27,7 @@
       var contact = [pr.location, pr.email].filter(Boolean).map(esc).concat(pr.links.split(/[\s,]+/).filter(Boolean).map(function (u) { return H.safeUrl(u) ? link(u, u.replace(/^https?:\/\//, "")) : esc(u); }));
       var doc = '<article class="resume"><header><h1>' + esc(pr.name || "Your name") + "</h1><div class=\"headline\">" + esc(pr.headline) + '</div><div class="contact">' + (contact.join(" · ") || '<span class="noprint muted">Add location / email / links via Edit details</span>') + "</div></header>" +
         (pr.summary ? "<section><h2>Summary</h2><p>" + esc(pr.summary) + "</p></section>" : "") +
-        (c.certs.length ? "<section><h2>Certifications</h2><ul>" + c.certs.map(function (x) { return "<li><b>" + esc(x.name) + "</b> — " + esc(x.issuer) + ' <span class="when">' + H.fmtDate(x.ts) + "</span></li>"; }).join("") + "</ul></section>" : "") +
+        (c.certs.length ? "<section><h2>Certifications</h2><ul>" + c.certs.map(function (x) { return "<li><b>" + esc(x.name) + "</b> — " + esc(x.issuer) + ' <span class="when">' + H.fmtDate(x.ts) + "</span>" + (x.detail ? '<div class="small muted">' + esc(x.detail) + "</div>" : "") + "</li>"; }).join("") + "</ul></section>" : "") +
         (c.projects.length ? "<section><h2>Projects</h2>" + c.projects.map(function (p) {
           return '<div class="rp"><div><b>' + esc(p.title) + "</b> " + [link(p.repo, "repo"), link(p.demo, "demo"), link(p.writeup, "write-up")].filter(Boolean).join(" · ") + "</div><p>" + esc(p.desc) + "</p>" +
             ((p.skills || []).length ? '<div class="small muted">' + esc(p.skills.join(" · ")) + "</div>" : "") + "</div>";

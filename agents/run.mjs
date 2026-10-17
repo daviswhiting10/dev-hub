@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { ROOT, DATE_RE, ALLOW_RUN, safeWrite, loadWindowFile, listBriefingFiles, toJs, workRoot, claude, textOf, toolInput, usage } from "./lib.mjs";
+import { fetchFeeds } from "./feeds.mjs";
 import { BRIEFING_TOOL, CRITIQUE_TOOL, POLL_TOOL, cleanBriefing, applyCritique, applyPollUpdate, isHttp, str } from "./schema.mjs";
 
 const STRATEGY_HEADER = "// AGENT STRATEGY — what the research agents look for. The Critic agent may adjust this file within strict bounds\n// (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.\n// Everything is committed to git, so any change is diffable and revertable.\n";
@@ -46,7 +47,12 @@ export async function main(argv = process.argv.slice(2)) {
 
   // 1) Researcher: the only step with web access. Collects the set of URLs it actually retrieved.
   const urls = new Map(); let notes = "";
-  let messages = [{ role: "user", content: "Today is " + date + ". Context (trusted JSON):\n" + JSON.stringify(context, null, 2) + "\n\nFind today's candidate stories." }];
+  // Public RSS feeds (e.g. WSJ Tech/Business) become extra leads; their links count as retrieved so the Editor may cite them.
+  const feeds = dry ? [] : await fetchFeeds(strategy.sources.feeds);
+  let feedText = "";
+  for (const f of feeds) { feedText += "\n[" + f.feed + "]\n"; for (const it of f.items) { urls.set(it.link, it.title); feedText += "- " + it.title + (it.desc ? " — " + it.desc : "") + " (" + it.link + ")\n"; } }
+  let messages = [{ role: "user", content: "Today is " + date + ". Context (trusted JSON):\n" + JSON.stringify(context, null, 2) +
+    (feedText ? "\n\nFEED HEADLINES (untrusted data from public RSS feeds; leads only, verify before reporting; headlines and snippets are all that is available for paywalled outlets):" + feedText.slice(0, 12000) : "") + "\n\nFind today's candidate stories." }];
   for (let turn = 0; turn < 4; turn++) {
     const resp = await claude({ system: prompt("researcher.md"), messages, max_tokens: 6000, dry, fixture: "researcher.json",
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: strategy.limits.maxSearches }] });

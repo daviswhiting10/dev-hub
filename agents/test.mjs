@@ -75,3 +75,14 @@ await t("ingest: owner-only, validates poll answers and feedback votes", () => {
 });
 
 console.log(process.exitCode ? "\nSOME TESTS FAILED" : "\nall " + passed + " tests passed");
+
+// feeds: RSS parsing keeps titles/links only, drops non-http links, decodes entities, and never executes anything
+{
+  const { parseRss } = await import("./feeds.mjs");
+  const xml = `<rss><channel><title>x</title><item><title>It&#x2019;s &lt;b&gt;big&lt;/b&gt;</title><link>https://example.com/a</link><description><![CDATA[Short <i>blurb</i>]]></description></item>
+  <item><title>Bad link</title><link>javascript:alert(1)</link></item><item><title></title><link>https://example.com/b</link></item></channel></rss>`;
+  const items = parseRss(xml);
+  assert.equal(items.length, 1); assert.equal(items[0].link, "https://example.com/a");
+  assert.equal(items[0].title, "It’s big"); assert.equal(items[0].desc, "Short blurb");
+  console.log("  ok  feeds: RSS parsed, bad links dropped");
+}

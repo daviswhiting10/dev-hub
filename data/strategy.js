@@ -22,7 +22,12 @@ window.HUB_STRATEGY = {
   ],
   sources: {
     prefer: ["anthropic.com", "openai.com", "deepmind.google", "arxiv.org", "huggingface.co", "github.com"],
-    avoid: []
+    avoid: [],
+    // Public RSS feeds read as extra leads (headlines + short descriptions only; no logins). https only.
+    feeds: [
+      { name: "WSJ Technology", url: "https://feeds.content.dowjones.io/public/rss/RSSWSJD" },
+      { name: "WSJ US Business", url: "https://feeds.content.dowjones.io/public/rss/WSJcomUSBusiness" }
+    ]
   },
   seedLeads: [
     "OpenAI / Hugging Face incident technical report (cited in video: How to Survive the Next 2 Years of AI)",

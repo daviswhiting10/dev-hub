@@ -91,3 +91,17 @@ archive/            previous standalone practice-exam page
 - Practice questions are independent study material, not actual exam content.
 - Scaled score estimate = 100 + 900 × percent correct (Anthropic's real scaling isn't published); pass line 720 ≈ 69%.
 - Playbook source: reel by @swerikcodes, built from on-screen text (no audio transcript was available).
+
+## Ask panel (live explainer)
+
+The **Ask** button (bottom right) opens a panel that calls the Claude API directly from your browser. Paste an API key once
+(use a separate key with a low spend limit). It is stored only in this browser under its own localStorage entry, so
+**Export backup does not include it** and the repo never sees it. Highlight any text on a page and press **Explain**, or type a
+question. “Save to glossary” keeps terms in your backup. Note: localStorage is shared by every page under
+`daviswhiting10.github.io`, so only host pages there that you trust.
+
+## News feeds
+
+`data/strategy.js` → `sources.feeds` lists public RSS feeds (WSJ Technology and US Business to start). The daily run reads
+their headlines and short descriptions as extra leads for the researcher. No logins: for paywalled outlets the briefing only
+has the headline and snippet, and links out so you can read the article with your own subscription.

@@ -25,6 +25,7 @@ await t("safeWrite rejects traversal, absolute and non-whitelisted paths", () =>
 });
 
 await t("dry run writes a valid briefing, updates index, applies only valid strategy changes", async () => {
+  const v0 = loadWindowFile("data/strategy.js").HUB_STRATEGY.version; // the repo's strategy advances as real runs happen
   const r = await main(["--dry-run", "--date", "2026-10-18", "--force"]); // 2026-10-18 is a Sunday -> weekly path too
   const b = loadWindowFile("data/briefings/2026-10-18.js", r.root).BRIEFINGS[0];
   assert.equal(b.date, "2026-10-18");
@@ -39,7 +40,7 @@ await t("dry run writes a valid briefing, updates index, applies only valid stra
   const idx = loadWindowFile("data/briefings/index.js", r.root).BRIEFING_INDEX;
   assert.equal(idx[0], "2026-10-18"); assert.ok(idx.includes("2026-10-16"));
   const s = loadWindowFile("data/strategy.js", r.root).HUB_STRATEGY;
-  assert.equal(s.version, 2); assert.equal(r.applied.length, 1);
+  assert.equal(s.version, v0 + 1); assert.equal(r.applied.length, 1);
   assert.ok(s.beats.find((x) => x.id === "agents-mcp").queries.includes("fixture query about agent evaluation"));
   assert.equal(s.beats.find((x) => x.id === "frontier-labs").weight, 3, "invalid weight rejected");
   assert.equal(s.sources.prefer.includes("../../etc/passwd"), false);

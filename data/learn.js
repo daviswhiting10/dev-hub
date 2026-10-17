@@ -38,8 +38,7 @@ window.HUB_DATA = window.HUB_DATA || {};
         items: [
           { id: "ln7-1", t: "Watch “Turning AI Into Money” (31:09)", link: V + "1869s" },
           { id: "ln7-2", t: "List three ways to monetize AI skills using your fitness background", skill: ["AI business"] },
-          { id: "ln7-3", t: "Watch “AI Opportunities Are Coming” (34:55) and pick one area to track in your daily briefing", link: V + "2095s",
-            resume: "Completed a structured one-week AI curriculum covering LLM fundamentals, the AI stack, major labs, tooling, and prompting." } ] }
+          { id: "ln7-3", t: "Watch “AI Opportunities Are Coming” (34:55) and pick one area to track in your daily briefing", link: V + "2095s" } ] }
     ]
   };
 })();

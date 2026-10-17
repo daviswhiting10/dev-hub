@@ -7,7 +7,7 @@
 
   function toText(pr, c) {
     var L = [pr.name, pr.headline, [pr.location, pr.email, pr.links].filter(Boolean).join(" · "), "", "SUMMARY", pr.summary, ""];
-    if (c.certs.length) { L.push("CERTIFICATIONS"); c.certs.forEach(function (x) { L.push("- " + x.name + " — " + x.issuer + " (" + H.fmtDate(x.ts) + ")"); }); L.push(""); }
+    if (c.certs.length) { L.push("CERTIFICATIONS"); c.certs.forEach(function (x) { L.push("- " + x.name + " — " + x.issuer + " (" + H.fmtDate(x.ts) + ")"); if (x.detail) L.push("  " + x.detail); }); L.push(""); }
     if (c.projects.length) {
       L.push("PROJECTS");
       c.projects.forEach(function (p) {
@@ -35,7 +35,7 @@
         (c.skillList.length ? '<section><h2>Skills</h2><div class="tags">' + c.skillList.map(function (s) { return '<span class="tag">' + esc(s) + "</span>"; }).join("") + "</div></section>" : "") +
         (c.highlights.length ? "<section><h2>Highlights</h2><ul>" + c.highlights.map(function (h) { return "<li>" + esc(h.text) + "</li>"; }).join("") + "</ul></section>" : "") +
         (pr.experience.trim() ? "<section><h2>Background</h2><p>" + esc(pr.experience).replace(/\n/g, "<br>") + "</p></section>" : '<section class="noprint"><h2>Background</h2><p class="muted">Add your fitness experience under Edit details — reframe it for AI work (clients coached, programs designed, systems you ran).</p></section>') +
-        (!c.certs.length && !c.projects.length && !c.skillList.length ? '<section class="noprint"><p class="muted">This resume fills itself in as you check off roadmap milestones, playbook items and ship projects. Nothing here is claimed until you complete it.</p></section>' : "") + "</article>";
+        (!c.certs.length && !c.projects.length && !c.skillList.length ? '<section class="noprint"><p class="muted">This resume fills itself in with your big wins only: certifications (like the CAF), shipped projects and landmark milestones. Routine tasks stay in the activity log. Nothing is claimed until you complete it.</p></section>' : "") + "</article>";
 
       var inprog = c.pending.length ? '<div class="card noprint"><div class="eyebrow">Not on the resume yet</div><ul class="small muted">' + c.pending.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul></div>" : "";
       var log = c.log.length ? '<div class="card noprint"><div class="eyebrow">Activity log</div><ul class="log">' + c.log.slice(0, 40).map(function (l) {

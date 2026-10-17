@@ -1,5 +1,6 @@
 // ROADMAP DATA — edit this file to change phases, sprints, or milestones. No code changes needed.
 // A milestone is { id, t: "title", skill?: ["Skill"], resume?: "Resume bullet shown once checked", cert?: {name, issuer} }.
+// RESUME RULE: only items with `cert` or `resume` reach the Digital Resume (and only they add their `skill`s). Give `resume` to big wins only.
 // Ids must be unique and stable (progress is saved against them). Add new milestones by adding lines.
 window.HUB_DATA = window.HUB_DATA || {};
 window.HUB_DATA.roadmap = {

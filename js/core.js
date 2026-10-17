@@ -172,9 +172,11 @@
     function consider(it, source) {
       var ts = done[it.id];
       if (ts) {
-        addSkills(it.skill);
-        if (it.cert) out.certs.push({ name: it.cert.name, issuer: it.cert.issuer, ts: ts });
-        if (it.resume) out.highlights.push({ text: it.resume, ts: ts });
+        // Only notable items reach the resume: a certification or an item with a `resume` bullet. Everything else
+        // (routine tasks, small skills) stays in the Activity log only.
+        if (it.cert || it.resume) addSkills(it.skill);
+        if (it.cert) out.certs.push({ name: it.cert.name, issuer: it.cert.issuer, ts: ts, detail: it.resume || "" });
+        else if (it.resume) out.highlights.push({ text: it.resume, ts: ts });
         out.log.push({ title: it.t, source: source, ts: ts });
       } else if (it.cert) out.pending.push("Certification in progress: " + it.cert.name);
     }

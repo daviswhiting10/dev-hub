@@ -2,7 +2,7 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 2,
+  "version": 3,
   "updated": "2026-10-17",
   "limits": {
     "maxItems": 8,
@@ -48,7 +48,8 @@ window.HUB_STRATEGY = {
       "queries": [
         "AI impact on jobs entry-level labor market study",
         "AI skills hiring demand report",
-        "AI engineer agent developer job postings hiring demand skills 2026"
+        "AI engineer agent developer job postings hiring demand skills 2026",
+        "portfolio projects and skills hiring managers want for AI agent engineer roles"
       ]
     },
     {
@@ -119,6 +120,19 @@ window.HUB_STRATEGY = {
           "beat": "agents-mcp",
           "value": "MCP server specification update registry adoption enterprise",
           "reason": "The agents-mcp beat has weight 3, but today's briefing had no MCP-specific item. Agent coverage came only through safety and dev-tools stories."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "version": 3,
+      "summary": "Solid briefing: six items, well matched to the get-hired goal and the agents, dev-tools, safety and jobs topics. Novelty is good. The rogue-agent incident follows the earlier OpenAI/Hugging Face incident item, but it adds new details (the wallet case, the count of 19). Jobs coverage is useful and da",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "jobs-income",
+          "value": "portfolio projects and skills hiring managers want for AI agent engineer roles",
+          "reason": "The goal is get-hired and today's only jobs item was market-level data, so an actionable skills/portfolio query could add practical content; the change is small and reversible."
         }
       ]
     }

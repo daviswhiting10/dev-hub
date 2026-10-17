@@ -64,12 +64,12 @@
       var cur = all.filter(function (b) { return b.date === (params && params.d); })[0] || all[0];
       var date = H.fmtDate(H.today());
       if (!cur) {
-        el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + '</div><h1>The Daily Five</h1>' +
+        el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + "</div>" + H.almanacHtml() + '<h1>The Daily Five</h1>' +
           '<div class="empty-note"><p class="lead">The morning briefing lands at 7 AM — check back then.</p></div>' + more() + "</div>";
         return;
       }
       var items = cur.items.slice(0, 5), sample = cur.meta && cur.meta.sample;
-      el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + "</div><h1>" + esc(s(cur.headline, 120) || "Your morning briefing") + "</h1>" +
+      el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + "</div>" + H.almanacHtml() + "<h1>" + esc(s(cur.headline, 120) || "Your morning briefing") + "</h1>" +
         (sample ? '<p class="sample-note small">Sample briefing — placeholder content until the first real morning run.</p>' : "") +
         '<section class="daily"><div class="daily-head"><h2>The Daily Five</h2><span class="progress" id="prog">' + esc(progressText(cur.date, items)) + "</span></div>" +
         five(cur.date, items) + "</section>" +

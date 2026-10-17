@@ -64,3 +64,15 @@
 .plines .pst{margin-left:auto;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
 .plines li.now .pst{color:var(--accent-ink);font-weight:700} .plines li.done .pst{color:var(--ok)} .plines li.behind .pst{color:var(--bad)}
 details.milestones>summary{cursor:pointer;margin-bottom:6px}
+
+/* Almanac: three cards above the headline */
+.almanac{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 26px}
+.alm-card{border:1px solid var(--line);border-top:2px solid var(--text);background:var(--panel);padding:14px 16px;min-width:0}
+.alm-label{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.alm-big{font-family:var(--serif);font-size:24px;line-height:1.25;margin-top:4px}
+.alm-big span{color:var(--muted);font-size:19px} .alm-set{margin-top:0} .alm-stale{opacity:.55}
+.alm-sub{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+.alm-moon{display:flex;align-items:center;gap:12px;margin-top:6px}
+.alm-name{font-family:var(--serif);font-size:19px;line-height:1.25}
+.moon-svg{width:54px;height:54px;flex:none} .moon-dark{fill:var(--panel2)} .moon-lit{fill:var(--text)} .moon-rim{fill:none;stroke:var(--text);stroke-width:1.2}
+@media (max-width:640px){.almanac{grid-template-columns:1fr}}

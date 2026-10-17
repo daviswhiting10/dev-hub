@@ -1,0 +1,45 @@
+name: daily-weather
+
+# Fetches the Columbia, MD forecast (Open-Meteo, no API key) and commits data/weather.js. Sunrise/sunset and the moon are
+# computed in the browser, so only the weather needs this job.
+on:
+  schedule:
+    - cron: "30 9 * * *"        # 9:30 UTC (5:30 AM US Eastern in daylight time), before the 11:00 UTC briefing
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: hub-data     # shared with the briefing and feedback jobs so pushes never collide
+  cancel-in-progress: false
+
+jobs:
+  weather:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch forecast
+        run: node scripts/weather.mjs
+      - name: Verify only data/weather.js changed
+        run: |
+          bad=$(git status --porcelain | awk '{print $2}' | grep -v '^data/weather\.js$' || true)
+          if [ -n "$bad" ]; then echo "::error::Unexpected files changed:"; echo "$bad"; exit 1; fi
+      - name: Commit and push
+        run: |
+          git config user.name "dev-hub-agents"
+          git config user.email "dev-hub-agents@users.noreply.github.com"
+          git add data/weather.js
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Weather $(date -u +%F)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Ask GitHub Pages to rebuild
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" || echo "Pages rebuild request failed (it may still rebuild on push)."

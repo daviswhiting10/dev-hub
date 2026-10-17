@@ -128,7 +128,7 @@
       (Array.isArray(su.files) ? su.files : []).forEach(function (f) { if (/^[\w.\-\/]+\.js$/.test(f) && f.indexOf("..") < 0 && files.indexOf(f) < 0) files.push(f); });
     });
     return Promise.all(files.map(function (f) {
-      return new Promise(function (res) { var sc = document.createElement("script"); sc.src = f; sc.onload = sc.onerror = function () { res(); }; document.head.appendChild(sc); });
+      return new Promise(function (res) { var sc = document.createElement("script"); sc.src = f + "?v=" + (window.HUB_VERSION || ""); sc.onload = sc.onerror = function () { res(); }; document.head.appendChild(sc); });
     }));
   }
   Hub.loadBanks = function () {
@@ -138,7 +138,7 @@
       function next() {
         if (misses >= 2 || n > 60) return loadExtra().then(resolve);
         var s = document.createElement("script");
-        s.src = "q" + n + ".js";
+        s.src = "q" + n + ".js?v=" + (window.HUB_VERSION || "");
         s.onload = function () { misses = 0; n++; next(); };
         s.onerror = function () { misses++; n++; s.remove(); next(); };
         document.head.appendChild(s);

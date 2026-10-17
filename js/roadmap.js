@@ -77,7 +77,7 @@
         }).join("");
         return '<section class="phase' + (isCur ? " current" : "") + '"><div class="phase-head"><div><div class="eyebrow">' + p.id + " · " + esc(p.range) + "</div><h2 class=\"tight\">" + esc(p.name) + '</h2><div class="muted small">' + esc(p.goal) + '</div></div><div class="phase-prog">' + H.bar(pr.pct, "var(--accent)") + '<span class="small">' + pr.done + "/" + pr.total + " · " + pr.pct + "%</span></div></div>" + sprints + "</section>";
       }).join("");
-      el.innerHTML = '<div class="page paper"><div class="eyebrow">Roadmap</div><h1>' + esc(rm.goal) + "</h1>" + journey() + phaseLines() +
+      el.innerHTML = '<div class="page paper wide"><div class="eyebrow">Roadmap</div><h1>' + esc(rm.goal) + "</h1>" + journey() + phaseLines() +
         '<details class="card milestones"><summary><b>Sprints &amp; milestones</b> <span class="muted small">' + op.done + "/" + op.total + ' checked — certifications and tagged skills flow into your Digital Resume</span></summary>' + phases +
         '<p class="muted small">Edit <code>data/roadmap.js</code> to change phases, sprints, milestones or the journey map.</p></details></div>';
       loadAvatar(el);

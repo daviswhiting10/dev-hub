@@ -59,15 +59,23 @@ export async function claude({ system, messages, tools, tool_choice, max_tokens 
   if (!key) throw new Error("ANTHROPIC_API_KEY is not set");
   const body = { model: process.env.AGENT_MODEL || "claude-sonnet-5-5", max_tokens, system, messages };
   if (tools) body.tools = tools;
-  if (tool_choice) body.tool_choice = tool_choice;
-  let lastErr;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  // Some models reject a forced tool_choice, so we ask for the tool in the prompt instead, and re-ask once if it is skipped.
+  const forced = tool_choice && tool_choice.type === "tool" ? tool_choice.name : null;
+  if (forced) body.system = system + "\n\nYou MUST finish by calling the `" + forced + "` tool exactly once with your complete answer. Do not reply with plain text instead.";
+  else if (tool_choice) body.tool_choice = tool_choice;
+  let lastErr, retried = false;
+  for (let attempt = 0; attempt < 4; attempt++) {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST", headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" }, body: JSON.stringify(body)
     });
     if (res.ok) {
       const j = await res.json();
       budget.used += (j.usage?.input_tokens || 0) + (j.usage?.output_tokens || 0);
+      if (forced && !(j.content || []).some((b) => b.type === "tool_use" && b.name === forced) && !retried && budget.used < budget.limit) {
+        retried = true;
+        body.messages = [...messages, { role: "assistant", content: j.content }, { role: "user", content: "Now call the `" + forced + "` tool with your complete answer." }];
+        continue;
+      }
       return j;
     }
     lastErr = new Error("API " + res.status + ": " + (await res.text()).slice(0, 300));

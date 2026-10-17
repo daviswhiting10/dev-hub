@@ -115,7 +115,5 @@
       });
     }
   };
-  function more() {
-    return '<p class="more small muted">Also: <a href="#/briefing">Tune your agents</a> · <a href="#/projects">Projects</a> · <a href="#/playbook">Playbook</a> · <a href="#/learn">Learn</a> · <a href="#/resume">Resume</a></p>';
-  }
+  function more() { return ""; }
 })();

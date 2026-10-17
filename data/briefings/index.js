@@ -1,2 +1,5 @@
-// Index of available briefings, newest first. Maintained by agents/run.mjs. The site loads the most recent files listed here.
-window.BRIEFING_INDEX = ["2026-10-16"];
+// Index of available briefings, newest first. Maintained by agents/run.mjs.
+window.BRIEFING_INDEX = [
+  "2026-10-17",
+  "2026-10-16"
+];

@@ -6,21 +6,18 @@
 <title>Dev Hub</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/exam.css">
+<link rel="stylesheet" href="css/today.css">
 </head>
 <body>
 <div class="shell">
   <aside class="side noprint">
     <div class="brand"><span class="logo">▲</span> Dev Hub</div>
     <nav id="nav">
-      <a href="#/dashboard" data-view="dashboard">Dashboard</a>
-      <a href="#/briefing" data-view="briefing">Briefing</a>
-      <a href="#/tests" data-view="tests">CAF Practice</a>
+      <a href="#/today" data-view="today">Today</a>
+      <a href="#/tests" data-view="tests">Tests</a>
       <a href="#/roadmap" data-view="roadmap">Roadmap</a>
-      <a href="#/projects" data-view="projects">Projects</a>
-      <a href="#/playbook" data-view="playbook">Playbook</a>
-      <a href="#/learn" data-view="learn">Learn</a>
-      <a href="#/resume" data-view="resume">Resume</a>
     </nav>
+    <div class="side-more small"><a href="#/briefing" data-view="briefing">Agents</a> · <a href="#/projects" data-view="projects">Projects</a> · <a href="#/playbook" data-view="playbook">Playbook</a> · <a href="#/learn" data-view="learn">Learn</a> · <a href="#/resume" data-view="resume">Resume</a></div>
     <div class="side-foot">
       <div id="saveState" class="save-state">Saved locally</div>
       <button class="btn small" id="exportBtn">Export backup</button>
@@ -33,6 +30,7 @@
 
 <!-- Data (edit these files to change content; no code changes needed) -->
 <script src="data/roadmap.js"></script>
+<script src="data/tests.js"></script>
 <script src="data/playbook.js"></script>
 <script src="data/projects.js"></script>
 <script src="data/learn.js"></script>
@@ -50,6 +48,7 @@
 <script src="js/poll.js"></script>
 <script src="js/briefing.js"></script>
 <script src="js/resume.js"></script>
+<script src="js/today.js"></script>
 <script src="js/main.js"></script>
 <!-- Question banks q1.js, q2.js, ... are discovered automatically by js/core.js -->
 </body>

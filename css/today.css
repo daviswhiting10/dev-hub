@@ -1,0 +1,66 @@
+/* Today / Tests grid / Roadmap journey — the "printed morning briefing" look. Paper, ink, serif, hairlines, one red accent. */
+.side-more{padding:0 22px;line-height:1.9}
+.side-more a{color:var(--faint)} .side-more a:hover{color:var(--accent-ink)}
+.paper{max-width:760px}
+.paper h1{font-size:38px}
+.sample-note{border-left:2px solid var(--line);padding-left:10px;color:var(--muted);margin:0 0 6px}
+.empty-note{border-top:1px solid var(--text);border-bottom:1px solid var(--line);padding:30px 0;margin-top:20px}
+
+/* Daily Five */
+.daily{border-top:2px solid var(--text);margin:26px 0 40px;padding-top:6px}
+.daily-head,.report-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.daily h2,.report h2{border:0;padding:0;margin:8px 0}
+.progress{font-family:var(--serif);font-style:italic;color:var(--accent-ink);font-size:16px}
+.five{list-style:none;margin:6px 0 0;padding:0}
+.five-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-top:1px solid var(--line)}
+.five-item:first-child{border-top:0}
+.pencil{flex:none;width:22px;height:22px;margin-top:3px;border:1.5px solid var(--text);background:transparent;border-radius:2px;cursor:pointer;position:relative;padding:0}
+.pencil span{position:absolute;left:4px;top:1px;width:6px;height:12px;border:solid var(--accent);border-width:0 2px 2px 0;transform:rotate(40deg) scale(.6);opacity:0;transition:opacity .2s ease,transform .2s ease}
+.five-item.done .pencil span{opacity:1;transform:rotate(40deg) scale(1)}
+.pencil:focus-visible,.less:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.five-t{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--text);flex:1}
+.five-t:hover{text-decoration:none;color:var(--accent-ink)}
+.five-n{color:var(--faint)}
+.five-txt{background:linear-gradient(var(--accent),var(--accent)) no-repeat 0 55%/0 1.5px;transition:background-size .2s ease,opacity .2s ease,color .2s ease}
+.five-item.done .five-txt{background-size:100% 1.5px;opacity:.5}
+
+/* Tech news report */
+.report{margin-top:6px}
+.story{padding:22px 0;border-top:1px solid var(--line);scroll-margin-top:16px}
+.story h3{font-size:22px;line-height:1.25;margin-bottom:6px}
+.story.flash{animation:flash 1.4s ease}
+@keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
+.pull{font-family:var(--serif);font-style:italic;color:var(--muted);border-left:2px solid var(--accent);padding-left:14px;margin:12px 0}
+.match{font-size:12px;letter-spacing:.04em;color:var(--faint)}
+.story-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;font-size:13px;flex-wrap:wrap}
+.less{font:inherit;font-size:12px;color:var(--muted);background:none;border:0;border-bottom:1px dotted var(--faint);cursor:pointer;padding:0}
+.less:hover,.less.on{color:var(--accent-ink);border-bottom-color:var(--accent)}
+.sendbar{border-top:2px solid var(--text);padding-top:14px;margin-top:10px}
+.more{margin-top:40px;border-top:1px solid var(--line);padding-top:12px}
+@media (prefers-reduced-motion:reduce){.five-txt,.pencil span{transition:none}.story.flash{animation:none}}
+
+/* Tests grid */
+.suites{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:20px}
+.suite{display:block;border:1px solid var(--line);border-top:2px solid var(--text);background:var(--panel);padding:20px;color:var(--text)}
+.suite:hover{text-decoration:none;border-color:var(--accent)}
+.suite p{color:var(--muted)}
+.suite-prog{border-top:1px solid var(--line-soft);padding-top:10px;margin-top:12px;color:var(--accent-ink);font-weight:600}
+
+/* Roadmap journey */
+.journey{margin:18px 0 8px;border-top:2px solid var(--text);border-bottom:1px solid var(--line);padding:6px 0}
+.journey svg{width:100%;height:auto;display:block;font-family:var(--serif)}
+.road{fill:none;stroke:var(--line);stroke-width:3;stroke-dasharray:2 7;stroke-linecap:round}
+.cp circle{fill:var(--bg);stroke:var(--text);stroke-width:2}
+.cp.done circle{fill:var(--text)} .cp.now circle{stroke:var(--accent);stroke-width:3}
+.cp .tick{fill:none;stroke:var(--bg);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.cp text,.goal text{font-size:15px;fill:var(--text)} .cp.next text{fill:var(--muted)}
+.goal circle{fill:var(--accent);stroke:none} .goal .pole{stroke:var(--text);stroke-width:2;fill:none} .goal .flag{fill:var(--accent)}
+.goal text{font-style:italic;font-weight:700}
+.you .ring{fill:var(--bg);stroke:var(--accent);stroke-width:2.5} .you .avbg{fill:var(--text)} .you .avbg~text,.you #avatarDefault text{fill:var(--bg);font-size:14px;font-weight:700;font-family:var(--sans)}
+.you .pin{fill:var(--accent)} .you .here{font-size:12px;font-style:italic;fill:var(--accent-ink)}
+.plines{list-style:none;margin:6px 0 24px;padding:0}
+.plines li{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--line-soft);font-size:14px}
+.plines li:first-child{border-top:0}
+.plines .pst{margin-left:auto;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.plines li.now .pst{color:var(--accent-ink);font-weight:700} .plines li.done .pst{color:var(--ok)} .plines li.behind .pst{color:var(--bad)}
+details.milestones>summary{cursor:pointer;margin-bottom:6px}

@@ -4,8 +4,19 @@
 window.HUB_DATA = window.HUB_DATA || {};
 window.HUB_DATA.roadmap = {
   goal: "Working in AI by March 31, 2027 — an offer or signed freelance work.",
+  // JOURNEY drives the Roadmap map and the Tests header. Checkpoints point at phases below; "you are here" is derived from
+  // today's date and the sprint dates (set `current: { phase: "P2" }` to override). Completed = every milestone in the phase checked.
+  journey: {
+    endGoal: { label: "AI career — March 2027", date: "2027-03-31" },
+    avatar: "assets/yo",   // your photo: drop it at assets/yo (or yo.png / yo.jpg / yo.webp); a styled marker is used until then
+    initials: "DW",
+    checkpoints: [
+      { label: "Foundation", phase: "P1" }, { label: "Build", phase: "P2" },
+      { label: "Position", phase: "P3" }, { label: "Hunt", phase: "P4" }
+    ]
+  },
   phases: [
-    { id: "P1", name: "Close the gap", range: "Oct 15 – Nov 15, 2026",
+    { id: "P1", name: "Close the gap", range: "Oct 15 – Nov 15, 2026", tests: "CAF retake prep",
       goal: "Pass the CAF retake. Drill weak domains, schedule the retake for early/mid-November." },
     { id: "P2", name: "Build proof", range: "Nov 2026 – Jan 2027",
       goal: "Ship 3 projects (agentic, RAG, health-adjacent) plus write-ups. Learn Python basics, APIs, git, evals and deployment alongside." },

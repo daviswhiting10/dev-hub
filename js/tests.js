@@ -22,9 +22,15 @@
   H.DOMAINS = DOMAINS; H.PASS_PCT = PASS_PCT;
 
   // ---------- stats ----------
+  // The suite currently open (from data/tests.js); null means every loaded bank.
+  var suiteId = null;
+  function suites() { return (window.HUB_TESTS && Array.isArray(window.HUB_TESTS.suites)) ? window.HUB_TESTS.suites : []; }
+  function suiteOf(id) { return suites().filter(function (x) { return x.id === id; })[0] || null; }
+  function suiteBanks(su) { var ids = (su.banks || []).map(String); return H.banks.filter(function (b) { return ids.indexOf(String(b.id)) >= 0; }); }
+  function activeBanks() { var su = suiteId && suiteOf(suiteId); return su ? suiteBanks(su) : H.banks; }
   function pool() {
     var out = [];
-    H.banks.forEach(function (b) { b.questions.forEach(function (q, i) { out.push({ b: b.id, i: i, q: q }); }); });
+    activeBanks().forEach(function (b) { b.questions.forEach(function (q, i) { out.push({ b: b.id, i: i, q: q }); }); });
     return out;
   }
   function getQ(ref) { var b = H.banks.filter(function (x) { return x.id === ref.b; })[0]; return b && b.questions[ref.i]; }
@@ -115,6 +121,9 @@
       document.body.classList.add("exam-skin");
       sanitizeInProgress();
       var st = H.store.tests;
+      if (params && params.suite != null) { suiteId = suiteOf(params.suite) ? params.suite : null; screen = "home"; }
+      // Arriving via the nav (not an internal re-render) with nothing in progress shows the suite grid.
+      if (params && params._nav && params.suite == null && params.drill == null && screen === "home" && suites().length) { suiteId = null; return renderSuites(el); }
       if (params && params.drill != null) { // started from the dashboard link: #/tests?drill=3 | all | missed
         var items, label;
         if (params.drill === "missed") { items = H.shuffle(missedRefs()).slice(0, 25).map(function (r) { return { b: r.b, i: r.i }; }); label = "Missed-question review"; }
@@ -130,9 +139,30 @@
   };
   H.views.tests = view;
 
+  // Card grid of suites declared in data/tests.js, with progress from localStorage.
+  function renderSuites(el) {
+    document.body.classList.remove("exam-skin");
+    var st = H.store.tests, rm = H.data.roadmap, cur = H.sprintFor(H.today()), ph = H.phaseOf(cur.sprint.phase);
+    var sps = rm.sprints.filter(function (x) { return x.phase === ph.id; });
+    function num(x) { return String(x.id).replace(/\D/g, ""); }
+    var label = (sps.length > 1 ? "Sprint " + num(sps[0]) + "–" + num(sps[sps.length - 1]) : "Sprint " + num(sps[0])) + ": " + (ph.tests || ph.name);
+    var cards = suites().map(function (su) {
+      var banks = suiteBanks(su), ids = banks.map(function (b) { return String(b.id); });
+      var hist = st.attempts.filter(function (a) { return ids.indexOf(String(a.bank)) >= 0; });
+      var tried = {}; hist.forEach(function (a) { tried[a.bank] = 1; });
+      var best = hist.length ? Math.max.apply(null, hist.map(function (a) { return a.pct; })) : null;
+      var count = banks.reduce(function (n, b) { return n + b.questions.length; }, 0) || +su.questions || 0;
+      var prog = st.inProgress && ids.indexOf(String(st.inProgress.bank)) >= 0;
+      return '<a class="suite" href="#/tests?suite=' + encodeURIComponent(su.id) + '"><div class="eyebrow">' + (banks.length || ids.length) + " tests · " + count + ' questions</div><h2 class="tight">' + esc(su.title) + "</h2><p>" + esc(su.description || "") + "</p>" +
+        '<div class="suite-prog small">' + (hist.length ? "Attempted " + Object.keys(tried).length + " of " + banks.length + " · Best " + best + "%" : "Not attempted yet") + (prog ? " · in progress" : "") + "</div></a>";
+    }).join("");
+    el.innerHTML = '<div class="page"><div class="eyebrow">Tests</div><h1>' + esc(label) + '</h1><p class="lead">Tests chosen for where you are in the plan. This heading follows your roadmap, so it changes as you advance.</p>' +
+      '<div class="suites">' + (cards || '<div class="card empty">No test suites yet. Add one to <code>data/tests.js</code>.</div>') + "</div></div>";
+  }
+
   function renderHome(el) {
     var st = H.store.tests, dst = H.domainStats(), weak = H.weakestDomains(), mode = st.mode || "exam";
-    var cards = H.banks.map(function (b) {
+    var cards = activeBanks().map(function (b) {
       var hist = st.attempts.filter(function (a) { return a.bank === b.id; });
       var best = hist.length ? Math.max.apply(null, hist.map(function (a) { return a.pct; })) : null;
       var last = hist.length ? hist[hist.length - 1] : null;
@@ -161,7 +191,7 @@
         (a.kind === "bank" ? (scaled(a.pct / 100) >= 720 ? '<span class="x-badge ok">pass pace</span>' : '<span class="x-badge bad">below</span>') : "") + "</td></tr>";
     }).join("");
 
-    el.innerHTML = '<div class="x-wrap"><span class="x-pill"><span class="x-dot"></span>CCAR-F · Unofficial practice</span><h1 class="x-h1">Practice exams</h1>' +
+    el.innerHTML = '<div class="x-wrap">' + (suites().length ? '<a class="x-muted x-small" href="#/tests" id="allSuites">← All tests</a><br>' : "") + '<span class="x-pill"><span class="x-dot"></span>CCAR-F · Unofficial practice</span><h1 class="x-h1">' + esc(suiteId && suiteOf(suiteId) ? suiteOf(suiteId).title : "Practice exams") + '</h1>' +
       '<p class="x-lead">Scenario-based tests modeled on the CCAR-F exam guide. Answer options are length-balanced and shuffled each attempt. Every answer feeds the domain accuracy below, so you always know what to drill.</p>' +
       '<p class="x-muted x-small" style="margin:-16px 0 24px">Independent study material written from the public CCAR-F exam guide. Not affiliated with or endorsed by Anthropic, and not actual exam content.</p>' +
       '<div class="x-row" style="margin-bottom:18px"><div class="x-seg"><button data-mode="exam" class="' + (mode === "exam" ? "on" : "") + '">Exam mode</button><button data-mode="study" class="' + (mode === "study" ? "on" : "") + '">Study mode</button></div>' +
@@ -176,6 +206,7 @@
       (H.warnings.length ? '<div class="x-card" style="margin-top:14px;border-color:var(--warn)"><b>Bank warnings</b><ul>' + H.warnings.map(function (w) { return "<li>" + esc(w) + "</li>"; }).join("") + "</ul></div>" : "") + "</div>";
 
     el.onclick = function (ev) {
+      if (ev.target.id === "allSuites") { ev.preventDefault(); suiteId = null; try { history.replaceState(null, "", "#/tests"); } catch (e) { /* file:// */ } renderSuites(el); return; }
       var t = ev.target.closest("button"); if (!t) return;
       if (t.dataset.mode) { st.mode = t.dataset.mode; H.save(); renderHome(el); }
       else if (t.dataset.bank != null) {

@@ -70,6 +70,8 @@
       "&payload=" + encodeURIComponent(JSON.stringify(p));
   }
 
+  H.feedback = { pending: pending, url: feedbackUrl, list: list };
+
   function itemHtml(it, i) {
     var v = H.store.feedback.votes[it.id], conf = s(it.confidence, 10);
     var srcs = (it.sources || []).map(link).join("");

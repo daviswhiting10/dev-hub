@@ -43,6 +43,7 @@
   function defaults() {
     return {
       done: {}, days: {}, projects: null, seeded: [],
+      reviewed: {},                                // Daily Five check-offs: { briefingDate: { itemId: timestamp } }
       briefing: { text: "", date: "" },
       tests: { attempts: [], q: {}, log: [], answered: 0, inProgress: null },
       feedback: { votes: {}, sent: {}, sentAt: 0 }, // briefing item votes: { itemId: "up" | "down" | "more" }; `sent` = what was already sent
@@ -120,12 +121,22 @@
 
   // ---------- question bank loader ----------
   // Tries q1.js, q2.js, ... and stops after two consecutive misses, so dropping in q4.js "just works".
+  // Extra bank scripts declared by a suite in data/tests.js (`files`), so a new suite needs no code change.
+  function loadExtra() {
+    var files = [];
+    ((window.HUB_TESTS && window.HUB_TESTS.suites) || []).forEach(function (su) {
+      (Array.isArray(su.files) ? su.files : []).forEach(function (f) { if (/^[\w.\-\/]+\.js$/.test(f) && f.indexOf("..") < 0 && files.indexOf(f) < 0) files.push(f); });
+    });
+    return Promise.all(files.map(function (f) {
+      return new Promise(function (res) { var sc = document.createElement("script"); sc.src = f; sc.onload = sc.onerror = function () { res(); }; document.head.appendChild(sc); });
+    }));
+  }
   Hub.loadBanks = function () {
     return new Promise(function (resolve) {
       window.EXAMS = window.EXAMS || [];
       var n = 1, misses = 0;
       function next() {
-        if (misses >= 2 || n > 60) return resolve();
+        if (misses >= 2 || n > 60) return loadExtra().then(resolve);
         var s = document.createElement("script");
         s.src = "q" + n + ".js";
         s.onload = function () { misses = 0; n++; next(); };
@@ -195,9 +206,10 @@
   var current = null;
   Hub.route = function () {
     var h = location.hash.replace(/^#\/?/, ""), parts = h.split("?");
-    var name = parts[0] || "dashboard", params = {};
+    var name = parts[0] || "today", params = {};
     new URLSearchParams(parts[1] || "").forEach(function (v, k) { params[k] = v; });
-    if (!Hub.views[name]) name = "dashboard";
+    params._nav = 1;
+    if (!Hub.views[name]) name = "today";
     if (current && Hub.views[current].leave) Hub.views[current].leave();
     current = name;
     Hub.$$("#nav a").forEach(function (a) { a.classList.toggle("on", a.dataset.view === name); });

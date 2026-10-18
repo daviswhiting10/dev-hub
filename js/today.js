@@ -47,7 +47,7 @@
     return '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(s(src.title, 120) || u) + " ↗</a>";
   }
   function story(it) {
-    var m = matches(it), down = H.store.feedback.votes[it.id] === "down";
+    var m = matches(it), v = H.store.feedback.votes[it.id], down = v === "down", more = v === "more";
     var srcs = (it.sources || []).map(link).filter(Boolean).join(" · ");
     return '<article class="story" id="story-' + esc(sid(it.id)) + '" data-id="' + esc(s(it.id, 60)) + '">' +
       "<h3>" + esc(s(it.title, 200)) + "</h3><p>" + esc(s(it.summary, 600)) + "</p>" +
@@ -55,7 +55,8 @@
       '<div class="match">' + (m.length ? "Matches your interests: " + esc(m.join(" · ")) : "Outside your stated interests") + "</div>" +
       (it.analysis ? '<details class="deep"><summary>More detail</summary><p>' + esc(s(it.analysis, 2500)) + "</p></details>" : "") +
       '<div class="story-foot">' + (srcs ? '<span class="src">' + srcs + "</span>" : '<span class="src muted">No external source</span>') +
-      '<button class="less' + (down ? " on" : "") + '" data-less="1">' + (down ? "Noted — less like this" : "Less like this") + "</button></div></article>";
+      '<span class="votes"><button class="less' + (more ? " on" : "") + '" data-vote="more">' + (more ? "Noted — more like this" : "More like this") + "</button>" +
+      '<button class="less' + (down ? " on" : "") + '" data-vote="down">' + (down ? "Noted — less like this" : "Less like this") + "</button></span></div></article>";
   }
 
   H.views.today = {
@@ -84,7 +85,7 @@
       function note() {
         var n = H.feedback.pending().length, b = H.$("#fbSend", root), t = H.$("#fbNote", root); if (!b) return;
         b.href = H.feedback.url(); b.classList.toggle("primary", n > 0);
-        t.textContent = n ? n + " note" + (n === 1 ? "" : "s") + " ready for your agents. Opens a prefilled GitHub Issue." : "Mark stories “Less like this” and send them here.";
+        t.textContent = n ? n + " note" + (n === 1 ? "" : "s") + " ready for your agents. Opens a prefilled GitHub Issue." : "Mark stories “More” or “Less like this” and send them here.";
       }
       note();
       root.addEventListener("change", function (ev) { if (ev.target.id === "bsel") H.go("today", "d=" + ev.target.value); });
@@ -104,12 +105,17 @@
           el2.scrollIntoView({ behavior: window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
           el2.classList.remove("flash"); void el2.offsetWidth; el2.classList.add("flash"); return;
         }
-        var less = t.closest && t.closest("[data-less]");
-        if (less) {
-          var sid2 = less.closest(".story").dataset.id, f = H.store.feedback;
-          if (f.votes[sid2] === "down") delete f.votes[sid2]; else f.votes[sid2] = "down";
+        var vb = t.closest && t.closest("[data-vote]");
+        if (vb) { // one vote per story: pressing the other button switches it, pressing the same one clears it
+          var sid2 = vb.closest(".story").dataset.id, f = H.store.feedback, want = vb.dataset.vote;
+          if (f.votes[sid2] === want) delete f.votes[sid2]; else f.votes[sid2] = want;
           H.touch(); H.save();
-          var d = f.votes[sid2] === "down"; less.classList.toggle("on", d); less.textContent = d ? "Noted — less like this" : "Less like this"; note(); return;
+          var cur2 = f.votes[sid2];
+          H.$$("[data-vote]", vb.parentNode).forEach(function (bt) {
+            var on = cur2 === bt.dataset.vote, w = bt.dataset.vote;
+            bt.classList.toggle("on", on); bt.textContent = on ? "Noted — " + (w === "more" ? "more" : "less") + " like this" : (w === "more" ? "More" : "Less") + " like this";
+          });
+          note(); return;
         }
         if (t.id === "fbSend") { H.feedback.pending().forEach(function (x) { H.store.feedback.sent[x.item] = x.vote; }); H.store.feedback.sentAt = Date.now(); H.save(); setTimeout(note, 0); }
       });

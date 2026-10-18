@@ -34,6 +34,7 @@
 .match{font-size:12px;letter-spacing:.04em;color:var(--faint)}
 .story-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;font-size:13px;flex-wrap:wrap}
 .less{font:inherit;font-size:12px;color:var(--muted);background:none;border:0;border-bottom:1px dotted var(--faint);cursor:pointer;padding:0}
+.votes{display:flex;gap:16px}
 .less:hover,.less.on{color:var(--accent-ink);border-bottom-color:var(--accent)}
 .sendbar{border-top:2px solid var(--text);padding-top:14px;margin-top:10px}
 .more{margin-top:40px;border-top:1px solid var(--line);padding-top:12px}

@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 3,
-  "updated": "2026-10-17",
+  "version": 4,
+  "updated": "2026-10-18",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -29,7 +29,8 @@ window.HUB_STRATEGY = {
       "weight": 3,
       "queries": [
         "Anthropic OpenAI Google DeepMind model release announcement",
-        "frontier AI lab news this week"
+        "frontier AI lab news this week",
+        "open-weight model release Hugging Face agentic coding benchmark"
       ]
     },
     {
@@ -49,7 +50,8 @@ window.HUB_STRATEGY = {
         "AI impact on jobs entry-level labor market study",
         "AI skills hiring demand report",
         "AI engineer agent developer job postings hiring demand skills 2026",
-        "portfolio projects and skills hiring managers want for AI agent engineer roles"
+        "portfolio projects and skills hiring managers want for AI agent engineer roles",
+        "AI agent engineer hiring trends new data October 2026"
       ]
     },
     {
@@ -58,7 +60,8 @@ window.HUB_STRATEGY = {
       "weight": 2,
       "queries": [
         "AI agent incident security report",
-        "AI agents escaping control or misbehaving case study"
+        "AI agents escaping control or misbehaving case study",
+        "AI agent sandbox escape disclosure lab incident regulator advisory"
       ]
     },
     {
@@ -133,6 +136,31 @@ window.HUB_STRATEGY = {
           "beat": "jobs-income",
           "value": "portfolio projects and skills hiring managers want for AI agent engineer roles",
           "reason": "The goal is get-hired and today's only jobs item was market-level data, so an actionable skills/portfolio query could add practical content; the change is small and reversible."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-18",
+      "version": 4,
+      "summary": "The briefing fits the reader's goal (get hired, analysis depth, low hype) and mostly covers new material: Muse Spark Open, the China export controls and the Claude Code/Codex convergence are fresh. Weaknesses: the MCP and agent-containment items follow up on recent briefings. The jobs coverage is th",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "jobs-income",
+          "value": "AI agent engineer hiring trends new data October 2026",
+          "reason": "Jobs coverage today was one low-confidence background item (the Stanford canaries study) plus a newsroom listing, and the reader's goal is get-hired."
+        },
+        {
+          "op": "add_query",
+          "beat": "agent-safety",
+          "value": "AI agent sandbox escape disclosure lab incident regulator advisory",
+          "reason": "Agent containment has appeared in two consecutive briefings, so a query aimed at primary disclosures and regulator advisories should add new detail instead of rehashing the same story."
+        },
+        {
+          "op": "add_query",
+          "beat": "frontier-labs",
+          "value": "open-weight model release Hugging Face agentic coding benchmark",
+          "reason": "The Muse Spark Open item was strong and relevant, and this query should surface similar open-weight releases."
         }
       ]
     }

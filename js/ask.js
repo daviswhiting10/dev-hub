@@ -36,7 +36,7 @@
     var g = ensure(); panel.querySelector("#askGN").textContent = g.length ? "(" + g.length + ")" : "";
     gloss.innerHTML = g.length ? g.slice().reverse().map(function (e, i) {
       return '<details class="gl"><summary><b>' + esc(e.term) + '</b> <a href="#" class="small" data-a="gdel" data-i="' + (g.length - 1 - i) + '">delete</a></summary><div class="small">' + fmt(e.def) + "</div></details>";
-    }).join("") : '<p class="small muted">Nothing saved yet. Press “Save to glossary” under any answer.</p>';
+    }).join("") + '<p class="small"><a href="#/map">Open the concept map →</a></p>' : '<p class="small muted">Nothing saved yet. Press “Save to glossary” under any answer.</p>';
   }
   function open(tab) { panel.hidden = false; fab.hidden = true; show(tab || "chat"); if ((tab || "chat") === "chat") setTimeout(function () { input.focus(); }, 0); }
   function show(tab) { log.hidden = tab !== "chat"; panel.querySelector("#askForm").hidden = tab !== "chat"; gloss.hidden = tab !== "gloss"; }
@@ -82,6 +82,19 @@
       .catch(function (e) { out.className = "ask-msg err"; out.textContent = e.name === "AbortError" ? "Stopped." : (e.message === "Failed to fetch" ? "Couldn’t reach Anthropic (offline, or the browser blocked the request)." : e.message); done(); });
   }
 
+  // One-shot call (no streaming) for other views, e.g. the concept map. Resolves to the reply text.
+  function call(system, user, maxTokens) {
+    var key = store(KEY); if (!key) return Promise.reject(new Error("Add your API key in the Ask panel first."));
+    return fetch("https://api.anthropic.com/v1/messages", { method: "POST",
+      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({ model: store(MODEL_KEY) || DEFAULT_MODEL, max_tokens: maxTokens || 800, system: system, messages: [{ role: "user", content: user }] }) })
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status === 401 ? "The key was rejected. Check it in the Ask panel." : r.status === 429 ? "Rate or spend limit reached." : "Error " + r.status);
+        return r.json();
+      }).then(function (j) { return (j.content || []).map(function (c) { return c.text || ""; }).join(""); })
+      .catch(function (e) { throw new Error(e.message === "Failed to fetch" ? "Couldn’t reach Anthropic (offline, or the browser blocked the request)." : e.message); });
+  }
+
   // ---------- wiring ----------
   function contextFor(node) {
     var el = node && (node.nodeType === 1 ? node : node.parentElement), st = el && el.closest && el.closest(".story, .brief-item");
@@ -99,7 +112,10 @@
       else if (a === "rmkey") { ev.preventDefault(); store(KEY, null); renderSetup(); }
       else if (a === "stop" && busy) busy.abort();
       else if (a === "clear") { history = []; log.innerHTML = ""; }
-      else if (a === "gsave") { var g = ensure(); g.push({ term: t.dataset.term, def: t.dataset.def, ts: Date.now() }); H.save(); t.textContent = "Saved ✓"; t.disabled = true; renderGloss(); }
+      else if (a === "gsave") { // saving a term you already have updates it and keeps its connections
+        var g = ensure(), k = t.dataset.term.trim().toLowerCase().replace(/\s+/g, " "), ex = g.filter(function (e) { return String(e.term).trim().toLowerCase().replace(/\s+/g, " ") === k; })[0];
+        if (ex) ex.def = t.dataset.def; else g.push({ term: t.dataset.term.slice(0, 60), def: t.dataset.def, ts: Date.now(), links: [] });
+        H.touch(); H.save(); t.textContent = "Saved ✓"; t.disabled = true; renderGloss(); }
       else if (a === "gdel") { ev.preventDefault(); ensure().splice(+t.dataset.i, 1); H.save(); renderGloss(); }
     });
     panel.querySelector("#askForm").addEventListener("submit", function (ev) { ev.preventDefault(); var q = input.value.trim(); if (!q) return; input.value = ""; ask(q); });
@@ -121,7 +137,7 @@
       popover.hidden = true; if (!sel) return; open("chat");
       ask("Explain “" + sel.text + "” in plain English.", sel.text, sel.ctx);
     });
-    H.ask = { open: open, ask: ask };
+    H.ask = { open: open, ask: ask, call: call };
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

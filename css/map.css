@@ -1,0 +1,45 @@
+/* Map: the glossary as a linked concept graph. Same paper-and-ink look; one red accent for the selection and bridges. */
+.mapview{max-width:1180px}
+.mp-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0 14px}
+.mp-bar input,.mp-add input,.mp-add select,.mapview select,.mapview textarea{font:14px var(--sans);color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:7px 10px}
+.mp-new{display:flex;gap:6px}
+.mapview textarea{width:100%;resize:vertical;line-height:1.5}
+.mp-wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}
+.mp-canvas{border-top:2px solid var(--text);border-bottom:1px solid var(--line);background:var(--panel);min-height:300px}
+.mp-svg{display:block;width:100%;height:auto;touch-action:none;user-select:none}
+.mp-side{border-top:2px solid var(--text);padding-top:10px;max-height:640px;overflow:auto}
+.mp-e{stroke:var(--text);stroke-width:1.2;opacity:.75}
+.mp-e.mention{stroke:var(--faint);stroke-dasharray:4 4;opacity:.8}
+.mp-e.path{stroke:var(--accent);stroke-width:3;opacity:1;stroke-dasharray:none}
+.mp-e.dim{opacity:.1}
+.mp-el{font:11px var(--serif);font-style:italic;fill:var(--accent-ink);opacity:0;pointer-events:none;paint-order:stroke;stroke:var(--panel);stroke-width:4px}
+.mp-el.show{opacity:1}
+.mp-n{cursor:pointer;outline:none}
+.mp-n circle{fill:var(--text);stroke:var(--panel);stroke-width:2}
+.mp-n text{font:12.5px var(--serif);fill:var(--text);paint-order:stroke;stroke:var(--panel);stroke-width:4px}
+.mp-n:hover circle,.mp-n:focus-visible circle{fill:var(--accent-ink)}
+.mp-n.sel circle,.mp-n.path circle{fill:var(--accent)}
+.mp-n.hit circle{stroke:var(--accent);stroke-width:3}
+.mp-n.dim{opacity:.18}
+.mp-index{list-style:none;margin:0;padding:0}
+.mp-index li{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:6px 0}
+.mp-index button,.mp-back{background:none;border:0;padding:0;font:16px var(--serif);color:var(--text);cursor:pointer;text-align:left}
+.mp-index button:hover,.mp-back:hover{color:var(--accent-ink)}
+.mp-back{font:700 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.mp-def{font-family:var(--serif);font-size:16px;line-height:1.55;margin:6px 0 10px}
+.mp-h{margin:18px 0 6px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:var(--sans)}
+.mp-chip{background:var(--accent-soft);border:0;border-radius:2px;padding:1px 7px;font:14px var(--serif);color:var(--accent-ink);cursor:pointer}
+.mp-chip.new{background:transparent;border:1px dashed var(--faint);color:var(--muted)}
+.mp-conn{list-style:none;margin:0;padding:0}
+.mp-conn li{padding:4px 0;border-top:1px solid var(--line-soft)}
+.mp-x{background:none;border:0;color:var(--faint);cursor:pointer}
+.mp-x:hover{color:var(--bad)}
+.mp-add{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mp-add select{flex:1 1 100%} .mp-add input{flex:1 1 130px;min-width:0}
+.mp-chain{line-height:2}
+.mp-del{margin-top:22px;font-size:13px} .mp-del a{color:var(--faint)}
+.mp-props{border:1px solid var(--text);background:var(--panel2);padding:12px 14px;margin:0 0 14px}
+.mp-prop{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.row.between{display:flex;justify-content:space-between;align-items:center;gap:10px}
+@media (max-width:900px){.mp-wrap{grid-template-columns:1fr}.mp-side{max-height:none}}
+@media print{.mp-side,.mp-bar{display:none}}

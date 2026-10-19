@@ -4,7 +4,8 @@ name: daily-briefing
 # Requires the repo secret ANTHROPIC_API_KEY. Without it the job exits cleanly with a warning (no failures, no spend).
 on:
   schedule:
-    - cron: "0 11 * * *"        # 11:00 UTC (7:00 AM US Eastern during daylight time)
+    - cron: "7 9 * * *"         # 5:07 AM US Eastern during daylight time (EDT = UTC-4)
+    - cron: "7 10 * * *"        # 5:07 AM US Eastern during standard time (EST = UTC-5); the gate job skips whichever is off by an hour
   workflow_dispatch:
     inputs:
       dry_run:
@@ -25,7 +26,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    # GitHub cron is UTC-only, so we fire at both possible UTC hours and let only the one matching 05:xx US Eastern
+    # (Columbia, MD) continue. This keeps the schedule right across daylight-saving changes.
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.t.outputs.go }}
+    steps:
+      - id: t
+        run: |
+          h=$(TZ=America/New_York date +%H)
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "$h" = "05" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; else echo "go=false" >> "$GITHUB_OUTPUT"; echo "Local hour is $h; skipping."; fi
+
   briefing:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

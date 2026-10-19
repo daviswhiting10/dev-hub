@@ -66,7 +66,7 @@
       var date = H.fmtDate(H.today());
       if (!cur) {
         el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + "</div>" + H.almanacHtml() + '<h1>The Daily Five</h1>' +
-          '<div class="empty-note"><p class="lead">The morning briefing lands at 7 AM — check back then.</p></div>' + more() + "</div>";
+          '<div class="empty-note"><p class="lead">The morning briefing lands at 5 AM — check back then.</p></div>' + more() + "</div>";
         return;
       }
       var items = cur.items.slice(0, 5), sample = cur.meta && cur.meta.sample;

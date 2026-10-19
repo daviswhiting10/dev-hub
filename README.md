@@ -35,7 +35,7 @@ Optional local server (single command): `python3 -m http.server 8000` then open 
 ## AI workspace: daily briefing, poll, self-improving agents
 
 ```
-GitHub Action (daily 11:00 UTC)             The website (static)
+GitHub Action (daily, about 5 AM Eastern)             The website (static)
   agents/run.mjs                              Briefing page reads data/briefings/*.js
   Researcher (web search) -> Editor ->        you vote + answer the poll
   Critic -> weekly Poll agent                 "Send" opens a prefilled GitHub Issue

@@ -4,7 +4,8 @@ name: daily-weather
 # computed in the browser, so only the weather needs this job.
 on:
   schedule:
-    - cron: "30 9 * * *"        # 9:30 UTC (5:30 AM US Eastern in daylight time), before the 11:00 UTC briefing
+    - cron: "37 8 * * *"        # 4:37 AM US Eastern during daylight time, ahead of the 5 AM briefing
+    - cron: "37 9 * * *"        # 4:37 AM US Eastern during standard time; the gate job skips whichever is off by an hour
   workflow_dispatch:
 
 permissions:
@@ -16,7 +17,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    # GitHub cron is UTC-only, so we fire at both possible UTC hours and let only the one matching 04:xx US Eastern
+    # (Columbia, MD) continue. This keeps the schedule right across daylight-saving changes.
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.t.outputs.go }}
+    steps:
+      - id: t
+        run: |
+          h=$(TZ=America/New_York date +%H)
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "$h" = "04" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; else echo "go=false" >> "$GITHUB_OUTPUT"; echo "Local hour is $h; skipping."; fi
+
   weather:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

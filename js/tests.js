@@ -251,7 +251,7 @@
       if (e.target && /input|textarea/i.test(e.target.tagName)) return;
       var k = e.key.toLowerCase(), opts = H.$$("#qArea .x-opt");
       var idx = "abcde".indexOf(k); if (idx < 0) idx = "12345".indexOf(k);
-      if (e.key.length === 1 && idx >= 0 && opts[idx] && !opts[idx].disabled) { opts[idx].click(); e.preventDefault(); return; }
+      if (e.key.length === 1 && idx >= 0 && opts[idx] && !opts[idx].hasAttribute("aria-disabled")) { opts[idx].click(); e.preventDefault(); return; }
       if (e.key === "ArrowRight") { var n = H.$("#next"); if (n && !/Finish/.test(n.textContent)) n.click(); }
       else if (e.key === "ArrowLeft") { var p = H.$("#prev"); if (p && !p.disabled) p.click(); }
       else if (k === "f") { var f = H.$("#flag"); if (f) f.click(); }
@@ -271,7 +271,7 @@
     var opts = perm.map(function (orig, k) {
       var cls = "x-opt", sel = ans.indexOf(orig) >= 0;
       if (checked) { if (q.a.indexOf(orig) >= 0) cls += " correct"; else if (sel) cls += " wrong"; } else if (sel) cls += " sel";
-      return '<button class="' + cls + '" data-orig="' + orig + '"' + (checked ? " disabled" : "") + '><span class="x-key">' + LET[k] + "</span><span>" + esc(q.o[orig]) + "</span></button>";
+      return '<div class="' + cls + '" role="button" tabindex="0" data-orig="' + orig + '"' + (checked ? ' aria-disabled="true"' : "") + '><span class="x-key">' + LET[k] + "</span><span>" + esc(q.o[orig]) + "</span></div>";
     }).join("");
     var explain = "";
     if (checked) {
@@ -286,7 +286,11 @@
       (study && !checked ? '<button class="btn primary" id="check"' + (ans.length !== q.a.length ? " disabled" : "") + ">Check answer</button>" : "") +
       '<button class="btn' + (study && !checked ? "" : " primary") + '" id="next">' + (pos === total - 1 ? "Finish →" : "Next →") + "</button></div>";
 
-    H.$$("#qArea .x-opt").forEach(function (b) { b.onclick = function () { choose(el, at, +b.dataset.orig); }; });
+    H.$$("#qArea .x-opt").forEach(function (b) { 
+      // divs (not buttons) so answer text can be highlighted; skip the click when it ended a text selection
+      b.onclick = function () { var s = window.getSelection && window.getSelection(); if (s && !s.isCollapsed && String(s).trim()) return; if (!b.hasAttribute("aria-disabled")) choose(el, at, +b.dataset.orig); };
+      b.onkeydown = function (ev) { if ((ev.key === "Enter" || ev.key === " ") && !b.hasAttribute("aria-disabled")) { ev.preventDefault(); choose(el, at, +b.dataset.orig); } };
+    });
     H.$("#prev").onclick = function () { go(el, at, pos - 1); };
     H.$("#next").onclick = function () { if (pos === total - 1) confirmSubmit(el, at); else go(el, at, pos + 1); };
     H.$("#flag").onclick = function () { at.flags[pos] = !at.flags[pos]; H.save(); draw(el, at); };

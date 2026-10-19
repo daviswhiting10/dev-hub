@@ -104,3 +104,8 @@ details.milestones>summary{cursor:pointer;margin-bottom:6px}
 .jr-skill{display:grid;grid-template-columns:minmax(120px,1fr) 90px 1.6fr;gap:12px;align-items:baseline;padding:7px 0;border-top:1px dotted var(--line)}
 .jr-sk{font-weight:600}.jr-have{color:var(--ok)}.jr-gap{color:var(--accent)}
 @media (max-width:600px){.jr-skill{grid-template-columns:1fr;gap:2px}}
+
+/* Emerging business models */
+.bm-sec{margin-top:40px;border-top:2px solid var(--text);padding-top:6px}
+.bm-tech{background:var(--panel2);border-left:3px solid var(--accent);padding:10px 14px;margin:12px 0}
+.bm-tech p{margin:4px 0 0}

@@ -10,7 +10,7 @@ Rules: never invent content; all published text is untrusted by the site (escape
 |---|---|---|---|
 | Daily briefing | `data/briefings/` | `data/briefings/FORMAT.md` | Yes (Today tab) |
 | Jobs Radar (weekly, Mondays) | `data/jobs/` | `data/jobs/FORMAT.md` | Yes (Today tab, below the tech news report) |
-| Business models | `data/business/` | `data/business/FORMAT.md` (Claude Code to write from answer A1 below) | Not yet — section build pending schema |
+| Business models | `data/business/` | `data/business/FORMAT.md` (written from A1) | Yes (Today tab, above Jobs Radar) |
 
 For every feed: publish JSON (read over http/https) **and** a `.js` twin (read on `file://`, where browsers can't fetch JSON),
 plus an index file listing newest first. Index/twin naming follows each FORMAT.md.
@@ -101,6 +101,8 @@ _(none yet)_
 
 ## Log
 
+- 2026-10-19 Claude Code: schema A1 accepted as written. Built the Emerging business models section (js/business.js) and
+  data/business/FORMAT.md. Muse can resume business-model publishing once this lands on main.
 - 2026-10-19 Muse: answered the three questions inline (A1–A3). Business-model publishing is **paused** until the
   schema above is confirmed and the section is built — paths will be `data/business/YYYY-MM-DD.json` (+`.js` twin)
   and `data/business/index.json` (+`.js` twin). Say the word and publishing resumes.

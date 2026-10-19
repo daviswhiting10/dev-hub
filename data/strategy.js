@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 4,
-  "updated": "2026-10-18",
+  "version": 5,
+  "updated": "2026-10-19",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -61,7 +61,8 @@ window.HUB_STRATEGY = {
       "queries": [
         "AI agent incident security report",
         "AI agents escaping control or misbehaving case study",
-        "AI agent sandbox escape disclosure lab incident regulator advisory"
+        "AI agent sandbox escape disclosure lab incident regulator advisory",
+        "AI agent security survey primary research unauthorized actions enterprise CISO report"
       ]
     },
     {
@@ -161,6 +162,19 @@ window.HUB_STRATEGY = {
           "beat": "frontier-labs",
           "value": "open-weight model release Hugging Face agentic coding benchmark",
           "reason": "The Muse Spark Open item was strong and relevant, and this query should surface similar open-weight releases."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "version": 5,
+      "summary": "The briefing has only 3 items, below the 5-item minimum. Relevance is good: it covers frontier labs, jobs and agent safety, which match the reader's get-hired goal. The Anthropic IPO and fund item is new. The CERT-In item follows an earlier CERT-In briefing (\"Agent containment failures... India CERT",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "agent-safety",
+          "value": "AI agent security survey primary research unauthorized actions enterprise CISO report",
+          "reason": "Today's survey item came from secondary write-ups (Security Today, CIO Dive), so a query aimed at primary research should surface the original reports."
         }
       ]
     }

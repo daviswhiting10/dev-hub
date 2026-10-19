@@ -92,3 +92,15 @@ details.milestones>summary{cursor:pointer;margin-bottom:6px}
 .ask-form{border-top:1px solid var(--line);padding:12px 16px} .ask-form textarea{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--line);background:var(--bg);resize:vertical}
 .gl{border-top:1px solid var(--line-soft);padding:8px 0} .gl summary{cursor:pointer;display:flex;gap:10px;justify-content:space-between}
 .ask-pop{position:fixed;z-index:70;font:700 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:#fff;border:0;border-radius:2px;padding:7px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+
+/* Jobs Radar */
+.jr{margin-top:40px;border-top:2px solid var(--text);padding-top:6px}
+.jr-roles{list-style:none;margin:12px 0 0;padding:0;font-size:14px}
+.jr-role{padding:6px 0;border-top:1px dotted var(--line)}
+.jr-signal{border-top:2px solid var(--text);margin-top:10px;padding-top:12px}
+.jr-signal p{font-family:var(--serif);font-size:19px;line-height:1.4;margin:4px 0 0}
+.jr-demand{border-top:1px solid var(--line);margin-top:22px;padding-top:12px}
+.jr-skills{list-style:none;margin:8px 0 0;padding:0}
+.jr-skill{display:grid;grid-template-columns:minmax(120px,1fr) 90px 1.6fr;gap:12px;align-items:baseline;padding:7px 0;border-top:1px dotted var(--line)}
+.jr-sk{font-weight:600}.jr-have{color:var(--ok)}.jr-gap{color:var(--accent)}
+@media (max-width:600px){.jr-skill{grid-template-columns:1fr;gap:2px}}

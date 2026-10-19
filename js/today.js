@@ -67,6 +67,7 @@
       if (!cur) {
         el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + "</div>" + H.almanacHtml() + '<h1>The Daily Five</h1>' +
           '<div class="empty-note"><p class="lead">The morning briefing lands at 5 AM — check back then.</p></div>' + more() + "</div>";
+        if (H.mountJobs) H.mountJobs(el);
         return;
       }
       var items = cur.items.slice(0, 5), sample = cur.meta && cur.meta.sample;
@@ -82,6 +83,7 @@
         '<div class="sendbar"><a class="btn small" id="fbSend" target="_blank" rel="noopener" href="' + esc(H.feedback.url()) + '">Send feedback</a> <span class="small muted" id="fbNote"></span></div></section>' + more() + "</div>";
 
       var root = H.$(".page", el), items5 = items;
+      if (H.mountJobs) H.mountJobs(root);
       function note() {
         var n = H.feedback.pending().length, b = H.$("#fbSend", root), t = H.$("#fbNote", root); if (!b) return;
         b.href = H.feedback.url(); b.classList.toggle("primary", n > 0);
@@ -121,5 +123,5 @@
       });
     }
   };
-  function more() { return ""; }
+  function more() { return H.jobsShell ? H.jobsShell() : ""; } // below the report: Jobs Radar (js/jobs.js)
 })();

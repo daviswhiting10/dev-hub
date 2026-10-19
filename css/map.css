@@ -5,7 +5,7 @@
 .mp-new{display:flex;gap:6px}
 .mapview textarea{width:100%;resize:vertical;line-height:1.5}
 .mp-wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}
-.mp-canvas{border-top:2px solid var(--text);border-bottom:1px solid var(--line);background:var(--panel);min-height:300px}
+.mp-canvas{position:relative;border-top:2px solid var(--text);border-bottom:1px solid var(--line);background:var(--panel);min-height:300px}
 .mp-svg{display:block;width:100%;height:auto;touch-action:none;user-select:none}
 .mp-side{border-top:2px solid var(--text);padding-top:10px;max-height:640px;overflow:auto}
 .mp-e{stroke:var(--text);stroke-width:1.2;opacity:.75}
@@ -21,6 +21,8 @@
 .mp-n.sel circle,.mp-n.path circle{fill:var(--accent)}
 .mp-n.hit circle{stroke:var(--accent);stroke-width:3}
 .mp-n.dim{opacity:.18}
+.mp-tip{position:absolute;z-index:2;max-width:260px;max-height:60%;overflow:auto;background:var(--panel);border:1px solid var(--text);padding:10px 12px;font:14px/1.45 var(--serif);box-shadow:3px 3px 0 var(--line);pointer-events:none}
+.mp-tip b{display:block;font-size:15px;margin-bottom:4px}
 .mp-index{list-style:none;margin:0;padding:0}
 .mp-index li{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:6px 0}
 .mp-index button,.mp-back{background:none;border:0;padding:0;font:16px var(--serif);color:var(--text);cursor:pointer;text-align:left}

@@ -119,7 +119,20 @@
       var l = els.e[e.id], a = byK[e.a], b = byK[e.b]; if (!l) return;
       l.setAttribute("x1", a.x.toFixed(1)); l.setAttribute("y1", a.y.toFixed(1)); l.setAttribute("x2", b.x.toFixed(1)); l.setAttribute("y2", b.y.toFixed(1));
     });
-    labels();
+    labels(); tip();
+  }
+  // Definition card that floats beside the selected node, so a click answers "what does this mean?" right on the map.
+  function tip() {
+    var c = root && root.querySelector("#mpCanvas"), d = c && c.querySelector(".mp-tip");
+    if (!S.sel || !M || !M.by[S.sel] || !byK[S.sel] || !svg || !c.contains(svg)) { if (d) d.remove(); return; }
+    if (!d) { d = document.createElement("div"); d.className = "mp-tip"; c.appendChild(d); }
+    var e = M.by[S.sel], sig = S.sel + "\u0001" + (e.def || "");
+    if (d.dataset.sig !== sig) { d.dataset.sig = sig; d.innerHTML = "<b>" + esc(e.term) + "</b><div>" + (e.def ? rich(e.def) : '<span class="muted">No definition yet. Use the panel to add one.</span>') + "</div>"; }
+    var n = byK[S.sel], r = svg.getBoundingClientRect(), cr = c.getBoundingClientRect(), sx = r.width / W, sy = r.height / HT;
+    var px = n.x * sx + (r.left - cr.left), py = n.y * sy + (r.top - cr.top), w = d.offsetWidth, h = d.offsetHeight;
+    var x = px + n.r + 10; if (x + w > cr.width - 6) x = px - n.r - 10 - w; x = Math.max(6, x);
+    var y = Math.max(6, Math.min(cr.height - h - 6, py - h / 2));
+    d.style.left = x.toFixed(0) + "px"; d.style.top = y.toFixed(0) + "px";
   }
   var labelEls = {};
   function labels() {
@@ -209,7 +222,7 @@
   function setPath() {
     path = S.sel && S.bridge && M.by[S.bridge] && M.by[S.sel] ? bridge(S.sel, S.bridge) : null;
   }
-  function select(k) { S.sel = k && M.by[k] ? k : null; S.edit = false; S.bridge = ""; path = null; panel(); paint(); }
+  function select(k) { S.sel = k && M.by[k] ? k : null; S.edit = false; S.bridge = ""; path = null; panel(); paint(); tip(); }
   function rebuild() {
     M = model(); if (S.sel && !M.by[S.sel]) S.sel = null;
     layout(); setPath(); drawGraph(); panel(); if (alpha > 0.02 && !raf) raf = requestAnimationFrame(tick);
@@ -293,7 +306,7 @@
         else if (a === "suggest") suggest();
         else if (a === "edit") { S.edit = true; panel(); root.querySelector("#mpDef").focus(); }
         else if (a === "canceldef") { S.edit = false; panel(); }
-        else if (a === "savedef") { entry(k0).def = root.querySelector("#mpDef").value.slice(0, 2000); S.edit = false; commit(); panel(); }
+        else if (a === "savedef") { entry(k0).def = root.querySelector("#mpDef").value.slice(0, 2000); S.edit = false; commit(); panel(); tip(); }
         else if (a === "explain") { if (H.ask) { H.ask.open("chat"); H.ask.ask("Explain “" + M.by[k0].term + "” in plain English.", M.by[k0].term, ""); } }
         else if (a === "conn") {
           var to = root.querySelector("#mpTo").value, lab = root.querySelector("#mpLab").value.trim().replace(/[<>]/g, "").slice(0, 40);

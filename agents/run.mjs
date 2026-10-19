@@ -6,7 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { ROOT, DATE_RE, ALLOW_RUN, safeWrite, loadWindowFile, listBriefingFiles, toJs, workRoot, claude, textOf, toolInput, usage } from "./lib.mjs";
+import { ROOT, DATE_RE, ALLOW_RUN, safeWrite, loadWindowFile, listBriefingFiles, toJs, workRoot, claude, textOf, toolInput, usage, usageByModel } from "./lib.mjs";
 import { fetchFeeds } from "./feeds.mjs";
 import { BRIEFING_TOOL, CRITIQUE_TOOL, POLL_TOOL, cleanBriefing, applyCritique, applyPollUpdate, isHttp, str } from "./schema.mjs";
 
@@ -55,7 +55,7 @@ export async function main(argv = process.argv.slice(2)) {
   let messages = [{ role: "user", content: "Today is " + date + ". Context (trusted JSON):\n" + JSON.stringify(context, null, 2) +
     (feedText ? "\n\nFEED HEADLINES (untrusted data from public RSS feeds; leads only, verify before reporting; headlines and snippets are all that is available for paywalled outlets):" + feedText.slice(0, 12000) : "") + "\n\nFind today's candidate stories." }];
   for (let turn = 0; turn < 4; turn++) {
-    const resp = await claude({ system: prompt("researcher.md"), messages, max_tokens: 6000, dry, fixture: "researcher.json",
+    const resp = await claude({ system: prompt("researcher.md"), messages, max_tokens: 6000, dry, fixture: "researcher.json", model: process.env.AGENT_RESEARCH_MODEL || "claude-haiku-5-5", // research is gathering and sorting, so a cheaper model; the Editor keeps the stronger one
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: strategy.limits.maxSearches }] });
     for (const b of resp.content || []) {
       if (b.type === "web_search_tool_result" && Array.isArray(b.content)) for (const r of b.content) if (r?.type === "web_search_result" && isHttp(r.url)) urls.set(r.url, str(r.title, 200));
@@ -115,6 +115,7 @@ export async function main(argv = process.argv.slice(2)) {
   const idx = (loadWindowFile("data/briefings/index.js", root).BRIEFING_INDEX || []).filter((d) => DATE_RE.test(d) && d !== date);
   safeWrite("data/briefings/index.js", "// Index of available briefings, newest first. Maintained by agents/run.mjs.\nwindow.BRIEFING_INDEX = " + toJs([date, ...idx].sort().reverse().slice(0, 60)) + ";\n", ALLOW_RUN, root);
 
+  if (!dry) console.log("token use by model: " + JSON.stringify(usageByModel()));
   console.log(`briefing ${date}: ${briefing.items.length} items, ${applied.length} strategy change(s), tokens used: ${usage()}${dry ? " (dry run in " + root + ")" : ""}`);
   return { root, briefing, applied, weekly };
 }

@@ -16,12 +16,15 @@ exactly as given. Say that it comes from the named feed and that only the headli
 them because they are paywalled; the reader has a subscription and will click through.
 
 ## How to work
+0. The feed headlines are free and already in front of you, so start from them. Spend web searches only to (a) check or
+   deepen a feed story that matters, or (b) cover a high-weight beat the feeds do not touch. Searches are scarce (about 4):
+   use each on a distinct, specific query and do not repeat a search for the same story.
 1. Plan searches from the highest-weight beats first. Use the starter queries as a guide; vary wording.
 2. Prefer primary sources (company blogs, papers, official reports, repositories) over commentary. Prefer the domains
    listed as preferred; do not use avoided domains.
 3. Verify surprising claims with a second source before listing them. Mark anything you could not verify as UNVERIFIED.
 4. Seed leads are LEADS to check, not facts. Report only what you can confirm from sources you actually found.
-5. Stay within the search budget. Stop when you have 8-12 solid candidates. If it is a quiet day and you only find a few
+5. Stay within the search budget. Stop when you have 6-10 solid candidates. If it is a quiet day and you only find a few
    real stories, report only those. Never invent or pad. Skip hype, press-release rewrites, and crypto-adjacent noise.
 
 ## Output (plain text, no markdown tables)

@@ -51,13 +51,15 @@ export function workRoot(dry) {
 // ---------- Claude API ----------
 const budget = { used: 0, limit: Number(process.env.TOKEN_BUDGET || 200000) };
 export const usage = () => budget.used;
+const byModel = {};  // { model: { input, output } } so each run can report what it cost
+export const usageByModel = () => JSON.parse(JSON.stringify(byModel));
 
-export async function claude({ system, messages, tools, tool_choice, max_tokens = 4000, dry, fixture }) {
+export async function claude({ system, messages, tools, tool_choice, max_tokens = 4000, dry, fixture, model }) {
   if (dry) return JSON.parse(fs.readFileSync(path.join(ROOT, "agents/fixtures", fixture), "utf8"));
   if (budget.used >= budget.limit) throw new Error("token budget exhausted (" + budget.used + "/" + budget.limit + ")");
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error("ANTHROPIC_API_KEY is not set");
-  const body = { model: process.env.AGENT_MODEL || "claude-sonnet-5-5", max_tokens, system, messages };
+  const body = { model: model || process.env.AGENT_MODEL || "claude-sonnet-5-5", max_tokens, system, messages };
   if (tools) body.tools = tools;
   // Some models reject a forced tool_choice, so we ask for the tool in the prompt instead, and re-ask once if it is skipped.
   const forced = tool_choice && tool_choice.type === "tool" ? tool_choice.name : null;
@@ -71,6 +73,8 @@ export async function claude({ system, messages, tools, tool_choice, max_tokens 
     if (res.ok) {
       const j = await res.json();
       budget.used += (j.usage?.input_tokens || 0) + (j.usage?.output_tokens || 0);
+      const m = (byModel[body.model] = byModel[body.model] || { input: 0, output: 0 });
+      m.input += j.usage?.input_tokens || 0; m.output += j.usage?.output_tokens || 0;
       if (forced && !(j.content || []).some((b) => b.type === "tool_use" && b.name === forced) && !retried && budget.used < budget.limit) {
         retried = true;
         body.messages = [...messages, { role: "assistant", content: j.content }, { role: "user", content: "Now call the `" + forced + "` tool with your complete answer." }];

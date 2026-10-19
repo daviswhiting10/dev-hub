@@ -7,7 +7,7 @@ window.HUB_STRATEGY = {
   "limits": {
     "maxItems": 8,
     "minItems": 5,
-    "maxSearches": 8,
+    "maxSearches": 4,
     "maxQueriesPerBeat": 6,
     "maxChangesPerRun": 5
   },

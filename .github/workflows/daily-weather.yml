@@ -18,16 +18,23 @@ concurrency:
 
 jobs:
   gate:
-    # GitHub cron is UTC-only, so we fire at both possible UTC hours and let only the one matching 04:xx US Eastern
-    # (Columbia, MD) continue. This keeps the schedule right across daylight-saving changes.
+    # GitHub cron is UTC-only, so we schedule both possible UTC times and let only the one that matches Eastern daylight
+    # saving continue. Decided from WHICH cron fired (not the clock), because GitHub often starts scheduled runs late.
     runs-on: ubuntu-latest
     outputs:
       go: ${{ steps.t.outputs.go }}
     steps:
       - id: t
+        env:
+          EVENT: ${{ github.event_name }}
+          CRON: ${{ github.event.schedule }}
         run: |
-          h=$(TZ=America/New_York date +%H)
-          if [ "${{ github.event_name }}" != "schedule" ] || [ "$h" = "04" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; else echo "go=false" >> "$GITHUB_OUTPUT"; echo "Local hour is $h; skipping."; fi
+          off=$(TZ=America/New_York date +%z)
+          if [ "$EVENT" != "schedule" ] || { [ "$off" = "-0400" ] && [ "$CRON" = "37 8 * * *" ]; } || { [ "$off" = "-0500" ] && [ "$CRON" = "37 9 * * *" ]; }; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"; echo "Eastern offset is $off and cron is '$CRON'; skipping the duplicate."
+          fi
 
   weather:
     needs: gate

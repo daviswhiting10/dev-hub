@@ -63,7 +63,7 @@
     render: function (el, params) {
       var all = H.feedback ? H.feedback.list() : [];
       var cur = all.filter(function (b) { return b.date === (params && params.d); })[0] || all[0];
-      var date = H.fmtDate(H.today());
+      var date = H.parse(H.today()).toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric", year: "numeric" });
       if (!cur) {
         el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + "</div>" + H.almanacHtml() + '<h1>The Daily Five</h1>' +
           '<div class="empty-note"><p class="lead">The morning briefing lands at 5 AM — check back then.</p></div>' + more() + "</div>";

@@ -52,7 +52,7 @@
     } else wBody = '<div class="alm-sub">Today’s forecast arrives early each morning.</div>';
     var moonSub = m.illum + "% lit · " + (m.toFull <= m.toNew ? "full moon in " + m.toFull + (m.toFull === 1 ? " day" : " days") : "new moon in " + m.toNew + (m.toNew === 1 ? " day" : " days"));
     return '<div class="almanac">' +
-      card("Sun · Columbia, MD", '<div class="alm-big">↑ ' + esc(clock(sun.rise)) + '</div><div class="alm-big alm-set">↓ ' + esc(clock(sun.set)) + '</div><div class="alm-sub">Sunrise / sunset</div>') +
+      card("Sunrise & sunset · Columbia, MD", '<div class="alm-big">↑ ' + esc(clock(sun.rise)) + '</div><div class="alm-big alm-set">↓ ' + esc(clock(sun.set)) + '</div><div class="alm-sub">Sunrise / sunset</div>') +
       card("Weather · Columbia, MD", wBody) +
       card("Moon", '<div class="alm-moon">' + moonSvg(m.f) + '<div><div class="alm-name">' + esc(m.name) + '</div><div class="alm-sub">' + esc(moonSub) + "</div></div></div>") + "</div>";
   };

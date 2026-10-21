@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 5,
-  "updated": "2026-10-19",
+  "version": 6,
+  "updated": "2026-10-21",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -19,8 +19,7 @@ window.HUB_STRATEGY = {
       "queries": [
         "Claude Agent SDK and MCP news this week",
         "new MCP servers and agent frameworks",
-        "multi-agent systems production lessons",
-        "MCP server specification update registry adoption enterprise"
+        "multi-agent systems production lessons"
       ]
     },
     {
@@ -51,7 +50,8 @@ window.HUB_STRATEGY = {
         "AI skills hiring demand report",
         "AI engineer agent developer job postings hiring demand skills 2026",
         "portfolio projects and skills hiring managers want for AI agent engineer roles",
-        "AI agent engineer hiring trends new data October 2026"
+        "AI agent engineer hiring trends new data October 2026",
+        "AI agent engineer job openings salary data and employer demand this month"
       ]
     },
     {
@@ -175,6 +175,25 @@ window.HUB_STRATEGY = {
           "beat": "agent-safety",
           "value": "AI agent security survey primary research unauthorized actions enterprise CISO report",
           "reason": "Today's survey item came from secondary write-ups (Security Today, CIO Dive), so a query aimed at primary research should surface the original reports."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-21",
+      "version": 6,
+      "summary": "Today's briefing has 4 items, below the 5-item minimum. Relevance is strong, since it covers agent safety, MCP and frontier labs. Novelty is mostly fine, but the MCP spec follow-ups are the third briefing in a row on the same story. Clarity is good. The jobs-income, dev-tools and health beats are mi",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "jobs-income",
+          "value": "AI agent engineer job openings salary data and employer demand this month",
+          "reason": "The briefing has no real jobs-income item (the S-1 story is only loosely tagged), and the reader's goal is get-hired."
+        },
+        {
+          "op": "drop_query",
+          "beat": "agents-mcp",
+          "value": "MCP server specification update registry adoption enterprise",
+          "reason": "MCP spec follow-ups have appeared in at least three recent briefings, including today's, so this query keeps returning the same story."
         }
       ]
     }

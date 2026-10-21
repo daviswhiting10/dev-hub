@@ -67,7 +67,7 @@
       if (!cur) {
         el.innerHTML = '<div class="page paper"><div class="eyebrow">Today · ' + esc(date) + "</div>" + H.almanacHtml() + '<h1>The Daily Five</h1>' +
           '<div class="empty-note"><p class="lead">The morning briefing lands at 5 AM — check back then.</p></div>' + more() + "</div>";
-        mountMore(el);
+        mountMore(el); addBoard(el);
         return;
       }
       var items = cur.items.slice(0, 5), sample = cur.meta && cur.meta.sample;
@@ -83,7 +83,7 @@
         '<div class="sendbar"><a class="btn small" id="fbSend" target="_blank" rel="noopener" href="' + esc(H.feedback.url()) + '">Send feedback</a> <span class="small muted" id="fbNote"></span></div></section>' + more() + "</div>";
 
       var root = H.$(".page", el), items5 = items;
-      mountMore(root);
+      mountMore(root); addBoard(el);
       function note() {
         var n = H.feedback.pending().length, b = H.$("#fbSend", root), t = H.$("#fbNote", root); if (!b) return;
         b.href = H.feedback.url(); b.classList.toggle("primary", n > 0);
@@ -124,5 +124,12 @@
     }
   };
   function more() { return (H.businessShell ? H.businessShell() : "") + (H.jobsShell ? H.jobsShell() : "") + (H.oppsHtml ? H.oppsHtml() : ""); } // below the report: business models (js/business.js), then Jobs Radar (js/jobs.js)
+  // Full-width whiteboard under the page column (whiteboard.html is a self-contained page; it keeps its own board in this browser's localStorage)
+  function addBoard(el) {
+    if (el.querySelector(".wb-sec")) return;
+    var sec = document.createElement("section"); sec.className = "wb-sec";
+    sec.innerHTML = '<div class="wb-head"><h2>Whiteboard</h2><span class="small muted">Saved in this browser only</span></div><iframe class="wb-frame" src="whiteboard.html?v=' + esc(window.HUB_VERSION || "") + '" title="Whiteboard" loading="lazy"></iframe>';
+    el.appendChild(sec);
+  }
   function mountMore(root) { if (H.mountBusiness) H.mountBusiness(root); if (H.mountJobs) H.mountJobs(root); }
 })();

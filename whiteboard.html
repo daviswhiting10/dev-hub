@@ -116,6 +116,8 @@
       }
       .node[data-type="diamond"] .txt{left:19%;right:19%;top:16%;bottom:16%;padding:2px;}
       .node[data-type="ellipse"] .txt{left:10%;right:10%;}
+      .node.multi .bg{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft),0 2px 6px rgba(20,28,40,.12);}
+      .marquee{position:absolute;z-index:20;border:1px dashed var(--accent);background:rgba(37,99,235,.08);pointer-events:none;}
       .node.selected .bg{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft),0 2px 6px rgba(20,28,40,.12);}
       .node.connect-src .bg{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
       .node .handle{
@@ -172,6 +174,9 @@
           <button class="tool" id="btn-edit">Edit text</button>
           <button class="tool danger" id="btn-delete">Delete</button>
         </div>
+        <div class="group" aria-label="AI feedback">
+          <button class="tool" id="btn-feedback" title="Send the selected blocks (or the whole board) to the Dev Hub AI for hard feedback">Get feedback</button>
+        </div>
         <div class="spacer"></div>
         <div class="group" aria-label="Zoom">
           <button class="tool" id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
@@ -184,6 +189,7 @@
         <span><b>Drag</b> blocks to move · <b>drag canvas</b> to pan · <b>scroll</b> to zoom</span>
         <span class="opt"><b>Double-click</b> a block to edit its text</span>
         <span class="opt"><b>Connect</b> mode links blocks with arrows</span>
+        <span class="opt"><b>Shift</b>-click or shift-drag to select several, then Get feedback</span>
         <span class="connect-note" id="connect-note">Connect: click a block, then the block it points to. Esc to cancel.</span>
       </div>
       <div class="viewport" id="viewport">
@@ -283,6 +289,7 @@
       if (!state){ state = seedState(); freshSeed = true; }
 
       var selectedNodeId = null, selectedEdgeId = null;
+      var multi = {};   // extra selection (shift-click / marquee), used for "Get feedback"
       var connectMode = false, connectFrom = null;
 
       /* ---------------- dom ---------------- */
@@ -395,6 +402,7 @@
         bg.style.background = c.bg; bg.style.borderColor = c.bd;
         el.querySelector(".txt").textContent = n.text;
         el.classList.toggle("selected", n.id === selectedNodeId);
+        el.classList.toggle("multi", !!multi[n.id]);
         el.classList.toggle("connect-src", connectMode && n.id === connectFrom);
       }
       function clipPoint(cx, cy, hw, hh, tx, ty){
@@ -462,7 +470,14 @@
         drawEdges();
         updateSelTools();
       }
+      function feedbackScope(){
+        var ids = Object.keys(multi).filter(function(id){ return nodeById(id); });
+        if (!ids.length && selectedNodeId) ids = [selectedNodeId];
+        return ids;
+      }
       function updateSelTools(){
+        var fb = document.getElementById("btn-feedback"), c = feedbackScope().length;
+        if (fb) fb.textContent = c ? "Get feedback (" + c + " selected)" : "Get feedback";
         var hasNode = !!selectedNodeId, hasSel = hasNode || !!selectedEdgeId;
         selTools.classList.toggle("on", hasSel);
         document.getElementById("btn-edit").disabled = !hasNode;
@@ -474,9 +489,9 @@
           });
         }
       }
-      function selectNode(id){ selectedNodeId = id; selectedEdgeId = null; refreshSelectionPaint(); }
-      function selectEdge(id){ selectedEdgeId = id; selectedNodeId = null; refreshSelectionPaint(); }
-      function clearSelection(){ selectedNodeId = null; selectedEdgeId = null; refreshSelectionPaint(); }
+      function selectNode(id){ selectedNodeId = id; selectedEdgeId = null; multi = {}; refreshSelectionPaint(); }
+      function selectEdge(id){ selectedEdgeId = id; selectedNodeId = null; multi = {}; refreshSelectionPaint(); }
+      function clearSelection(){ selectedNodeId = null; selectedEdgeId = null; multi = {}; refreshSelectionPaint(); }
 
       /* ---------------- editing text ---------------- */
       var editingId = null;
@@ -603,6 +618,13 @@
           return;
         }
         ev.stopPropagation();
+        if (ev.shiftKey){ // shift-click toggles the block in the multi-selection (no drag)
+          if (selectedNodeId && !multi[selectedNodeId]) multi[selectedNodeId] = 1;
+          selectedNodeId = null; selectedEdgeId = null;
+          if (multi[id]) delete multi[id]; else multi[id] = 1;
+          refreshSelectionPaint();
+          return;
+        }
         el.setPointerCapture && el.setPointerCapture(ev.pointerId);
         selectNode(id);
         var isHandle = ev.target.getAttribute && ev.target.getAttribute("data-handle") === "1";
@@ -633,6 +655,13 @@
           return;
         }
         if (connectMode) return;
+        if (ev.shiftKey){ // shift-drag on empty canvas draws a selection rectangle
+          var vr0 = viewport.getBoundingClientRect(), box = document.createElement("div");
+          box.className = "marquee"; viewport.appendChild(box);
+          selectedNodeId = null; selectedEdgeId = null; multi = {};
+          drag = { kind:"marquee", pointerId: ev.pointerId, sx: ev.clientX - vr0.left, sy: ev.clientY - vr0.top, box: box };
+          return;
+        }
         drag = { kind:"pan", pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, origX: state.view.x, origY: state.view.y };
         viewport.classList.add("panning");
       });
@@ -665,6 +694,16 @@
           state.view.x = drag.origX + (ev.clientX - drag.startX);
           state.view.y = drag.origY + (ev.clientY - drag.startY);
           applyView();
+        } else if (drag.kind === "marquee"){
+          var vr = viewport.getBoundingClientRect(), cx2 = ev.clientX - vr.left, cy2 = ev.clientY - vr.top;
+          var x1 = Math.min(drag.sx, cx2), y1 = Math.min(drag.sy, cy2), x2 = Math.max(drag.sx, cx2), y2 = Math.max(drag.sy, cy2);
+          drag.box.style.left = x1 + "px"; drag.box.style.top = y1 + "px"; drag.box.style.width = (x2 - x1) + "px"; drag.box.style.height = (y2 - y1) + "px";
+          var v = state.view; multi = {};
+          state.nodes.forEach(function(n){
+            var nx1 = v.x + n.x * v.k, ny1 = v.y + n.y * v.k, nx2 = nx1 + n.w * v.k, ny2 = ny1 + n.h * v.k;
+            if (nx1 < x2 && nx2 > x1 && ny1 < y2 && ny2 > y1) multi[n.id] = 1;
+          });
+          state.nodes.forEach(paintNode); updateSelTools();
         } else if (drag.kind === "node"){
           n = nodeById(drag.id); if (!n) return;
           n.x = Math.round(drag.origX + (wpt.x - drag.startWX));
@@ -684,6 +723,7 @@
         if (pinch && Object.keys(pointers).length < 2){ pinch = null; save(); }
         if (drag && drag.pointerId === ev.pointerId){
           if (drag.kind === "pan"){ viewport.classList.remove("panning"); save(); }
+          if (drag.kind === "marquee"){ drag.box.remove(); }
           if (drag.kind === "node" || drag.kind === "resize") save();
           drag = null;
         }
@@ -712,6 +752,29 @@
         zoomAt(ev.clientX, ev.clientY, ev.deltaY < 0 ? 1.09 : 1/1.09);
       }, { passive:false });
 
+      /* ---------------- AI feedback: describe the board as text and hand it to the Dev Hub's Ask panel ---------------- */
+      function describeBoard(ids){
+        var set = {}; ids.forEach(function(id){ set[id] = 1; });
+        var nodes = ids.length ? state.nodes.filter(function(n){ return set[n.id]; }) : state.nodes;
+        var label = {}; nodes.forEach(function(n, i){ label[n.id] = "B" + (i + 1); });
+        var lines = nodes.map(function(n){
+          var open = /^\s*OPEN\b/i.test(n.text) ? " [OPEN QUESTION]" : "";
+          return label[n.id] + " (" + n.type + ")" + open + ": " + n.text.replace(/\s+/g, " ");
+        });
+        var inside = state.edges.filter(function(e){ return label[e.from] && label[e.to]; });
+        var outside = ids.length ? state.edges.filter(function(e){ return (label[e.from] ? 1 : 0) + (label[e.to] ? 1 : 0) === 1; }).length : 0;
+        var arrows = inside.map(function(e){ return label[e.from] + " -> " + label[e.to]; });
+        return "BLOCKS:\n" + lines.join("\n") + "\n\nARROWS (from -> to):\n" + (arrows.length ? arrows.join("\n") : "(none)") +
+          (outside ? "\n\nNote: " + outside + " arrow(s) connect these blocks to blocks outside the selection." : "");
+      }
+      function sendFeedback(){
+        var ids = feedbackScope();
+        if (!state.nodes.length){ return; }
+        if (window.parent === window){ alert("Open the whiteboard inside the Dev Hub (Whiteboard tab) to get AI feedback."); return; }
+        var target = location.protocol === "file:" ? "*" : location.origin;
+        window.parent.postMessage({ type:"hub-board-feedback", scope: ids.length ? ids.length + " selected block" + (ids.length === 1 ? "" : "s") : "whole board", text: describeBoard(ids) }, target);
+      }
+
       /* ---------------- toolbar wiring ---------------- */
       document.getElementById("add-rect").addEventListener("click", function(){ addNode("rect"); });
       document.getElementById("add-rounded").addEventListener("click", function(){ addNode("rounded"); });
@@ -720,6 +783,7 @@
       connectBtn.addEventListener("click", function(){ setConnectMode(!connectMode); });
       document.getElementById("btn-edit").addEventListener("click", function(){ if (selectedNodeId) openEditor(selectedNodeId); });
       document.getElementById("btn-delete").addEventListener("click", deleteSelected);
+      document.getElementById("btn-feedback").addEventListener("click", sendFeedback);
       document.getElementById("zoom-in").addEventListener("click", function(){ zoomCenter(1.25); });
       document.getElementById("zoom-out").addEventListener("click", function(){ zoomCenter(1/1.25); });
       document.getElementById("zoom-fit").addEventListener("click", fitView);

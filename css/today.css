@@ -109,3 +109,18 @@ details.milestones>summary{cursor:pointer;margin-bottom:6px}
 .bm-sec{margin-top:40px;border-top:2px solid var(--text);padding-top:6px}
 .bm-tech{background:var(--panel2);border-left:3px solid var(--accent);padding:10px 14px;margin:12px 0}
 .bm-tech p{margin:4px 0 0}
+
+/* Opportunity cards */
+.op-sec{margin-top:40px;border-top:2px solid var(--text);padding-top:6px}
+.op-card{border:1px solid var(--line);background:#fff;margin:14px 0}
+.op-card summary{list-style:none;cursor:pointer;display:grid;gap:4px;padding:14px 16px}
+.op-card summary::-webkit-details-marker{display:none}
+.op-card[open] summary{border-bottom:1px solid var(--line);background:var(--panel2)}
+.op-tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.op-title{font-family:var(--serif);font-size:21px;line-height:1.25}
+.op-tldr{color:var(--muted)}
+.op-card[open] .op-open{display:none}
+.op-body{padding:4px 16px 16px}
+.op-blk{margin-top:14px}
+.op-list{margin:6px 0 0;padding-left:20px}.op-list li{margin:6px 0}
+.op-ev{border-top:1px dotted var(--line);padding-top:10px;margin-top:16px}

@@ -7,7 +7,7 @@
   "use strict";
   var H = Hub, esc = H.esc, W = 900, HT = 620;
   var LABELS = ["is part of", "enables", "depends on", "contrasts with", "is an example of", "leads to", "is a kind of"];
-  var S = { sel: null, edit: false, bridge: "", props: null, q: "", msg: "", busy: false };
+  var S = { sel: null, edit: false, rename: false, bridge: "", props: null, q: "", msg: "", busy: false };
   var M = null, nodes = [], byK = {}, els = { n: {}, e: {} }, raf = 0, alpha = 0, svg, root, path = null;
 
   // ---------- data ----------
@@ -61,6 +61,21 @@
     if (!entry(k)) gl().push({ term: String(term).trim().slice(0, 60), def: "", ts: Date.now(), links: [] });
     return k;
   }
+  // Rename a term's NAME (not its definition). Re-points connections, [[links]] in other definitions and the saved map position.
+  function renameTerm(k, name) {
+    var nn = String(name).replace(/[<>]/g, "").trim().slice(0, 60), nk = key(nn), e = entry(k);
+    if (!e || !nn) return "Give it a name.";
+    if (nk !== k && entry(nk)) return "“" + nn + "” already exists. Delete or rename that one first.";
+    if (nk !== k) {
+      H.glossaryGone(k);
+      gl().forEach(function (x) {
+        (x.links || []).forEach(function (l) { if (key(l.to) === k) l.to = nk; });
+        if (x !== e && x.def) x.def = x.def.replace(/\[\[([^\]\n]{1,60})\]\]/g, function (m, t) { return key(t) === k ? "[[" + nn + "]]" : m; });
+      });
+      if (H.store.mapPos && H.store.mapPos[k]) { H.store.mapPos[nk] = H.store.mapPos[k]; delete H.store.mapPos[k]; }
+    }
+    e.term = nn; return "";
+  }
   function connect(a, b, label) {
     var ea = entry(a); if (!ea || !entry(b) || a === b) return;
     ea.links = Array.isArray(ea.links) ? ea.links : [];
@@ -71,6 +86,7 @@
     [a, b].forEach(function (x) { var e = entry(x), y = x === a ? b : a; if (e && e.links) e.links = e.links.filter(function (l) { return key(l.to) !== y; }); });
   }
   function removeTerm(k) {
+    H.glossaryGone(k);
     H.store.glossary = gl().filter(function (e) { return key(e.term) !== k; });
     gl().forEach(function (e) { if (e.links) e.links = e.links.filter(function (l) { return key(l.to) !== k; }); });
     if (H.store.mapPos) delete H.store.mapPos[k];
@@ -197,7 +213,9 @@
         return (i ? '<span class="small muted"> —' + esc(lab) + "→ </span>" : "") + '<button class="mp-chip" data-go="' + esc(n) + '">' + esc(title(n)) + "</button>";
       }).join("") + "</p>";
     }
-    return '<button class="mp-back" data-a="back">← Index</button><h2 class="tight">' + esc(e.term) + "</h2>" +
+    return '<button class="mp-back" data-a="back">← Index</button>' + (S.rename ?
+      '<div class="row"><input id="mpName" value="' + esc(e.term) + '" maxlength="60" aria-label="Term name"><button class="btn small primary" data-a="savename">Save name</button><button class="btn small ghost" data-a="cancelname">Cancel</button></div>' :
+      '<h2 class="tight">' + esc(e.term) + ' <button class="btn small ghost" data-a="rename" aria-label="Rename this term">Rename</button></h2>') +
       (S.edit ? '<textarea id="mpDef" rows="7" placeholder="Write it in your own words. Use [[Another term]] to link.">' + esc(e.def || "") + '</textarea><div class="row"><button class="btn small primary" data-a="savedef">Save</button><button class="btn small ghost" data-a="canceldef">Cancel</button></div>' :
         '<div class="mp-def">' + (e.def ? rich(e.def) : '<span class="muted">No definition yet. Write it in your own words — that is how it sticks.</span>') + '</div><div class="row"><button class="btn small" data-a="edit">Edit</button><button class="btn small ghost" data-a="explain">Explain with Claude</button></div>') +
       '<h3 class="mp-h">Connections</h3>' + (conn ? '<ul class="mp-conn">' + conn + "</ul>" : '<p class="small muted">None yet.</p>') +
@@ -222,7 +240,7 @@
   function setPath() {
     path = S.sel && S.bridge && M.by[S.bridge] && M.by[S.sel] ? bridge(S.sel, S.bridge) : null;
   }
-  function select(k) { S.sel = k && M.by[k] ? k : null; S.edit = false; S.bridge = ""; path = null; panel(); paint(); tip(); }
+  function select(k) { S.sel = k && M.by[k] ? k : null; S.edit = false; S.rename = false; S.bridge = ""; path = null; panel(); paint(); tip(); }
   function rebuild() {
     M = model(); if (S.sel && !M.by[S.sel]) S.sel = null;
     layout(); setPath(); drawGraph(); panel(); if (alpha > 0.02 && !raf) raf = requestAnimationFrame(tick);
@@ -305,6 +323,12 @@
         if (a === "back") select(null);
         else if (a === "suggest") suggest();
         else if (a === "edit") { S.edit = true; panel(); root.querySelector("#mpDef").focus(); }
+        else if (a === "rename") { S.rename = true; panel(); var nm = root.querySelector("#mpName"); nm.focus(); nm.select(); }
+        else if (a === "cancelname") { S.rename = false; panel(); }
+        else if (a === "savename") {
+          var er = renameTerm(k0, root.querySelector("#mpName").value);
+          if (er) { S.msg = er; panel(); } else { S.rename = false; S.sel = key(root.querySelector("#mpName").value.replace(/[<>]/g, "")); S.msg = ""; commit(); }
+        }
         else if (a === "canceldef") { S.edit = false; panel(); }
         else if (a === "savedef") { entry(k0).def = root.querySelector("#mpDef").value.slice(0, 2000); S.edit = false; commit(); panel(); tip(); }
         else if (a === "explain") { if (H.ask) { H.ask.open("chat"); H.ask.ask("Explain “" + M.by[k0].term + "” in plain English.", M.by[k0].term, ""); } }

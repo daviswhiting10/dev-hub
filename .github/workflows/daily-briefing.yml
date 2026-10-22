@@ -5,7 +5,9 @@ name: daily-briefing
 on:
   schedule:
     - cron: "7 9 * * *"         # 5:07 AM US Eastern during daylight time (EDT = UTC-4)
-    - cron: "7 10 * * *"        # 5:07 AM US Eastern during standard time (EST = UTC-5); the gate job skips whichever is off by an hour
+    - cron: "7 10 * * *"        # 5:07 AM US Eastern during standard time (EST = UTC-5)
+    - cron: "37 13 * * *"       # catch-up runs: agents/run.mjs skips if today's briefing exists, so these cost nothing on a good day
+    - cron: "37 16 * * *"       # and rescue the day if an earlier run failed or GitHub dropped it
   workflow_dispatch:
     inputs:
       dry_run:
@@ -26,28 +28,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  gate:
-    # GitHub cron is UTC-only, so we schedule both possible UTC times and let only the one that matches Eastern daylight
-    # saving continue. Decided from WHICH cron fired (not the clock), because GitHub often starts scheduled runs late.
-    runs-on: ubuntu-latest
-    outputs:
-      go: ${{ steps.t.outputs.go }}
-    steps:
-      - id: t
-        env:
-          EVENT: ${{ github.event_name }}
-          CRON: ${{ github.event.schedule }}
-        run: |
-          off=$(TZ=America/New_York date +%z)
-          if [ "$EVENT" != "schedule" ] || { [ "$off" = "-0400" ] && [ "$CRON" = "7 9 * * *" ]; } || { [ "$off" = "-0500" ] && [ "$CRON" = "7 10 * * *" ]; }; then
-            echo "go=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "go=false" >> "$GITHUB_OUTPUT"; echo "Eastern offset is $off and cron is '$CRON'; skipping the duplicate."
-          fi
-
   briefing:
-    needs: gate
-    if: needs.gate.outputs.go == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

@@ -38,8 +38,39 @@
   // ---------- storage ----------
   var persistOK = true;
   function load() {
-    try { var r = localStorage.getItem(KEY); return r ? JSON.parse(r) : {}; } catch (e) { persistOK = false; return {}; }
+    var r = null;
+    try { r = localStorage.getItem(KEY); return r ? JSON.parse(r) : {}; }
+    catch (e) { persistOK = false; try { if (r) localStorage.setItem(KEY + ":corrupt", r); } catch (e2) { /* keep the unreadable copy so a later save cannot erase it */ } return {}; }
   }
+
+  // ---------- glossary safety net ----------
+  // Every save writes the whole in-memory store, so a stale tab (or a blocked read) could silently drop terms. Three guards:
+  // 1) terms found on disk but missing here are merged back unless you deleted/renamed them (tombstones in store.glossaryGone);
+  // 2) rolling snapshots of the glossary live under their own key; 3) at startup any term in a snapshot but missing is restored.
+  var GSNAP = KEY + ":glossary-snaps";
+  function gk(t) { return String(t == null ? "" : t).trim().toLowerCase().replace(/\s+/g, " "); }
+  function snaps() { try { var a = JSON.parse(localStorage.getItem(GSNAP)); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function mergeGlossary(extra) {
+    var st = Hub.store, mem = (st.glossary = Array.isArray(st.glossary) ? st.glossary : []), gone = (st.glossaryGone = st.glossaryGone || {}), have = {};
+    mem.forEach(function (e) { var k = gk(e && e.term); if (k) { have[k] = 1; delete gone[k]; } });
+    var disk = []; try { disk = (JSON.parse(localStorage.getItem(KEY)) || {}).glossary || []; } catch (e) { /* unreadable: snapshots still cover it */ }
+    [disk].concat(extra || []).forEach(function (list) {
+      (Array.isArray(list) ? list : []).forEach(function (e) {
+        var k = gk(e && e.term); if (!k || have[k] || gone[k] || typeof e.term !== "string") return;
+        have[k] = 1; mem.push(JSON.parse(JSON.stringify(e)));
+      });
+    });
+  }
+  function snapshot() {
+    var g = Hub.store.glossary || [], now = Date.now(), a = snaps(), last = a[a.length - 1], json = JSON.stringify(g);
+    if (!g.length || (last && JSON.stringify(last.list) === json)) return;
+    var e = { ts: now, list: JSON.parse(json) };
+    if (last && now - last.ts < 300000 && last.list.length <= g.length) a[a.length - 1] = e; else a.push(e);
+    try { localStorage.setItem(GSNAP, JSON.stringify(a.slice(-20))); } catch (err) { /* quota: main store still saves */ }
+  }
+  // Call when a term is deliberately removed or renamed away so the guard does not bring it back.
+  Hub.glossaryGone = function (term) { var st = Hub.store; (st.glossaryGone = st.glossaryGone || {})[gk(term)] = Date.now(); };
+  Hub.glossaryKey = gk;
   function defaults() {
     return {
       done: {}, days: {}, projects: null, seeded: [],
@@ -65,7 +96,10 @@
     });
     return s;
   })();
+  mergeGlossary(snaps().reverse().map(function (x) { return x.list; })); // startup: bring back anything a snapshot has that is missing
+  window.addEventListener("storage", function (ev) { if (ev.key === KEY) mergeGlossary(); }); // another tab saved: pick up its new terms
   Hub.save = function () {
+    mergeGlossary(); snapshot();
     try { localStorage.setItem(KEY, JSON.stringify(Hub.store)); persistOK = true; } catch (e) { persistOK = false; }
     var b = Hub.$("#saveState");
     if (b) { b.textContent = persistOK ? "Saved locally" : "⚠ Not saving — export a backup"; b.className = "save-state" + (persistOK ? "" : " warn"); }
@@ -97,7 +131,7 @@
       try {
         var o = JSON.parse(r.result);
         if (!o || typeof o !== "object" || !o.tests) throw new Error("not a Dev Hub backup");
-        localStorage.setItem(KEY, JSON.stringify(o));
+        localStorage.setItem(KEY, JSON.stringify(o)); localStorage.removeItem(GSNAP); // a deliberate restore: old snapshots must not resurrect terms it left out
         location.reload();
       } catch (e) { alert("Could not import: " + e.message); }
     };

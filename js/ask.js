@@ -123,7 +123,7 @@
         var g = ensure(), k = t.dataset.term.trim().toLowerCase().replace(/\s+/g, " "), ex = g.filter(function (e) { return String(e.term).trim().toLowerCase().replace(/\s+/g, " ") === k; })[0];
         if (ex) ex.def = t.dataset.def; else g.push({ term: t.dataset.term.slice(0, 60), def: t.dataset.def, ts: Date.now(), links: [] });
         H.touch(); H.save(); t.textContent = "Saved ✓"; t.disabled = true; renderGloss(); }
-      else if (a === "gdel") { ev.preventDefault(); ensure().splice(+t.dataset.i, 1); H.save(); renderGloss(); }
+      else if (a === "gdel") { ev.preventDefault(); var gone = ensure().splice(+t.dataset.i, 1)[0]; if (gone) H.glossaryGone(gone.term); H.save(); renderGloss(); }
     });
     panel.querySelector("#askForm").addEventListener("submit", function (ev) { ev.preventDefault(); var q = input.value.trim(); if (!q) return; input.value = ""; ask(q); });
     input.addEventListener("keydown", function (ev) { if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); panel.querySelector("#askForm").dispatchEvent(new Event("submit", { cancelable: true })); } });

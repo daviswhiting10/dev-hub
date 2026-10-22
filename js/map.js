@@ -213,8 +213,8 @@
         return (i ? '<span class="small muted"> —' + esc(lab) + "→ </span>" : "") + '<button class="mp-chip" data-go="' + esc(n) + '">' + esc(title(n)) + "</button>";
       }).join("") + "</p>";
     }
-    return '<button class="mp-back" data-a="back">← Index</button>' + (S.rename ?
-      '<div class="row"><input id="mpName" value="' + esc(e.term) + '" maxlength="60" aria-label="Term name"><button class="btn small primary" data-a="savename">Save name</button><button class="btn small ghost" data-a="cancelname">Cancel</button></div>' :
+    return '<button class="mp-back" data-a="back">← Index</button>' + (S.rename || S.edit ?
+      '<div class="row"><input id="mpName" value="' + esc(e.term) + '" maxlength="60" aria-label="Term name">' + (S.edit ? "" : '<button class="btn small primary" data-a="savename">Save name</button><button class="btn small ghost" data-a="cancelname">Cancel</button>') + '</div>' :
       '<h2 class="tight">' + esc(e.term) + ' <button class="btn small ghost" data-a="rename" aria-label="Rename this term">Rename</button></h2>') +
       (S.edit ? '<textarea id="mpDef" rows="7" placeholder="Write it in your own words. Use [[Another term]] to link.">' + esc(e.def || "") + '</textarea><div class="row"><button class="btn small primary" data-a="savedef">Save</button><button class="btn small ghost" data-a="canceldef">Cancel</button></div>' :
         '<div class="mp-def">' + (e.def ? rich(e.def) : '<span class="muted">No definition yet. Write it in your own words — that is how it sticks.</span>') + '</div><div class="row"><button class="btn small" data-a="edit">Edit</button><button class="btn small ghost" data-a="explain">Explain with Claude</button></div>') +
@@ -330,7 +330,11 @@
           if (er) { S.msg = er; panel(); } else { S.rename = false; S.sel = key(root.querySelector("#mpName").value.replace(/[<>]/g, "")); S.msg = ""; commit(); }
         }
         else if (a === "canceldef") { S.edit = false; panel(); }
-        else if (a === "savedef") { entry(k0).def = root.querySelector("#mpDef").value.slice(0, 2000); S.edit = false; commit(); panel(); tip(); }
+        else if (a === "savedef") {
+          var nameIn = root.querySelector("#mpName"), er2 = nameIn ? renameTerm(k0, nameIn.value) : "";
+          if (er2) { S.msg = er2; panel(); return; }
+          var nk2 = nameIn ? key(nameIn.value.replace(/[<>]/g, "")) : k0; entry(nk2).def = root.querySelector("#mpDef").value.slice(0, 2000); S.sel = nk2; S.edit = false; S.msg = ""; commit(); panel(); tip();
+        }
         else if (a === "explain") { if (H.ask) { H.ask.open("chat"); H.ask.ask("Explain “" + M.by[k0].term + "” in plain English.", M.by[k0].term, ""); } }
         else if (a === "conn") {
           var to = root.querySelector("#mpTo").value, lab = root.querySelector("#mpLab").value.trim().replace(/[<>]/g, "").slice(0, 40);

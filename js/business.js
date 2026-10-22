@@ -43,6 +43,7 @@
       (m.what_it_is ? "<p>" + esc(s(m.what_it_is, 280)) + "</p>" : "") +
       (m.why_emerging ? '<p class="pull">' + esc(s(m.why_emerging, 280)) + "</p>" : "") +
       (m.technique ? '<div class="bm-tech"><div class="eyebrow">The technique</div><p>' + esc(s(m.technique, 500)) + "</p></div>" : "") +
+      (m.for_venture ? '<div class="bm-tech"><div class="eyebrow">For the venture</div><p>' + esc(s(m.for_venture, 240)) + "</p></div>" : "") +
       '<div class="story-foot"><span class="small">' + (m.who ? "<b>Who:</b> " + esc(s(m.who, 120)) : "") + "</span>" +
       (u ? '<span class="src"><a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(src || u) + " ↗</a></span>" : src ? '<span class="src muted">' + esc(src) + "</span>" : "") + "</div></article>";
   }

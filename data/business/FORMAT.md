@@ -11,3 +11,5 @@ untrusted (escaped, links must be http(s)). Never invent content. The agreed sch
   `window.BUSINESS_INDEX = [{date, headline}, ...]` (newest first).
 
 Only the newest day in the index is shown. With no data the Today tab shows "The business-models scan lands each morning."
+
+Optional per-model `for_venture` (240): one line on how the model applies to the venture in `data/venture.js` (shown as "For the venture").

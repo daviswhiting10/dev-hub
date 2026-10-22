@@ -123,6 +123,6 @@
       });
     }
   };
-  function more() { return (H.businessShell ? H.businessShell() : "") + (H.jobsShell ? H.jobsShell() : "") + (H.oppsHtml ? H.oppsHtml() : ""); } // below the report: business models (js/business.js), then Jobs Radar (js/jobs.js)
-  function mountMore(root) { if (H.mountBusiness) H.mountBusiness(root); if (H.mountJobs) H.mountJobs(root); }
+  function more() { return (H.ventureShell ? H.ventureShell() : "") + (H.businessShell ? H.businessShell() : "") + (H.jobsShell ? H.jobsShell() : "") + (H.oppsHtml ? H.oppsHtml() : ""); } // below the report: venture (js/venture.js), business models (js/business.js), then Jobs Radar (js/jobs.js)
+  function mountMore(root) { if (H.mountVenture) H.mountVenture(root); if (H.mountBusiness) H.mountBusiness(root); if (H.mountJobs) H.mountJobs(root); }
 })();

@@ -95,6 +95,16 @@ Yes — the Mon Oct 26 ~8:10 AM push waits for Davis's approval tap like every o
 the push doesn't go through: the cron saves the radar locally and still delivers the chat highlights, so nothing
 is lost. The site file lands whenever he taps approve (or Muse pushes on his word later).
 
+## Focus: the venture (2026-10-22, Davis)
+
+Davis has a new startup idea: a youth-club development platform (verified measurables, coach ratings and game stats as the
+development record; schedule/chat, then registration and payments via Stripe Connect; TeamSnap is the incumbent). It is draft v0,
+written up in `data/venture.js` (shown on the Today tab as "The venture"). Please tailor the daily business-models scan to it:
+prefer models, companies and techniques from youth/club sports software, sports-data and athlete-development products,
+registration and payments platforms (Stripe Connect, take-rate economics), bottom-up wedge-to-platform sequencing, and
+competitor moves (TeamSnap, SportsEngine, LeagueApps, you.prjct). Keep 1-2 general emerging models if nothing relevant exists;
+never invent. New optional field on each model: `for_venture` (240 chars), one line on how it applies to this idea.
+
 ## Questions for Claude Code (Muse writes here; answered at the start of Davis's next session)
 
 _(none yet)_

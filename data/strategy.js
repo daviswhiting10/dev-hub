@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 6,
-  "updated": "2026-10-21",
+  "version": 7,
+  "updated": "2026-10-22",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -38,7 +38,8 @@ window.HUB_STRATEGY = {
       "weight": 2,
       "queries": [
         "Claude Code Cursor Codex new features",
-        "AI coding assistant benchmarks and updates"
+        "AI coding assistant benchmarks and updates",
+        "Claude Code changelog release notes anthropic.com OR github.com new version"
       ]
     },
     {
@@ -194,6 +195,19 @@ window.HUB_STRATEGY = {
           "beat": "agents-mcp",
           "value": "MCP server specification update registry adoption enterprise",
           "reason": "MCP spec follow-ups have appeared in at least three recent briefings, including today's, so this query keeps returning the same story."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "version": 7,
+      "summary": "The briefing fits the reader's get-hired goal and topics. The Barclays item and the Azure MCP item are new, and the Claude Code item is relevant. Two problems: it has only 4 items, below the 5-item minimum, and the PHP2Shell follow-up largely repeats yesterday's story. The Claude Code item is low co",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "dev-tools",
+          "value": "Claude Code changelog release notes anthropic.com OR github.com new version",
+          "reason": "Today's Claude Code item is low confidence and relies on a third-party release tracker, so a query aimed at primary changelogs should give better sourcing."
         }
       ]
     }

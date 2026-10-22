@@ -102,8 +102,9 @@ development record; schedule/chat, then registration and payments via Stripe Con
 written up in `data/venture.js` (shown on the Today tab as "The venture"). Please tailor the daily business-models scan to it:
 prefer models, companies and techniques from youth/club sports software, sports-data and athlete-development products,
 registration and payments platforms (Stripe Connect, take-rate economics), bottom-up wedge-to-platform sequencing, and
-competitor moves (TeamSnap, SportsEngine, LeagueApps, you.prjct). Keep 1-2 general emerging models if nothing relevant exists;
-never invent. New optional field on each model: `for_venture` (240 chars), one line on how it applies to this idea.
+competitor moves (TeamSnap, SportsEngine, LeagueApps, you.prjct). This applies ONLY to the business-models scan: the daily tech briefing and the Jobs Radar stay broad and unchanged (Davis still
+wants the latest in tech in general). Within the scan, make about half the models venture-relevant and keep the rest general
+emerging models (agents, AI, platforms) so it doesn't narrow to one niche; never invent. New optional field on each model: `for_venture` (240 chars), one line on how it applies to this idea.
 
 ## Questions for Claude Code (Muse writes here; answered at the start of Davis's next session)
 

@@ -1,0 +1,69 @@
+// Business-models briefing 2026-10-23 — published by muse-cron. Data only.
+window.BUSINESS = window.BUSINESS || [];
+window.BUSINESS.push({
+  "date": "2026-10-23",
+  "headline": "Teammate agents hit $1B, NGB lock-ins, and the payments take-rate.",
+  "models": [
+    {
+      "for_venture": "TeamSnap's official blessing in lacrosse is why your wedge can't be a better schedule: compete on the official development record, adopt alongside TeamSnap first, and pitch directors before they hear 'just use TeamSnap.'",
+      "name": "Governing-body 'preferred platform' lock-in",
+      "source": "USA Lacrosse (Oct 7, 2026)",
+      "technique": "Sign a multi-year preferred-platform deal with the NGB; bundle preferred access to the full stack (registration, chat, streaming) for member clubs; become the sport's official ecosystem. TeamSnap paired this with its LeagueSide acquisition to sell brands direct access to 25M+ authenticated users and 11M+ households of on-field reach — distribution plus sponsorship, so adopting clubs also get sponsor dollars that lower family costs.",
+      "url": "https://www.usalacrosse.com/magazine/teamsnap-named-preferred-mobile-first-engagement-solution-usa-lacrosse",
+      "what_it_is": "NGBs anoint one club platform as their official stack, and thousands of member clubs follow. On Oct 7, USA Lacrosse named TeamSnap its 'Preferred Mobile-First Engagement Solution,' giving ~425K members preferred access to TeamSnap One.",
+      "who": "TeamSnap (Oct 7, 2026); USA Lacrosse (NGB, ~425K members); CEO Peter Frintzilas.",
+      "why_emerging": "Club software is commoditizing, so incumbents buy distribution top-down: one NGB endorsement beats a thousand sales calls. For a challenger this is the moat to watch — the blessed stack becomes the default before a club ever shops."
+    },
+    {
+      "for_venture": "Watch this one closest: portable parent-owned records attack your 'official development record' from the consumer side. Your answer is verified data adults trust — measurables from testing days, which parent-owned profiles can't fake.",
+      "name": "Portable athletic records as the free wedge",
+      "source": "sport-loop.com; overlapsports.com",
+      "technique": "Give the record away: free-for-parents signup in seconds, no credit card; one profile across every club; pull clubs in with a cheap flat rate ($29/month, not per-player) and founding-club pricing locked in. Add a family AI assistant (Overlap's 'Nook' answers 'what's on tomorrow?' across kids and teams) so parents open the app daily — the record becomes the distribution surface, and monetization moves to clubs and scheduling features.",
+      "url": "https://sport-loop.com/",
+      "what_it_is": "New youth apps sell families a permanent, portable player profile — game history, stats and achievements that follow the kid across clubs and sports. Sport Loop is live in San Diego: free forever for players, parents and coaches; clubs pay $29/month for full management features.",
+      "who": "Sport Loop (San Diego launch); Overlap (Nook AI; 130+ teams, 5,000+ events synced).",
+      "why_emerging": "Families juggle 4-6 apps a season and lose everything on switching; incumbents' data dies with the subscription. Portable records flip the power: whoever holds the kid's history owns the renewal decision, and free-to-family distribution is how you get the record first."
+    },
+    {
+      "for_venture": "This is your step 3 exactly: a few thousand dollars per family per season means a 2-3% take dwarfs any subscription — but the take only works after clubs trust you, which is why payments come after the development record, not before.",
+      "name": "Embedded payments: the take-rate is the business",
+      "source": "Whop; Coinflow (Oct 2026)",
+      "technique": "Use Stripe Connect destination charges (platform is merchant of record, keeps its application fee before transferring the club's share); pick 'you handle pricing' at scale (the $2/active-account and payout fees beat losing the margin) or let Stripe bill clubs directly and earn a revenue share past $1M annual volume. Onboard clubs between seasons, never mid-season; make transparent pricing the pitch against incumbents who pass fees to families by default.",
+      "url": "https://whop.com/blog/stripe-connect/",
+      "what_it_is": "Club software monetizes the money flow, not the subscription: dues collected via Stripe Connect destination charges let the platform keep ~2-3% before transferring to the club. Self-priced platforms pay Stripe $2/month per active account plus 0.25%+25¢ per payout.",
+      "who": "Stripe Connect docs; Whop & Coinflow platform analyses (Oct 2026); founderandai.com Baltimore pricing study (Oct 15).",
+      "why_emerging": "Subscriptions race to $29/month while a family pays thousands per season in dues — the take-rate on collections is 10-100x the SaaS fee. SportsEngine HQ runs $67/month plus 3.25% and $1.50 per transaction; TeamSnap's fee pass-through to families is on by default."
+    },
+    {
+      "for_venture": "Sell 'your first testing day delivered' as a managed outcome, not just software access: agents and playbooks handle the onboarding grind while clubs pay for the result — kids tested, parents briefed, directors renewed.",
+      "name": "AI-native services: outcomes, not hours",
+      "source": "Gainsight press (Oct 20, 2026)",
+      "technique": "Build agents into the delivery org rather than around it; price on the outcome (retention, renewals) with credit pools drawn down across outcomes; give customers three paths — build (free MCP access for their own agents), buy (platform with AI included), hire (managed outcomes via the services arm). Quivly (YC, ex-Plaid CEO, 4 people) shows the indie version: an agentic customer-success workspace taking on Gainsight directly.",
+      "url": "https://www.gainsight.com/press/gainsight-proves-ai-native-services-model-for-retention-as-atlas-manages-over-75m-in-customer-arr/",
+      "what_it_is": "Service businesses rebuilt around agents, selling contracted results instead of hours or seats. Gainsight's AI-native services arm Atlas now manages $75M+ of customer ARR in long-tail renewals with 7,000+ agentic interactions, and Gainsight is shifting to value-based pricing.",
+      "who": "Gainsight (Atlas; $75M ARR under management); Quivly (4-person YC team, ex-Plaid CEO).",
+      "why_emerging": "Agents make labor deliverable as software: when agents do the work, selling hours collapses and selling outcomes becomes the only defensible package. Incumbents that launched 'agentic stacks' this year (Gainsight, Planhat, Totango/Odie) are converging on the same shape."
+    },
+    {
+      "for_venture": "Your platform's coordination problem — registrar, coach, team parent, director — can run as agents that brief each other: the registrar's agent tells the coach's agent a new U13 middie joined, and his development record starts.",
+      "name": "Teammate agents: the network is the moat",
+      "source": "TechCrunch (Oct 19, 2026)",
+      "technique": "Ship a shared workflow that pushes new business information to every employee's assistant automatically instead of each worker updating their own; make handoffs permission-gated (each assistant shares only what its person would share, returns human-judgment decisions); extend agents outside the company walls — customers, partners, candidates over email and text. Customers own the context and can take it; data isn't used for training.",
+      "url": "https://techcrunch.com/2026/10/19/ai-assistant-startup-town-nabs-unicorn-valuation-four-months-after-launch/",
+      "what_it_is": "Assistants are going from solo copilots to teams: each employee gets a 'Townie' connected to email and work systems, and the assistants hand off work and share approved information. Town raised $108M at $1B (Oct 19), 4 months after launch, with millions in ARR within weeks.",
+      "who": "Town (Jean-Denis Greze, ex-Plaid CTO); $108M Series B, Forerunner & Menlo co-lead, a16z.",
+      "why_emerging": "Solo copilots hit the coordination limit — the faster each person moves, the more they wait on teammates. The next question isn't what an assistant can do, it's what its network can reach, verify and hand off. Coding-agent tools (BAND, Oct 15) are converging on the same play."
+    },
+    {
+      "for_venture": "Copy the playbook for your niche: an orchestrator that drafts the testing-day schedule from the club calendar and emails coaches for approval — agents do the admin, adults keep the trust, and nothing runs without a human's sign-off.",
+      "name": "Vertical agentic front-office SaaS",
+      "source": "GlobeNewswire (Oct 22, 2026)",
+      "technique": "Build AI into the platform rather than wrapping it around; give the orchestrator one view of the firm's record and one audit trail instead of another tool to pay for; ship workflow-level tools (create agent, run campaign, retrieve analytics) not just inference endpoints; require human approval before anything is sent; go live in days not months by plugging into existing data (emails, calendars, CRMs) rather than demanding migration.",
+      "url": "https://www.globenewswire.com/news-release/2026/10/22/3386152/0/en/finbursa-launches-the-intelligent-front-office-for-private-markets-powered-by-agentic-ai.html",
+      "what_it_is": "Niche software reborn as a team of specialists: FinBursa launched Oct 22 as an 'intelligent front office' for private markets — five live agents for deals, due diligence, data rooms and fundraising, run by one orchestrator with one permissions set and audit trail.",
+      "who": "FinBursa (Ismail Badereldine, ex-BlackRock director); leadership from eFront and investment banking.",
+      "why_emerging": "In expertise-dense verticals the tool isn't enough — firms buy the workload done. When the orchestrator sees the whole record (emails, meetings, deal history), it can draft the outreach, rank the day's priorities and answer with sources: what professionals actually pay for."
+    }
+  ],
+  "signal": "The wedge is becoming a network: records that follow the kid, assistants that brief each other, payments flowing through the platform. Whoever holds the record — and the money — owns the ecosystem."
+});

@@ -132,3 +132,6 @@ details.milestones>summary{cursor:pointer;margin-bottom:6px}
 .vn-body{padding:6px 0 4px} .vn-body ul{margin:6px 0 6px 20px;padding:0} .vn-body li{margin:4px 0} .vn-act{margin:10px 0 0}
 .warn{color:var(--warn)} .tbl-wrap{overflow-x:auto}
 .trading label{display:block;font-size:13px;color:var(--muted)} .trading label.check{display:flex;color:var(--text);font-size:inherit}
+.ask-panel{max-width:100vw} .ask-grip{position:absolute;left:-4px;top:0;bottom:0;width:9px;cursor:ew-resize;z-index:2} .ask-grip:hover,.ask-panel.resizing .ask-grip{background:var(--accent);opacity:.35}
+.ask-panel.resizing{user-select:none} .ask-panel.wide .ask-msg.ai{font-size:16.5px;line-height:1.65} .ask-panel.wide .ask-msg{max-width:78ch}
+.ask-form [hidden]{display:none}

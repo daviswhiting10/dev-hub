@@ -23,7 +23,7 @@
   function build() {
     fab = document.createElement("button"); fab.className = "ask-fab noprint"; fab.textContent = "Ask"; fab.setAttribute("aria-label", "Open the Ask panel");
     panel = document.createElement("aside"); panel.className = "ask-panel noprint"; panel.hidden = true;
-    panel.innerHTML = '<div class="ask-head"><b>Ask</b><span class="small muted">plain-English explainer</span><span class="grow"></span><button class="ask-x" data-a="tab" data-t="chat">Chat</button><button class="ask-x" data-a="tab" data-t="gloss">Glossary <span id="askGN"></span></button><button class="ask-x" data-a="close" aria-label="Close">✕</button></div>' +
+    panel.innerHTML = '<div class="ask-grip" data-grip title="Drag to resize"></div><div class="ask-head"><b>Ask</b><span class="small muted">plain-English explainer</span><span class="grow"></span><button class="ask-x" data-a="tab" data-t="chat">Chat</button><button class="ask-x" data-a="tab" data-t="gloss">Glossary <span id="askGN"></span></button><button class="ask-x" data-a="expand" id="askExp" title="Make the panel wider or narrower">Expand</button><button class="ask-x" data-a="close" aria-label="Close">✕</button></div>' +
       '<div class="ask-setup" id="askSetup"></div><div class="ask-log" id="askLog" aria-live="polite"></div><div class="ask-gloss" id="askGloss" hidden></div>' +
       '<form class="ask-form" id="askForm"><textarea id="askIn" rows="2" placeholder="Type a term or question…"></textarea><div class="row"><button class="btn small primary" type="submit" id="askGo">Ask</button><button class="btn small ghost" type="button" data-a="stop" hidden id="askStop">Stop</button><button class="btn small ghost" type="button" data-a="clear">Clear</button></div></form>';
     popover = document.createElement("button"); popover.className = "ask-pop noprint"; popover.textContent = "Explain"; popover.hidden = true;
@@ -108,12 +108,33 @@
     if (st) { var h = st.querySelector("h3"), p = st.querySelector("p"); return ((h ? h.textContent : "") + ". " + (p ? p.textContent : "")).trim(); }
     var blk = el && el.closest && el.closest("p, li, label"); return blk ? blk.textContent.trim() : "";
   }
+  // Panel width: Expand toggles a wide mode; dragging the left edge sets any width. Saved per browser (own key, not the main store).
+  var WKEY = "davis-dev-hub-ask-width";
+  function setWidth(px) {
+    var max = Math.max(320, window.innerWidth - 40); px = Math.max(320, Math.min(max, Math.round(px)));
+    panel.style.width = px + "px"; panel.classList.toggle("wide", px >= 640);
+    var b = panel.querySelector("#askExp"); if (b) b.textContent = px >= 640 ? "Narrow" : "Expand";
+    return px;
+  }
+  function setWide(on) { store(WKEY, String(setWidth(on ? Math.min(900, window.innerWidth * 0.7) : 420))); }
+  function initResize() {
+    var saved = parseInt(store(WKEY), 10); if (saved) setWidth(saved);
+    var grip = panel.querySelector(".ask-grip");
+    grip.addEventListener("pointerdown", function (ev) {
+      ev.preventDefault(); grip.setPointerCapture(ev.pointerId); panel.classList.add("resizing");
+      function mv(e) { setWidth(window.innerWidth - e.clientX); }
+      function up() { grip.removeEventListener("pointermove", mv); grip.removeEventListener("pointerup", up); grip.removeEventListener("pointercancel", up); panel.classList.remove("resizing"); store(WKEY, String(parseInt(panel.style.width, 10) || 420)); }
+      grip.addEventListener("pointermove", mv); grip.addEventListener("pointerup", up); grip.addEventListener("pointercancel", up);
+    });
+    window.addEventListener("resize", function () { var w = parseInt(panel.style.width, 10); if (w) setWidth(w); });
+  }
   function init() {
-    build();
+    build(); initResize();
     fab.onclick = function () { open("chat"); };
     panel.addEventListener("click", function (ev) {
       var t = ev.target.closest("[data-a]"); if (!t) return; var a = t.dataset.a;
       if (a === "close") { panel.hidden = true; fab.hidden = false; }
+      else if (a === "expand") { setWide(!panel.classList.contains("wide")); }
       else if (a === "tab") show(t.dataset.t);
       else if (a === "savekey") { var v = (panel.querySelector("#askKey").value || "").trim(); if (/^sk-ant-[\w-]{20,}$/.test(v)) { store(KEY, v); renderSetup(); } else { panel.querySelector("#askKey").value = ""; panel.querySelector("#askKey").placeholder = "That doesn’t look like an Anthropic key"; } }
       else if (a === "rmkey") { ev.preventDefault(); store(KEY, null); renderSetup(); }

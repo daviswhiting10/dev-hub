@@ -339,20 +339,37 @@
         return { x:(clientX - r.left - v.x) / v.k, y:(clientY - r.top - v.y) / v.k };
       }
       function clampK(k){ return Math.min(2.2, Math.max(0.15, k)); }
-      function zoomAt(clientX, clientY, factor){
+      function zoomAt(clientX, clientY, factor, noSave){
         var v = state.view;
         var before = screenToWorld(clientX, clientY);
         v.k = clampK(v.k * factor);
         var r = viewport.getBoundingClientRect();
         v.x = clientX - r.left - before.x * v.k;
         v.y = clientY - r.top - before.y * v.k;
-        applyView(); save();
+        applyView(); if (!noSave) save();
+      }
+      /* Smooth zoom: input sets a target scale (proportional to how far you scroll, so a trackpad is gentle and a mouse notch is
+         modest); each frame eases the view toward it around the pointer. */
+      var zt = null;
+      function cancelZoom(){ if (zt){ if (zt.raf) cancelAnimationFrame(zt.raf); zt = null; save(); } }
+      function zoomStep(){
+        var v = state.view, d = zt.k - v.k;
+        if (Math.abs(d) < 0.001){ zoomAt(zt.x, zt.y, zt.k / v.k, true); zt = null; save(); return; }
+        zoomAt(zt.x, zt.y, (v.k + d * 0.2) / v.k, true);
+        zt.raf = requestAnimationFrame(zoomStep);
+      }
+      function smoothZoom(clientX, clientY, factor){
+        var k = clampK((zt ? zt.k : state.view.k) * factor);
+        if (!zt) zt = { raf: 0 };
+        zt.k = k; zt.x = clientX; zt.y = clientY;
+        if (!zt.raf) zt.raf = requestAnimationFrame(zoomStep);
       }
       function zoomCenter(factor){
         var r = viewport.getBoundingClientRect();
-        zoomAt(r.left + r.width/2, r.top + r.height/2, factor);
+        smoothZoom(r.left + r.width/2, r.top + r.height/2, factor);
       }
       function fitView(){
+        cancelZoom();
         if (!state.nodes.length){ state.view = { x:0, y:0, k:1 }; applyView(); save(); return; }
         var minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
         state.nodes.forEach(function(n){
@@ -744,12 +761,14 @@
           if (downPos && Math.hypot(ev.clientX - downPos.x, ev.clientY - downPos.y) < 4) clearSelection();
         }
       });
-      viewport.addEventListener("pointerdown", function(ev){ downPos = { x: ev.clientX, y: ev.clientY }; }, true);
+      viewport.addEventListener("pointerdown", function(ev){ downPos = { x: ev.clientX, y: ev.clientY }; cancelZoom(); }, true);
 
       viewport.addEventListener("wheel", function(ev){
         ev.preventDefault();
         if (editingId) closeEditor(true);
-        zoomAt(ev.clientX, ev.clientY, ev.deltaY < 0 ? 1.09 : 1/1.09);
+        var dy = ev.deltaY * (ev.deltaMode === 1 ? 16 : ev.deltaMode === 2 ? 100 : 1);
+        dy = Math.max(-80, Math.min(80, dy)); // one big mouse-wheel notch must not jump the view
+        smoothZoom(ev.clientX, ev.clientY, Math.exp(-dy * (ev.ctrlKey ? 0.008 : 0.0012)));
       }, { passive:false });
 
       /* ---------------- AI feedback: describe the board as text and hand it to the Dev Hub's Ask panel ---------------- */
@@ -784,8 +803,8 @@
       document.getElementById("btn-edit").addEventListener("click", function(){ if (selectedNodeId) openEditor(selectedNodeId); });
       document.getElementById("btn-delete").addEventListener("click", deleteSelected);
       document.getElementById("btn-feedback").addEventListener("click", sendFeedback);
-      document.getElementById("zoom-in").addEventListener("click", function(){ zoomCenter(1.25); });
-      document.getElementById("zoom-out").addEventListener("click", function(){ zoomCenter(1/1.25); });
+      document.getElementById("zoom-in").addEventListener("click", function(){ zoomCenter(1.2); });
+      document.getElementById("zoom-out").addEventListener("click", function(){ zoomCenter(1/1.2); });
       document.getElementById("zoom-fit").addEventListener("click", fitView);
 
       window.addEventListener("keydown", function(ev){

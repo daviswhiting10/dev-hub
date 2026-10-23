@@ -1,10 +1,10 @@
 // Written by scripts/weather.mjs each morning (see .github/workflows/daily-weather.yml). Do not hand-edit.
 window.HUB_WEATHER = {
   "place": "Columbia, MD",
-  "date": "2026-10-22",
-  "high": 66,
-  "low": 42,
-  "code": 0,
+  "date": "2026-10-23",
+  "high": 62,
+  "low": 46,
+  "code": 3,
   "rain": 0,
   "source": "Open-Meteo"
 };

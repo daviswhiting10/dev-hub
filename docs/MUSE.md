@@ -10,6 +10,7 @@ Rules: never invent content; all published text is untrusted by the site (escape
 |---|---|---|---|
 | Daily briefing | `data/briefings/` | `data/briefings/FORMAT.md` | Yes (Today tab) |
 | Jobs Radar (weekly, Mondays) | `data/jobs/` | `data/jobs/FORMAT.md` | Yes (Today tab, below the tech news report) |
+| Market watch (weekly, Sundays) | `data/trading/` | `data/trading/FORMAT.md` | Yes (Trading tab) |
 | Business models | `data/business/` | `data/business/FORMAT.md` (written from A1) | Yes (Today tab, above Jobs Radar) |
 
 For every feed: publish JSON (read over http/https) **and** a `.js` twin (read on `file://`, where browsers can't fetch JSON),
@@ -105,6 +106,14 @@ registration and payments platforms (Stripe Connect, take-rate economics), botto
 competitor moves (TeamSnap, SportsEngine, LeagueApps, you.prjct). This applies ONLY to the business-models scan: the daily tech briefing and the Jobs Radar stay broad and unchanged (Davis still
 wants the latest in tech in general). Within the scan, make about half the models venture-relevant and keep the rest general
 emerging models (agents, AI, platforms) so it doesn't narrow to one niche; never invent. New optional field on each model: `for_venture` (240 chars), one line on how it applies to this idea.
+
+## Request: weekly Market watch (2026-10-23, Davis)
+
+Davis is learning to swing trade (about one trade a week, holding days) and has added a Trading tab. Please publish a weekly
+**Market watch** each Sunday evening to `data/trading/` per `data/trading/FORMAT.md` (JSON + `.js` twin + index): 3-6 emerging
+themes (sectors, technologies, macro shifts), what to watch next, a calendar of real dated events (earnings, Fed, CPI, jobs),
+risks, and a one-line signal. Tickers are "names to research", never recommendations. Real, retrieved sources only; never invent
+prices, dates or numbers. He is a beginner with no investing experience, so explain terms briefly. His setup: a $50 cash account for higher-risk, short-term trades, fractional shares of liquid US stocks and ETFs, no leverage or options, one position at a time, holds of days. Favor themes and names that fit that (liquid, catalysts inside the week, earnings dates in the calendar), and flag crowded or hype-driven moves as risks.
 
 ## Questions for Claude Code (Muse writes here; answered at the start of Davis's next session)
 

@@ -61,6 +61,21 @@
         border:1px solid rgba(20,28,40,.25);
       }
       .swatch.sel{outline:2px solid var(--accent);outline-offset:1px;}
+      .keypanel{position:fixed;left:12px;bottom:12px;z-index:40;width:min(330px,calc(100vw - 24px));max-height:70dvh;overflow:auto;
+        background:#fff;border:1px solid var(--bar-border);border-radius:10px;box-shadow:var(--shadow);padding:10px 12px 12px;font-size:12.5px;}
+      .keypanel[hidden]{display:none;}
+      .keypanel h3{margin:0;font-size:13px;}
+      .keypanel h4{margin:12px 0 4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);}
+      .kp-head{display:flex;align-items:center;gap:6px;margin-bottom:2px;} .kp-head .grow{flex:1;}
+      .kp-row{display:flex;gap:9px;align-items:flex-start;padding:5px 0;border-top:1px solid #eef0f3;}
+      .kp-row:first-of-type{border-top:0;}
+      .kp-sw{flex:none;width:24px;height:24px;border-radius:6px;border:1.5px solid;margin-top:1px;}
+      .kp-ic{flex:none;width:24px;height:24px;margin-top:1px;color:var(--ink-soft);}
+      .kp-txt{min-width:0;flex:1;} .kp-txt b{display:block;font-weight:600;} .kp-txt span{color:var(--ink-soft);line-height:1.35;display:block;}
+      .kp-row input[type=color]{flex:none;width:30px;height:30px;padding:0;border:1px solid #cfd5dc;border-radius:6px;background:#fff;cursor:pointer;}
+      .kp-row input[type=text],.kp-row textarea{width:100%;font:inherit;border:1px solid #cfd5dc;border-radius:5px;padding:3px 6px;margin:0 0 3px;color:var(--ink);background:#fff;}
+      .kp-row textarea{resize:vertical;min-height:34px;}
+      .kp-foot{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;} .kp-note{color:var(--ink-soft);margin:6px 0 0;line-height:1.4;}
       .sel-tools{display:none;align-items:center;gap:5px;}
       .sel-tools.on{display:flex;}
       .hint{
@@ -174,6 +189,9 @@
           <button class="tool" id="btn-edit">Edit text</button>
           <button class="tool danger" id="btn-delete">Delete</button>
         </div>
+        <div class="group" aria-label="Key">
+          <button class="tool" id="btn-key" aria-pressed="false" title="Show what each color and shape means (editable)">Key</button>
+        </div>
         <div class="group" aria-label="AI feedback">
           <button class="tool" id="btn-feedback" title="Send the selected blocks (or the whole board) to the Dev Hub AI for hard feedback">Get feedback</button>
         </div>
@@ -210,20 +228,55 @@
       </div>
     </div>
 
+    <aside class="keypanel" id="keypanel" hidden aria-label="Key to block colors and shapes"></aside>
+
     <script>
     (function(){
       "use strict";
       var LS_KEY = "dev-whiteboard-v1";
 
-      var COLORS = [
-        { id:"white",   bg:"#ffffff", bd:"#9aa4b1" },
-        { id:"yellow",  bg:"#fef3c7", bd:"#d9a83c" },
-        { id:"blue",    bg:"#dbeafe", bd:"#6ea8e8" },
-        { id:"green",   bg:"#dcf2e3", bd:"#5cb285" },
-        { id:"pink",    bg:"#fbe3ec", bd:"#e08bb0" },
-        { id:"sand",    bg:"#f3ead9", bd:"#c2a878" },
-        { id:"gray",    bg:"#e8ebee", bd:"#98a1ad" }
+      /* Key: every color and shape carries a name and a meaning, all editable (Key button). The ids stay fixed so existing
+         blocks keep their color. Defaults suit a goal-setting plan. Saved with the board (state.palette / state.shapes). */
+      var DEFAULT_PALETTE = [
+        { id:"blue",   bg:"#dbeafe", bd:"#6ea8e8", name:"Goal",               meaning:"The outcome you are committing to, with a deadline. Keep it to a few." },
+        { id:"sand",   bg:"#f3ead9", bd:"#c2a878", name:"Milestone / test",   meaning:"A checkpoint or experiment that proves you are making progress. Measurable." },
+        { id:"white",  bg:"#ffffff", bd:"#9aa4b1", name:"Next action",        meaning:"A concrete step you can do this week. Starts with a verb." },
+        { id:"green",  bg:"#dcf2e3", bd:"#5cb285", name:"Resource / strength", meaning:"A skill, tool, person or habit you already have and can lean on." },
+        { id:"yellow", bg:"#fef3c7", bd:"#d9a83c", name:"Open question",      meaning:"Unresolved. Needs an answer or a decision before you can move on." },
+        { id:"pink",   bg:"#fbe3ec", bd:"#e08bb0", name:"Obstacle / risk",    meaning:"What could stop you or go wrong, and ideally how you will handle it." },
+        { id:"gray",   bg:"#e8ebee", bd:"#98a1ad", name:"Done / parked",      meaning:"Finished, or deliberately set aside for now. Keep it for the record." }
       ];
+      var DEFAULT_SHAPES = {
+        rect:    { name:"Step",           meaning:"One piece of work or an idea. The default block." },
+        rounded: { name:"Theme",          meaning:"A group of related steps, such as an area of life or a workstream." },
+        ellipse: { name:"Start / finish", meaning:"Where you are starting from, or the end state that counts as success." },
+        diamond: { name:"Decision",       meaning:"A fork where you must choose a path. Link each option out of it." }
+      };
+      var COLORS = DEFAULT_PALETTE.map(function(c){ return { id:c.id, bg:c.bg, bd:c.bd, name:c.name, meaning:c.meaning }; });
+      var SHAPES = JSON.parse(JSON.stringify(DEFAULT_SHAPES));
+      function hexOk(h){ return /^#[0-9a-f]{6}$/i.test(String(h)); }
+      function shade(hex, f){ // darken a #rrggbb color by fraction f, used for the block border
+        var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+        function d(v){ return Math.max(0, Math.round(v * (1 - f))).toString(16).padStart(2, "0"); }
+        return "#" + d(r) + d(g) + d(b);
+      }
+      function clone(o){ return JSON.parse(JSON.stringify(o)); }
+      // Merge saved key data into the defaults, keeping only what is valid (old boards have none, so they get the defaults).
+      function loadKey(st){
+        var sp = Array.isArray(st.palette) ? st.palette : [];
+        COLORS = DEFAULT_PALETTE.map(function(d){
+          var u = sp.filter(function(x){ return x && x.id === d.id; })[0] || {};
+          return { id:d.id, bg: hexOk(u.bg) ? u.bg : d.bg, bd: hexOk(u.bd) ? u.bd : d.bd,
+                   name: typeof u.name === "string" && u.name.trim() ? u.name.slice(0, 40) : d.name,
+                   meaning: typeof u.meaning === "string" ? u.meaning.slice(0, 200) : d.meaning };
+        });
+        SHAPES = {};
+        Object.keys(DEFAULT_SHAPES).forEach(function(k){
+          var u = st.shapes && st.shapes[k] || {};
+          SHAPES[k] = { name: typeof u.name === "string" && u.name.trim() ? u.name.slice(0, 40) : DEFAULT_SHAPES[k].name,
+                        meaning: typeof u.meaning === "string" ? u.meaning.slice(0, 200) : DEFAULT_SHAPES[k].meaning };
+        });
+      }
       function colorById(id){
         for (var i=0;i<COLORS.length;i++) if (COLORS[i].id===id) return COLORS[i];
         return COLORS[0];
@@ -267,12 +320,13 @@
           e("e7","aim","kill"), e("e8","aim","test"),
           e("e9","cap","opencap"), e("e10","user","openuser"), e("e11","engine","openapi")
         ];
-        return { nodes:nodes, edges:edges, view:{ x:0, y:0, k:1 } };
+        return { nodes:nodes, edges:edges, view:{ x:0, y:0, k:1 }, keyOpen:true };
       }
 
       /* ---------------- state ---------------- */
       var state = null;
       function save(){
+        if (typeof syncKey === "function" && state) syncKey();
         try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e){ /* storage unavailable: board still works in-session */ }
       }
       function load(){
@@ -287,6 +341,9 @@
       var freshSeed = false;
       state = load();
       if (!state){ state = seedState(); freshSeed = true; }
+      loadKey(state);
+      if (state.keyOpen === undefined) state.keyOpen = true; // boards saved before the key existed show it once
+      function syncKey(){ state.palette = clone(COLORS); state.shapes = clone(SHAPES); }
 
       var selectedNodeId = null, selectedEdgeId = null;
       var multi = {};   // extra selection (shift-click / marquee), used for "Get feedback"
@@ -305,14 +362,18 @@
       var emptyNote = document.getElementById("empty-note");
       var SVGNS = "http://www.w3.org/2000/svg";
 
-      COLORS.forEach(function(c){
-        var b = document.createElement("button");
-        b.className = "swatch"; b.type = "button";
-        b.style.background = c.bg; b.title = "Fill: " + c.id;
-        b.setAttribute("data-color", c.id);
-        b.addEventListener("click", function(){ setSelectedColor(c.id); });
-        swatchBox.appendChild(b);
-      });
+      function buildSwatches(){
+        swatchBox.innerHTML = "";
+        COLORS.forEach(function(c){
+          var b = document.createElement("button");
+          b.className = "swatch"; b.type = "button";
+          b.style.background = c.bg; b.style.borderColor = c.bd; b.title = c.name + ": " + c.meaning;
+          b.setAttribute("data-color", c.id);
+          b.addEventListener("click", function(){ setSelectedColor(c.id); });
+          swatchBox.appendChild(b);
+        });
+      }
+      buildSwatches();
 
       function nodeById(id){
         for (var i=0;i<state.nodes.length;i++) if (state.nodes[i].id===id) return state.nodes[i];
@@ -771,6 +832,64 @@
         smoothZoom(ev.clientX, ev.clientY, Math.exp(-dy * (ev.ctrlKey ? 0.008 : 0.0012)));
       }, { passive:false });
 
+      /* ---------------- key panel (view + edit) ---------------- */
+      var keyPanel = document.getElementById("keypanel"), keyBtn = document.getElementById("btn-key"), keyEditing = false;
+      var SHAPE_ICON = {
+        rect:'<rect x="3" y="6" width="18" height="12" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+        rounded:'<rect x="3" y="6" width="18" height="12" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+        ellipse:'<ellipse cx="12" cy="12" rx="9" ry="6" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+        diamond:'<path d="M12 3 L21 12 L12 21 L3 12 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>'
+      };
+      function escH(t){ return String(t == null ? "" : t).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
+      function refreshKeyUse(){ // names/colors changed: repaint blocks, toolbar swatches and the Add button tooltips
+        buildSwatches(); updateSelTools(); state.nodes.forEach(paintNode);
+        [["add-rect","rect"],["add-rounded","rounded"],["add-ellipse","ellipse"],["add-diamond","diamond"]].forEach(function(p){
+          var b = document.getElementById(p[0]); if (b) b.title = "Add " + SHAPES[p[1]].name.toLowerCase() + " (" + (p[1] === "rect" ? "rectangle" : p[1] === "rounded" ? "rounded rectangle" : p[1]) + "): " + SHAPES[p[1]].meaning;
+        });
+      }
+      function renderKey(){
+        keyBtn.classList.toggle("active", !!state.keyOpen); keyBtn.setAttribute("aria-pressed", state.keyOpen ? "true" : "false");
+        keyPanel.hidden = !state.keyOpen; if (!state.keyOpen) return;
+        var ed = keyEditing, h = '<div class="kp-head"><h3>Key</h3><span class="grow"></span>' +
+          '<button class="tool" data-k="edit">' + (ed ? "Done" : "Edit") + '</button><button class="tool" data-k="close" aria-label="Close key">✕</button></div>';
+        h += "<h4>Colors: what a block is</h4>";
+        COLORS.forEach(function(c){
+          h += '<div class="kp-row">' + (ed ? '<input type="color" data-k="color" data-id="' + c.id + '" value="' + c.bg + '" title="Change this color">' :
+            '<span class="kp-sw" style="background:' + c.bg + ";border-color:" + c.bd + '"></span>') +
+            '<div class="kp-txt">' + (ed ? '<input type="text" data-k="cname" data-id="' + c.id + '" maxlength="40" value="' + escH(c.name) + '"><textarea data-k="cmean" data-id="' + c.id + '" maxlength="200" rows="2">' + escH(c.meaning) + "</textarea>" :
+            "<b>" + escH(c.name) + "</b><span>" + escH(c.meaning) + "</span>") + "</div></div>";
+        });
+        h += "<h4>Shapes: what kind of block</h4>";
+        Object.keys(SHAPES).forEach(function(k){
+          h += '<div class="kp-row"><svg class="kp-ic" viewBox="0 0 24 24">' + SHAPE_ICON[k] + '</svg><div class="kp-txt">' + (ed ? '<input type="text" data-k="sname" data-id="' + k + '" maxlength="40" value="' + escH(SHAPES[k].name) + '"><textarea data-k="smean" data-id="' + k + '" maxlength="200" rows="2">' + escH(SHAPES[k].meaning) + "</textarea>" :
+            "<b>" + escH(SHAPES[k].name) + "</b><span>" + escH(SHAPES[k].meaning) + "</span>") + "</div></div>";
+        });
+        h += ed ? '<div class="kp-foot"><button class="tool" data-k="reset">Reset to the goal-plan defaults</button></div><p class="kp-note">Pick a color to restyle every block of that kind. Changes save automatically.</p>' :
+          '<p class="kp-note">Select a block, then click a color in the toolbar to tag it. Edit to rename anything or change a color.</p>';
+        var keep = keyPanel.scrollTop; keyPanel.innerHTML = h; keyPanel.scrollTop = keep;
+      }
+      keyBtn.addEventListener("click", function(){ state.keyOpen = !state.keyOpen; save(); renderKey(); });
+      keyPanel.addEventListener("click", function(ev){
+        var t = ev.target.closest("[data-k]"); if (!t) return; var k = t.dataset.k;
+        if (k === "close"){ state.keyOpen = false; save(); renderKey(); }
+        else if (k === "edit"){ keyEditing = !keyEditing; renderKey(); }
+        else if (k === "reset" && confirm("Reset every color, name and meaning to the defaults? Blocks keep their color kinds.")){ loadKey({}); refreshKeyUse(); save(); renderKey(); }
+      });
+      keyPanel.addEventListener("input", function(ev){
+        var t = ev.target, k = t.dataset && t.dataset.k, id = t.dataset && t.dataset.id; if (!k || !id) return;
+        if (k === "color" || k === "cname" || k === "cmean"){
+          var c = colorById(id);
+          if (k === "color" && hexOk(t.value)){ c.bg = t.value; c.bd = shade(t.value, 0.25); }
+          else if (k === "cname"){ c.name = t.value.slice(0, 40) || c.name; }
+          else if (k === "cmean"){ c.meaning = t.value.slice(0, 200); }
+        } else if (SHAPES[id]){
+          if (k === "sname") SHAPES[id].name = t.value.slice(0, 40) || SHAPES[id].name; else if (k === "smean") SHAPES[id].meaning = t.value.slice(0, 200);
+        }
+        refreshKeyUse(); save();
+      });
+      keyPanel.addEventListener("keydown", function(ev){ ev.stopPropagation(); });
+      refreshKeyUse(); renderKey();
+
       /* ---------------- AI feedback: describe the board as text and hand it to the Dev Hub's Ask panel ---------------- */
       function describeBoard(ids){
         var set = {}; ids.forEach(function(id){ set[id] = 1; });
@@ -778,12 +897,14 @@
         var label = {}; nodes.forEach(function(n, i){ label[n.id] = "B" + (i + 1); });
         var lines = nodes.map(function(n){
           var open = /^\s*OPEN\b/i.test(n.text) ? " [OPEN QUESTION]" : "";
-          return label[n.id] + " (" + n.type + ")" + open + ": " + n.text.replace(/\s+/g, " ");
+          return label[n.id] + " (" + SHAPES[n.type].name + " / " + colorById(n.color).name + ")" + open + ": " + n.text.replace(/\s+/g, " ");
         });
         var inside = state.edges.filter(function(e){ return label[e.from] && label[e.to]; });
         var outside = ids.length ? state.edges.filter(function(e){ return (label[e.from] ? 1 : 0) + (label[e.to] ? 1 : 0) === 1; }).length : 0;
         var arrows = inside.map(function(e){ return label[e.from] + " -> " + label[e.to]; });
-        return "BLOCKS:\n" + lines.join("\n") + "\n\nARROWS (from -> to):\n" + (arrows.length ? arrows.join("\n") : "(none)") +
+        var key = "KEY (each block is shown as shape / color):\n" + COLORS.map(function(c){ return "- " + c.name + ": " + c.meaning; }).join("\n") + "\n" +
+          Object.keys(SHAPES).map(function(k){ return "- " + SHAPES[k].name + " (shape): " + SHAPES[k].meaning; }).join("\n") + "\n\n";
+        return key + "BLOCKS:\n" + lines.join("\n") + "\n\nARROWS (from -> to):\n" + (arrows.length ? arrows.join("\n") : "(none)") +
           (outside ? "\n\nNote: " + outside + " arrow(s) connect these blocks to blocks outside the selection." : "");
       }
       function sendFeedback(){

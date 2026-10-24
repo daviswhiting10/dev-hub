@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-24",
+  "headline": "Sponsorship pays for youth sports, IMG goes digital, and verification becomes the product.",
+  "models": [
+    {
+      "name": "Sponsorship-funded youth sports distribution",
+      "what_it_is": "Brands fund youth leagues through the incumbent platform instead of clubs funding themselves: Spectrum's multi-year TeamSnap deal, expanded March 2025, sponsors 720+ leagues through 2027 with jerseys, field signage and custom communications.",
+      "why_emerging": "Club fees keep rising while brands want authenticated local households; the platform that can prove reach to 620,000+ households (per TeamSnap's recent update) can sell that audience and subsidize the sport.",
+      "technique": "Pilot with one brand in a few markets, prove household reach with branded jerseys and signage, then scale to hundreds of leagues; spend sponsor dollars on scholarships, registration relief and equipment so leagues feel the benefit, not just the logo.",
+      "who": "TeamSnap (25M users); Spectrum (partnership since fall 2023, 1,100+ leagues per recent update)",
+      "source": "PR Newswire",
+      "url": "https://ycharts.com/news/story/PRN-CG39583-20250312",
+      "for_venture": "A verified development record is a sponsor-grade audience: brands will pay to reach club households they can trust, and sponsor dollars could cut family fees — but only once the record itself is trusted."
+    },
+    {
+      "name": "Elite academy goes digital, direct to families",
+      "what_it_is": "IMG Academy+ (announced Oct 19) unbundles a 50-year boarding-school development methodology into a consumer app for athletes as young as eight, from $10/month content to live one-on-one coaching and college recruiting help.",
+      "why_emerging": "Families who can't attend a campus will still pay for the brand's development system, and subscriptions turn a one-time camp sale into recurring revenue with national reach.",
+      "technique": "Tier the ladder: cheap on-demand content (1,000+ pieces on habits and leadership) at the bottom, live nutrition and mental-performance coaching with messaging in the middle, recruiting services at the top; sell the methodology, not the facility.",
+      "who": "IMG Academy (CCO Chris Ciaccio); launched Oct 19, 2026",
+      "source": "Sports Business Journal",
+      "url": "https://www.sportsbusinessjournal.com/Articles/2026/10/19/img-academy-takes-athlete-development-model-digital-with-img-academy/",
+      "for_venture": "Don't copy IMG's brand ladder — yours is record first, paid add-ons later — but IMG proves parents already pay monthly for development, not just for registration."
+    },
+    {
+      "name": "The AI finance employee for small business",
+      "what_it_is": "BOB is an AI finance employee for small businesses: it keeps the books, sends invoices, accepts payments and holds funds in a deposit account, and owners talk to it over WhatsApp, text, Slack, Teams or email like a bookkeeper.",
+      "why_emerging": "Small operators lose nights and weekends to finance work they hate, and agents can now do it inside the chat tools owners already open — no new dashboard to learn.",
+      "technique": "Meet owners where they already message; bundle bookkeeping, invoicing, payments and a deposit account into one 'employee'; launch in private beta, then use a free agent tier to onboard owners before charging for the money features.",
+      "who": "BOB AI Holdings ($5.5M seed Oct 23, Mischief led, Peter Thiel participating)",
+      "source": "PR Newswire",
+      "url": "https://www.wcia.com/business/press-releases/cision/20261023FL79872/miami-startup-bob-raises-5-5m-to-build-an-ai-powered-banking-platform/",
+      "for_venture": "Clubs are small businesses run by volunteers: a chat-first finance agent that chases dues and reconciles payments is your step-3 ops layer, sold to treasurers, not parents."
+    },
+    {
+      "name": "Verification infrastructure for agent-written work",
+      "what_it_is": "Blacksmith sells CI cloud built for the agent era: developers now push orders of magnitude more pull requests, and legacy CI can't keep up, so verification — not code generation — is the bottleneck worth paying for.",
+      "why_emerging": "When agents write the code, trust becomes the scarce resource; the layer that turns generated text into something a company will merge is getting repriced upward.",
+      "technique": "Make verification fast and parallel instead of queuing behind generation; sell the merge decision (tests, checks, speed) rather than raw compute; land with engineering teams whose PR volume already broke their old CI.",
+      "who": "Blacksmith ($66M Series C Oct 21, $1B valuation, Sequoia led; 17x ARR, 10,000 companies)",
+      "source": "nexi.fund",
+      "url": "https://nexi.fund/blacksmith-ci-cloud-unicorn-2026/",
+      "for_venture": "Every auto-generated rating, schedule or parent report needs a verification pass before families see it — trust is the feature, just as Blacksmith's merge gate is."
+    },
+    {
+      "name": "Outcome pricing: cost per workflow, not per seat",
+      "what_it_is": "Enterprise AI buying is shifting from cost per response to cost per business workflow completed correctly, securely and reliably — with planning budgets of $20-50K for a proof of concept and $50-125K for a narrow production workflow.",
+      "why_emerging": "Cheaper models didn't produce cheaper outcomes: a low-cost response that fails, needs rework or breaks compliance costs more than a pricier one that finishes the job.",
+      "technique": "Scope to one measurable workflow with known volume, error tolerance and approval rules; instrument cost per successful completion and error rate; price on completed outcomes and scale only the workflows that prove out.",
+      "who": "Enterprise AI buyers (Gartner Sept 2026 analysis; AWS AgentCore pricing)",
+      "source": "dev.to",
+      "url": "https://dev.to/quokkalabs/how-much-does-it-cost-to-build-an-enterprise-ai-agent-in-2026-3c5o",
+      "for_venture": "Sell clubs 'a testing day delivered' — kids tested, reports sent, directors briefed — priced per event, not per seat; that turns a one-club pilot into a repeatable sale."
+    },
+    {
+      "name": "Machine-to-machine tool marketplace",
+      "what_it_is": "Monid is a marketplace and checkout for AI agents: instead of a developer opening accounts and storing keys with every tool provider, they fund one balance and agents search, compare, call and pay per use across 1,700+ endpoints.",
+      "why_emerging": "If agents start choosing their own tools, discovery, identity, billing and permissions for machine buyers become infrastructure — and humans stop being the checkout step.",
+      "technique": "Aggregate tool providers behind one funded balance; charge provider pricing plus a 10% platform fee with per-call prices in fractions of a cent; win on volume, since the model only works if machine transactions reach enormous scale.",
+      "who": "Monid ($7.7M seed Oct 6, Long Journey Ventures led; 4M+ agent transactions)",
+      "source": "TechStartups",
+      "url": "https://techstartups.com/2026/10/07/startup-funding-news-today-october-7-2026-nous-research-monid-multiply-labs-quanfluence-more/"
+    }
+  ],
+  "signal": "Distribution and trust are splitting the market: whoever holds verified households — or verified work — can charge for outcomes instead of seats."
+}

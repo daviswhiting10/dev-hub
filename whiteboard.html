@@ -76,6 +76,9 @@
       .kp-row input[type=text],.kp-row textarea{width:100%;font:inherit;border:1px solid #cfd5dc;border-radius:5px;padding:3px 6px;margin:0 0 3px;color:var(--ink);background:#fff;}
       .kp-row textarea{resize:vertical;min-height:34px;}
       .kp-foot{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;} .kp-note{color:var(--ink-soft);margin:6px 0 0;line-height:1.4;}
+      .shapebox{display:flex;gap:2px;align-items:center;border-left:1px solid var(--bar-border);padding-left:6px;margin-left:2px;}
+      .shapebox button{appearance:none;border:1px solid transparent;background:transparent;color:var(--ink-soft);border-radius:6px;width:28px;height:26px;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+      .shapebox button:hover{background:#f1f3f6;} .shapebox button.sel{background:var(--accent-soft);border-color:#c7d9fb;color:var(--accent);}
       .sel-tools{display:none;align-items:center;gap:5px;}
       .sel-tools.on{display:flex;}
       .hint{
@@ -186,6 +189,7 @@
         </div>
         <div class="group sel-tools" id="sel-tools" aria-label="Selection tools">
           <div class="swatches" id="swatches" title="Block color"></div>
+          <div class="shapebox" id="shapebox" title="Block shape"></div>
           <button class="tool" id="btn-edit">Edit text</button>
           <button class="tool danger" id="btn-delete">Delete</button>
         </div>
@@ -374,6 +378,17 @@
         });
       }
       buildSwatches();
+      var shapeBox = document.getElementById("shapebox");
+      function buildShapeBtns(){
+        shapeBox.innerHTML = "";
+        ["rect","rounded","ellipse","diamond"].forEach(function(t){
+          var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-shape", t);
+          b.title = "Change to " + SHAPES[t].name.toLowerCase() + ": " + SHAPES[t].meaning;
+          b.innerHTML = '<svg width="18" height="14" viewBox="0 0 24 24">' + SHAPE_ICON[t] + "</svg>";
+          b.addEventListener("click", function(){ setSelectedType(t); });
+          shapeBox.appendChild(b);
+        });
+      }
 
       function nodeById(id){
         for (var i=0;i<state.nodes.length;i++) if (state.nodes[i].id===id) return state.nodes[i];
@@ -560,7 +575,10 @@
         selTools.classList.toggle("on", hasSel);
         document.getElementById("btn-edit").disabled = !hasNode;
         swatchBox.style.display = hasNode ? "flex" : "none";
+        shapeBox.style.display = hasNode ? "flex" : "none";
         if (hasNode){
+          var cur = nodeById(selectedNodeId);
+          shapeBox.querySelectorAll("button").forEach(function(b){ b.classList.toggle("sel", !!cur && b.getAttribute("data-shape") === cur.type); });
           var n = nodeById(selectedNodeId);
           swatchBox.querySelectorAll(".swatch").forEach(function(s){
             s.classList.toggle("sel", n && s.getAttribute("data-color") === n.color);
@@ -651,6 +669,25 @@
         paintNode(n);
         updateSelTools();
         save();
+      }
+
+      // Change the shape of the selected block (and any shift-selected ones). The center and the text stay.
+      function setSelectedType(type){
+        if (!SIZES[type]) return;
+        var ids = {}; if (selectedNodeId) ids[selectedNodeId] = 1; Object.keys(multi).forEach(function(k){ ids[k] = 1; });
+        var changed = false;
+        Object.keys(ids).forEach(function(id){
+          var n = nodeById(id); if (!n || n.type === type) return;
+          var cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+          n.type = type;
+          // A diamond is a square turned 45 degrees, so it needs equal sides to look right. Remember the old size to restore on the way out.
+          if (type === "diamond"){ n.prevSize = { w:n.w, h:n.h }; n.w = n.h = Math.round(Math.max(150, Math.min(200, Math.max(n.w, n.h) * 0.8))); }
+          else if (n.prevSize){ n.w = n.prevSize.w; n.h = n.prevSize.h; delete n.prevSize; }
+          n.x = Math.round(cx - n.w / 2); n.y = Math.round(cy - n.h / 2);
+          paintNode(n); changed = true;
+        });
+        if (!changed) return;
+        drawEdges(); updateSelTools(); save();
       }
 
       /* ---------------- connect mode ---------------- */
@@ -842,7 +879,7 @@
       };
       function escH(t){ return String(t == null ? "" : t).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
       function refreshKeyUse(){ // names/colors changed: repaint blocks, toolbar swatches and the Add button tooltips
-        buildSwatches(); updateSelTools(); state.nodes.forEach(paintNode);
+        buildSwatches(); buildShapeBtns(); updateSelTools(); state.nodes.forEach(paintNode);
         [["add-rect","rect"],["add-rounded","rounded"],["add-ellipse","ellipse"],["add-diamond","diamond"]].forEach(function(p){
           var b = document.getElementById(p[0]); if (b) b.title = "Add " + SHAPES[p[1]].name.toLowerCase() + " (" + (p[1] === "rect" ? "rectangle" : p[1] === "rounded" ? "rounded rectangle" : p[1]) + "): " + SHAPES[p[1]].meaning;
         });

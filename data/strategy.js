@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 7,
-  "updated": "2026-10-22",
+  "version": 8,
+  "updated": "2026-10-25",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -19,7 +19,8 @@ window.HUB_STRATEGY = {
       "queries": [
         "Claude Agent SDK and MCP news this week",
         "new MCP servers and agent frameworks",
-        "multi-agent systems production lessons"
+        "multi-agent systems production lessons",
+        "agent framework release OpenAI Agents SDK LangGraph new version production"
       ]
     },
     {
@@ -29,7 +30,8 @@ window.HUB_STRATEGY = {
       "queries": [
         "Anthropic OpenAI Google DeepMind model release announcement",
         "frontier AI lab news this week",
-        "open-weight model release Hugging Face agentic coding benchmark"
+        "open-weight model release Hugging Face agentic coding benchmark",
+        "new frontier model launch evals system card agentic capabilities this week"
       ]
     },
     {
@@ -208,6 +210,25 @@ window.HUB_STRATEGY = {
           "beat": "dev-tools",
           "value": "Claude Code changelog release notes anthropic.com OR github.com new version",
           "reason": "Today's Claude Code item is low confidence and relies on a third-party release tracker, so a query aimed at primary changelogs should give better sourcing."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-25",
+      "version": 8,
+      "summary": "The briefing has 3 items, below the 5-item minimum. It is relevant to the agent-safety, dev-tools and get-hired goals, but most of it follows up on recent briefings. The Black October update, Claude Code 2.1.305 and the OpenAI fired-researchers story all appeared in earlier titles. It has nothing on",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "agents-mcp",
+          "value": "agent framework release OpenAI Agents SDK LangGraph new version production",
+          "reason": "Today's agents-mcp coverage was only a Claude Code changelog side-item, and recent briefings repeated MCP spec and launch stories, so this adds a different angle."
+        },
+        {
+          "op": "add_query",
+          "beat": "frontier-labs",
+          "value": "new frontier model launch evals system card agentic capabilities this week",
+          "reason": "The only frontier-labs item today was a low-confidence insider-risk follow-up of an earlier story, so the beat needs primary model and release coverage."
         }
       ]
     }

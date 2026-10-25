@@ -1,7 +1,7 @@
 // THE POLL — five core questions that tune your agents. `adaptive` questions (max 3) are proposed weekly by the
 // Poll agent and expire after ~4 weeks. Answer on the Briefing page. types: single | multi | text
 window.HUB_POLL = {
-  "version": 2,
+  "version": 3,
   "core": [
     {
       "id": "goal",

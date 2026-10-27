@@ -9,6 +9,6 @@ window.HUB_TESTS = {
   suites: [
     { id: "caf", title: "CAF practice exams (CCAR-F)",
       description: "Scenario-based practice for the Claude Certified Architect – Foundations retake, with domain accuracy and weak-spot drills.",
-      banks: [1, 2, 3, 4, 5, 6], questions: 210 }
+      banks: [1, 2, 3, 4, 5, 6, 7, 8], questions: 230 }
   ]
 };

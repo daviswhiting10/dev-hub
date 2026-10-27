@@ -1,6 +1,10 @@
 // Index of business-models briefings, newest first. Maintained by muse-cron.
 window.BUSINESS_INDEX = [
   {
+    "date": "2026-10-27",
+    "headline": "Youth sports grows a back office; agents go vertical while incumbents bundle them free."
+  },
+  {
     "date": "2026-10-24",
     "headline": "Sponsorship pays for youth sports, IMG goes digital, and verification becomes the product."
   },

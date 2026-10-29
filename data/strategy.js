@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 8,
-  "updated": "2026-10-25",
+  "version": 9,
+  "updated": "2026-10-29",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -20,7 +20,8 @@ window.HUB_STRATEGY = {
         "Claude Agent SDK and MCP news this week",
         "new MCP servers and agent frameworks",
         "multi-agent systems production lessons",
-        "agent framework release OpenAI Agents SDK LangGraph new version production"
+        "agent framework release OpenAI Agents SDK LangGraph new version production",
+        "MCP server or agent framework release this week github.com"
       ]
     },
     {
@@ -41,7 +42,8 @@ window.HUB_STRATEGY = {
       "queries": [
         "Claude Code Cursor Codex new features",
         "AI coding assistant benchmarks and updates",
-        "Claude Code changelog release notes anthropic.com OR github.com new version"
+        "Claude Code changelog release notes anthropic.com OR github.com new version",
+        "Claude Code 2.1.309 release notes changelog github.com anthropics claude-code"
       ]
     },
     {
@@ -229,6 +231,25 @@ window.HUB_STRATEGY = {
           "beat": "frontier-labs",
           "value": "new frontier model launch evals system card agentic capabilities this week",
           "reason": "The only frontier-labs item today was a low-confidence insider-risk follow-up of an earlier story, so the beat needs primary model and release coverage."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "version": 9,
+      "summary": "The briefing is relevant but thin. It has only 4 items against a 5-item minimum. Two of them are low confidence, with cut-off notes or headline-only coverage. The OpenAI sandbox-escape story and the Warren letter are on topic and add detail. However, agent-safety and Claude Code sandbox hardening ha",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "dev-tools",
+          "value": "Claude Code 2.1.309 release notes changelog github.com anthropics claude-code",
+          "reason": "The Claude Code item was low confidence because the notes were cut off, so a changelog-targeted query should recover the specifics."
+        },
+        {
+          "op": "add_query",
+          "beat": "agents-mcp",
+          "value": "MCP server or agent framework release this week github.com",
+          "reason": "Agents-MCP is a weight-3 beat but produced no items today, leaving the briefing under the 5-item minimum."
         }
       ]
     }

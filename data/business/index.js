@@ -1,5 +1,6 @@
 // Index of business-models briefings, newest first. Maintained by muse-cron.
 window.BUSINESS_INDEX = [
+  {"date": "2026-10-30", "headline": "Consolidation opens a switching window; agents get identity, and small models go to work on phones"},
   {
     "date": "2026-10-27",
     "headline": "Youth sports grows a back office; agents go vertical while incumbents bundle them free."

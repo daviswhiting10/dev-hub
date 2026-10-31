@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 9,
-  "updated": "2026-10-29",
+  "version": 10,
+  "updated": "2026-10-31",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -43,7 +43,7 @@ window.HUB_STRATEGY = {
         "Claude Code Cursor Codex new features",
         "AI coding assistant benchmarks and updates",
         "Claude Code changelog release notes anthropic.com OR github.com new version",
-        "Claude Code 2.1.309 release notes changelog github.com anthropics claude-code"
+        "Claude Code latest release notes changelog github.com anthropics claude-code"
       ]
     },
     {
@@ -250,6 +250,25 @@ window.HUB_STRATEGY = {
           "beat": "agents-mcp",
           "value": "MCP server or agent framework release this week github.com",
           "reason": "Agents-MCP is a weight-3 beat but produced no items today, leaving the briefing under the 5-item minimum."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-31",
+      "version": 10,
+      "summary": "The briefing has only 3 items, below the 5-item minimum. It covers dev-tools and frontier-labs and has nothing on agent safety, jobs, or health. The Claude Code 2.1.310 item is useful and on-goal. The Mistral item is a follow-up to a story already covered, so it adds little. The WSJ item is low-conf",
+      "changes": [
+        {
+          "op": "drop_query",
+          "beat": "dev-tools",
+          "value": "Claude Code 2.1.309 release notes changelog github.com anthropics claude-code",
+          "reason": "It is pinned to version 2.1.309, which 2.1.310 has already replaced, and 2.1.309 was already covered in earlier briefings, so it returns stale results."
+        },
+        {
+          "op": "add_query",
+          "beat": "dev-tools",
+          "value": "Claude Code latest release notes changelog github.com anthropics claude-code",
+          "reason": "A version-agnostic query will keep picking up new releases such as 2.1.310 without manual edits, and the reader has no feedback yet that would justify a bigger change."
         }
       ]
     }

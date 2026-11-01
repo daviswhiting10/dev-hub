@@ -5,9 +5,13 @@
   var H = Hub, esc = H.esc, LET = "ABCDE";
   var DOMAINS = {
     1: "Agentic Architecture & Orchestration", 2: "Tool Design & MCP Integration", 3: "Claude Code Configuration & Workflows",
-    4: "Prompt Engineering & Structured Output", 5: "Context Management & Reliability"
+    4: "Prompt Engineering & Structured Output", 5: "Context Management & Reliability",
+    // CCAR-P (Professional) domains use ids 11–17 so their accuracy never mixes with the Foundations domains.
+    11: "Solution Design & Architecture", 12: "Claude Models, Prompting & Context Engineering", 13: "Integration",
+    14: "Evaluation, Testing & Optimization", 15: "Governance, Safety & Risk Management",
+    16: "Stakeholder Communication & Lifecycle Management", 17: "Developer Productivity & Operational Enablement"
   };
-  var WEIGHT = { 1: 27, 2: 18, 3: 20, 4: 20, 5: 15 };
+  var WEIGHT = { 1: 27, 2: 18, 3: 20, 4: 20, 5: 15, 11: 17, 12: 13, 13: 19, 14: 16, 15: 14, 16: 14, 17: 7 };
   var SCEN = {
     1: { name: "Customer Support Resolution Agent", text: "You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to your backend systems through custom MCP tools (get_customer, lookup_order, process_refund, escalate_to_human). Your target is 80%+ first-contact resolution while knowing when to escalate." },
     2: { name: "Code Generation with Claude Code", text: "You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution." },
@@ -27,6 +31,8 @@
   function suites() { return (window.HUB_TESTS && Array.isArray(window.HUB_TESTS.suites)) ? window.HUB_TESTS.suites : []; }
   function suiteOf(id) { return suites().filter(function (x) { return x.id === id; })[0] || null; }
   function suiteBanks(su) { var ids = (su.banks || []).map(String); return H.banks.filter(function (b) { return ids.indexOf(String(b.id)) >= 0; }); }
+  // Domains shown in the accuracy panel: the active suite's `domains` list (CCAR-P), otherwise the Foundations ones.
+  function panelDomains() { var su = suiteId && suiteOf(suiteId), want = su && su.domains; return Object.keys(DOMAINS).filter(function (d) { return want ? want.indexOf(+d) >= 0 : +d < 10; }); }
   function activeBanks() { var su = suiteId && suiteOf(suiteId); return su ? suiteBanks(su) : H.banks; }
   function pool() {
     var out = [];
@@ -177,7 +183,7 @@
     }).join("");
     var otherProg = st.inProgress && st.inProgress.kind !== "bank" ? st.inProgress : null;
 
-    var dom = Object.keys(DOMAINS).map(function (d) {
+    var dom = panelDomains().map(function (d) {
       var s = dst[d], p = s.rn ? H.pct(s.rc, s.rn) : null;
       var color = p == null ? "var(--line)" : p >= 75 ? "var(--ok)" : p >= PASS_PCT ? "var(--warn)" : "var(--bad)";
       var isWeak = weak.length && (d === weak[0] || d === weak[1]) && p != null && p < 75;
@@ -191,9 +197,9 @@
         (a.kind === "bank" ? (scaled(a.pct / 100) >= 720 ? '<span class="x-badge ok">pass pace</span>' : '<span class="x-badge bad">below</span>') : "") + "</td></tr>";
     }).join("");
 
-    el.innerHTML = '<div class="x-wrap">' + (suites().length ? '<a class="x-muted x-small" href="#/tests" id="allSuites">← All tests</a><br>' : "") + '<span class="x-pill"><span class="x-dot"></span>CCAR-F · Unofficial practice</span><h1 class="x-h1">' + esc(suiteId && suiteOf(suiteId) ? suiteOf(suiteId).title : "Practice exams") + '</h1>' +
-      '<p class="x-lead">Scenario-based tests modeled on the CCAR-F exam guide. Answer options are length-balanced and shuffled each attempt. Every answer feeds the domain accuracy below, so you always know what to drill.</p>' +
-      '<p class="x-muted x-small" style="margin:-16px 0 24px">Independent study material written from the public CCAR-F exam guide. Not affiliated with or endorsed by Anthropic, and not actual exam content.</p>' +
+    el.innerHTML = '<div class="x-wrap">' + (suites().length ? '<a class="x-muted x-small" href="#/tests" id="allSuites">← All tests</a><br>' : "") + '<span class="x-pill"><span class="x-dot"></span>' + esc((suiteOf(suiteId) || {}).pill || "CCAR-F") + ' · Unofficial practice</span><h1 class="x-h1">' + esc(suiteId && suiteOf(suiteId) ? suiteOf(suiteId).title : "Practice exams") + '</h1>' +
+      '<p class="x-lead">' + ((suiteOf(suiteId) || {}).lead || "Scenario-based tests modeled on the CCAR-F exam guide.") + ' Answer options are length-balanced and shuffled each attempt. Every answer feeds the domain accuracy below, so you always know what to drill.</p>' +
+      '<p class="x-muted x-small" style="margin:-16px 0 24px">Independent study material written from the public exam guide. Not affiliated with or endorsed by Anthropic, and not actual exam content.</p>' +
       '<div class="x-row" style="margin-bottom:18px"><div class="x-seg"><button data-mode="exam" class="' + (mode === "exam" ? "on" : "") + '">Exam mode</button><button data-mode="study" class="' + (mode === "study" ? "on" : "") + '">Study mode</button></div>' +
       '<span class="x-muted x-small">' + (mode === "exam" ? "Timed (2 min per question), no feedback until you submit — like the real thing." : "Untimed. Check each answer and read the explanation immediately.") + "</span></div>" +
       (otherProg ? '<div class="x-card x-test" style="margin-bottom:14px"><div><b>In progress:</b> ' + esc(otherProg.label) + " — " + Object.keys(otherProg.ans).length + "/" + otherProg.items.length + ' answered</div><div class="x-row"><button class="btn primary" id="resume">Resume</button><button class="btn ghost" id="abandon">Discard</button></div></div>' : "") +

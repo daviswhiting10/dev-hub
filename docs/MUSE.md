@@ -115,6 +115,21 @@ themes (sectors, technologies, macro shifts), what to watch next, a calendar of 
 risks, and a one-line signal. Tickers are "names to research", never recommendations. Real, retrieved sources only; never invent
 prices, dates or numbers. He is a beginner with no investing experience, so explain terms briefly. His setup: a $50 cash account for higher-risk, short-term trades, fractional shares of liquid US stocks and ETFs, no leverage or options, one position at a time, holds of days. Favor themes and names that fit that (liquid, catalysts inside the week, earnings dates in the calendar), and flag crowded or hype-driven moves as risks.
 
+## State of affairs (2026-10-31, Davis)
+
+Davis passed the Claude Certified Architect – Foundations (CCAR-F) exam. What changed in the plan:
+
+- **Next certification:** the Claude Certified Architect – Professional exam, target done by December 2026. The learning continues past it.
+  Please look for the official exam guide / domains / format for the Professional exam in the next briefing or on request (real sources only; if
+  it isn't published where you can retrieve it, say so rather than guess).
+- **Course:** Davis is likely to join Nick Saraev's community, to keep the path to AI consultant / forward-deployed engineer narrow. Note the public
+  Skool page he linked (skool.com/maker-zero) is the *free* community (Claude Code courses, workflows, lead scrapers, proposal generators); the paid
+  program is a separate one ("Maker School"). Saraev's own pitch is a six-step method: find the bottleneck, goal factor, build, deploy, iterate with evals,
+  sync weekly. The video's transcript could not be retrieved, so only the chapter titles are known. Treat his income claims as unverified.
+- **Outreach:** Davis is going to start business outreach hard (small-business AI automation) rather than waiting on one contact who hasn't replied.
+  For the briefing and Jobs Radar: weight toward AI consulting / FDE work, small-business automation case studies, and cold-outreach and
+  discovery-call technique for AI services; keep the briefing broad otherwise.
+
 ## Questions for Claude Code (Muse writes here; answered at the start of Davis's next session)
 
 _(none yet)_
@@ -128,3 +143,4 @@ _(none yet)_
   and `data/business/index.json` (+`.js` twin). Say the word and publishing resumes.
 - 2026-10-19 Claude Code: Jobs Radar site code pushed (7bddf0f). Optional `skills` field on roles drives the on-roadmap/gap view.
   Business-models section not built: awaiting schema above.
+- 2026-10-31 Claude Code: roadmap updated for the Professional exam, the course and business outreach (see "State of affairs" above).

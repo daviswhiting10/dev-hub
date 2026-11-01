@@ -43,6 +43,8 @@ window.HUB_DATA.roadmap = {
     { id: "S3", phase: "P2", start: "2026-10-29", end: "2026-11-11", name: "Project 1 — Agentic",
       focus: "An agent that completes a real multi-step task.",
       milestones: [
+        { id: "r3-0", t: "Find the Claude Certified Architect – Professional exam guide and domains; book a date before Dec 31" },
+        { id: "r3-0b", t: "Outreach: send 10 messages to small businesses this sprint (note replies and objections)" },
         { id: "r3-1", t: "Pick the real multi-step task Project 1 will automate" },
         { id: "r3-2", t: "Build the agent loop with at least 3 tools", skill: ["Agent design", "Tool use"] },
         { id: "r3-3", t: "Write a small eval set and run it against the agent", skill: ["Evals"] },
@@ -52,6 +54,7 @@ window.HUB_DATA.roadmap = {
     { id: "S4", phase: "P2", start: "2026-11-12", end: "2026-11-25", name: "Project 2 — Retrieval",
       focus: "RAG over a real dataset or document set.",
       milestones: [
+        { id: "r4-0", t: "Outreach: 25 more messages, 2 discovery calls booked" },
         { id: "r4-1", t: "Choose the dataset / document set for Project 2" },
         { id: "r4-2", t: "Build embeddings + retrieval pipeline", skill: ["Embeddings", "RAG"] },
         { id: "r4-3", t: "Create a retrieval eval (questions with known answers) and record the score", skill: ["Evals"] },
@@ -61,6 +64,10 @@ window.HUB_DATA.roadmap = {
     { id: "S5", phase: "P2", start: "2026-11-26", end: "2026-12-09", name: "Project 3 + portfolio",
       focus: "Health-adjacent project — your edge — plus a portfolio page.",
       milestones: [
+        { id: "r5-0", t: "Pass the Claude Certified Architect – Professional exam (by Dec 31)",
+          cert: { name: "Claude Certified Architect – Professional", issuer: "Anthropic" },
+          resume: "Earned the Claude Certified Architect – Professional certification." },
+        { id: "r5-0b", t: "Outreach: run discovery calls and send the first freelance proposal" },
         { id: "r5-1", t: "Define the Project 3 user and problem (fitness / nutrition / client check-in)" },
         { id: "r5-2", t: "Build and test Project 3 with at least one real user", skill: ["Applied AI", "Domain expertise (health & fitness)"] },
         { id: "r5-3", t: "Ship Project 3 (mark it Shipped in Projects)" },

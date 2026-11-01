@@ -9,6 +9,11 @@ window.HUB_TESTS = {
   suites: [
     { id: "caf", title: "CAF practice exams (CCAR-F)",
       description: "Scenario-based practice for the Claude Certified Architect – Foundations (passed Oct 2026). Keep them for review, with domain accuracy and weak-spot drills.",
-      banks: [1, 2, 3, 4, 5, 6, 7, 8], questions: 230 }
+      banks: [1, 2, 3, 4, 5, 6, 7, 8], questions: 230 },
+    { id: "cap", title: "CCAR-P practice exams (Professional)",
+      description: "Standalone-item practice for the Claude Certified Architect – Professional: 63 questions per exam, weighted like the official guide (v1.0, July 2026), with domain accuracy and drills.",
+      pill: "CCAR-P", domains: [11, 12, 13, 14, 15, 16, 17],
+      lead: "Standalone-item tests modeled on the CCAR-P exam guide: 63 questions, seven domains, no scenarios.",
+      banks: [9], questions: 63 }
   ]
 };

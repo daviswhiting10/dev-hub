@@ -19,7 +19,7 @@ window.HUB_DATA.roadmap = {
   phases: [
     { id: "P1", name: "Close the gap", range: "Oct 15 – Oct 28, 2026", tests: "CAF practice (passed)",
       goal: "Pass the CAF retake. Done: passed Oct 2026." },
-    { id: "P2", name: "Build proof", range: "Oct 29 – Dec 9, 2026", tests: "Keep the CAF sharp",
+    { id: "P2", name: "Build proof", range: "Oct 29 – Dec 9, 2026", tests: "CCAR-P prep",
       goal: "Ship 3 projects (agentic, RAG, health-adjacent) plus write-ups. Learn Python basics, APIs, git, evals and deployment alongside." },
     { id: "P3", name: "Position", range: "Dec 10, 2026 – Jan 20, 2027",
       goal: "Resume reframe, LinkedIn rebuild, DC market map (gov contractors + health-tech startups), networking 2–3 conversations/week from January." },

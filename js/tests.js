@@ -33,6 +33,9 @@
   function suiteBanks(su) { var ids = (su.banks || []).map(String); return H.banks.filter(function (b) { return ids.indexOf(String(b.id)) >= 0; }); }
   // Domains shown in the accuracy panel: the active suite's `domains` list (CCAR-P), otherwise the Foundations ones.
   function panelDomains() { var su = suiteId && suiteOf(suiteId), want = su && su.domains; return Object.keys(DOMAINS).filter(function (d) { return want ? want.indexOf(+d) >= 0 : +d < 10; }); }
+  // Attempts and in-progress runs belong to a suite by the domains they covered (CCAR-F ids 1-5, CCAR-P 11-17), so each suite shows only its own history.
+  function attemptInSuite(a) { var want = panelDomains(); return Object.keys(a.dom || {}).some(function (d) { return want.indexOf(String(d)) >= 0; }); }
+  function runInSuite(at) { var ids = activeBanks().map(function (b) { return String(b.id); }); return !!at && at.items.some(function (r) { return ids.indexOf(String(r.b)) >= 0; }); }
   function activeBanks() { var su = suiteId && suiteOf(suiteId); return su ? suiteBanks(su) : H.banks; }
   function pool() {
     var out = [];
@@ -169,9 +172,10 @@
   }
 
   function renderHome(el) {
-    var st = H.store.tests, dst = H.domainStats(), weak = H.weakestDomains(), mode = st.mode || "exam";
+    var st = H.store.tests, dst = H.domainStats(), weak = H.weakestDomains().filter(function (d) { return panelDomains().indexOf(d) >= 0; }), mode = st.mode || "exam";
+    var suiteAttempts = st.attempts.filter(attemptInSuite);
     var cards = activeBanks().map(function (b) {
-      var hist = st.attempts.filter(function (a) { return a.bank === b.id; });
+      var hist = suiteAttempts.filter(function (a) { return a.bank === b.id; });
       var best = hist.length ? Math.max.apply(null, hist.map(function (a) { return a.pct; })) : null;
       var last = hist.length ? hist[hist.length - 1] : null;
       var scen = {}; b.questions.forEach(function (q) { if (q.s) scen[q.s] = 1; });
@@ -183,7 +187,7 @@
         '<div class="x-row">' + (prog ? '<button class="btn" id="resume">Resume (' + Object.keys(prog.ans).length + "/" + prog.items.length + ")</button>" : "") +
         '<button class="btn primary" data-bank="' + esc(b.id) + '">' + (prog ? "Restart" : "Start") + "</button></div></div>";
     }).join("");
-    var otherProg = st.inProgress && st.inProgress.kind !== "bank" ? st.inProgress : null;
+    var otherProg = st.inProgress && st.inProgress.kind !== "bank" && runInSuite(st.inProgress) ? st.inProgress : null;
 
     var dom = panelDomains().map(function (d) {
       var s = dst[d], p = s.rn ? H.pct(s.rc, s.rn) : null;
@@ -194,7 +198,7 @@
         '<div class="x-bar-row"><div class="x-track"><div class="x-fill" style="width:' + (p == null ? 0 : p) + "%;background:" + color + '"></div></div><button class="btn x-sm" data-drill="' + d + '">Drill 15</button></div></div>';
     }).join("");
     var missed = missedRefs().length;
-    var rows = st.attempts.slice(-8).reverse().map(function (a) {
+    var rows = suiteAttempts.slice(-8).reverse().map(function (a) {
       return "<tr><td>" + H.fmtDate(a.ts) + "</td><td>" + esc(a.label) + "</td><td>" + (a.mode === "exam" ? "Exam" : "Study") + "</td><td>" + a.correct + "/" + a.total + "</td><td><b>" + a.pct + "%</b></td><td>" +
         (a.kind === "bank" ? (scaled(a.pct / 100) >= 720 ? '<span class="x-badge ok">pass pace</span>' : '<span class="x-badge bad">below</span>') : "") + "</td></tr>";
     }).join("");
@@ -210,7 +214,7 @@
       '<div class="x-card"><h2>Domain accuracy — your weak spots</h2><div style="margin-top:10px">' + dom + "</div>" +
       '<div class="x-row" style="margin-top:14px"><button class="btn" data-drill="all">Mixed drill (15)</button><button class="btn" data-drill="missed"' + (missed ? "" : " disabled") + ">Review missed (" + missed + ")</button></div>" +
       '<p class="x-muted x-small" style="margin:12px 0 0">Passing is a scaled 720/1000 ≈ ' + PASS_PCT + "% correct here (100 + 900 × percent; Anthropic’s real scaling isn’t published), so aim for 75%+ in every domain. Drills pick questions you missed first, then ones you haven’t seen.</p></div>" +
-      '<div class="x-card" style="margin-top:14px"><h2>Score history</h2>' + H.trendSVG(st.attempts.slice(-12).map(function (a) { return a.pct; }), PASS_PCT) +
+      '<div class="x-card" style="margin-top:14px"><h2>Score history</h2>' + H.trendSVG(suiteAttempts.slice(-12).map(function (a) { return a.pct; }), PASS_PCT) +
       (rows ? '<table class="x-tbl"><thead><tr><th>Date</th><th>Test</th><th>Mode</th><th>Score</th><th>%</th><th></th></tr></thead><tbody>' + rows + "</tbody></table>" : "") + "</div>" +
       (H.warnings.length ? '<div class="x-card" style="margin-top:14px;border-color:var(--warn)"><b>Bank warnings</b><ul>' + H.warnings.map(function (w) { return "<li>" + esc(w) + "</li>"; }).join("") + "</ul></div>" : "") + "</div>";
 

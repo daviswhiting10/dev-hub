@@ -1,5 +1,13 @@
 [
   {
+    "date": "2026-11-03",
+    "headline": "Anthropic ships verifiable AI: FlashProve proofs plus Messages API threads; hiring data tempers the AI-jobs story"
+  },
+  {
+    "date": "2026-11-02",
+    "headline": "Mythos 5.5 looms over Anthropic's IPO countdown; OpenAI's raise shrinks; agents get their own git forge"
+  },
+  {
     "date": "2026-10-30",
     "headline": "Le Chonk goes open-weight; Gemini 4 Carbon tops the index; coding tools hit by security pile-up"
   },
@@ -9,7 +17,7 @@
   },
   {
     "date": "2026-10-19",
-    "headline": "Anthropic demos AI worms \u2014 then drafts the law to stop them; MiniMax joins the price war."
+    "headline": "Anthropic demos AI worms — then drafts the law to stop them; MiniMax joins the price war."
   },
   {
     "date": "2026-10-18",

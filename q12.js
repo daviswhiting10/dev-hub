@@ -1,4 +1,4 @@
-// Practice Bank 12 — CCAR-P Module 2 Drill: Enterprise Integration & Production (58 items)
+// Practice Bank 12 — CCAR-P Module 2 Drill: Enterprise Integration & Production (66 items)
 // Written from the Anthropic Partner Academy prep course "Enterprise Integration & Production" (Module 2): evals, POC to production, sizing and feasibility, integration patterns, A/B testing and observability.
 // The course says its pricing, caching and model details change; verify against platform.claude.com. Domains use ids 11–17 (see js/tests.js). Correct option(s) first; the app shuffles.
 window.EXAMS = window.EXAMS || [];
@@ -371,6 +371,36 @@ o:["Identity and SSO: user identity passed as a raw field in the user message is
 "Authorization and policy: a model that is too small applies access rules unreliably, so the fix is moving access decisions to a larger model tier",
 "Data handling and PII: an overlong system prompt is the main risk, because sensitive fields are exposed only through the prompt and never the message",
 "Compliance: a route that fails review can be corrected late with a settings change, because regulated constraints apply after the design is complete"],
-a:[0],e:"Each layer has its own failure. Identity passed in the user message is manipulable, so inject it server-side. Authorization must be enforced at the system layer, PII in any part of the request reaches logs in plaintext, and compliance failures force a redesign from scratch."}
+a:[0],e:"Each layer has its own failure. Identity passed in the user message is manipulable, so inject it server-side. Authorization must be enforced at the system layer, PII in any part of the request reaches logs in plaintext, and compliance failures force a redesign from scratch."},
+{d:14,q:"A regional insurer's Claude system extracts claim fields, summarizes the narrative for an adjuster, and flags possible fraud, under a few-second limit, a per-claim cost ceiling, no cross-claimant leakage, and no auto-deny. For its evaluation framework: Accuracy: field extraction (claimant, policy number, loss amount, date of loss). Which metric, grading method and reason fit best?",
+o:["Field-level exact match against a labeled golden set, graded by code, because each field has one unambiguous correct value that needs no interpretation",
+"An overall quality score from an LLM judge reading each extraction, because a judge can weigh partial matches the way an adjuster would in practice",
+"An adjuster satisfaction rating from human review of every extraction, because people know best whether a policy number or loss amount looks right",
+"Field completeness rate graded by code, counting populated fields without comparing values to the golden set, because that is cheap to run on every release"],
+a:[0],e:"Extraction of specific values has an unambiguous right answer, so code-based exact match against a golden set is the cheapest and most reliable grader. A judge or human is reserved for behavior that needs interpretation. Completeness counts fields without checking that they are right."},
+{d:14,q:"A regional insurer's Claude system extracts claim fields, summarizes the narrative for an adjuster, and flags possible fraud, under a few-second limit, a per-claim cost ceiling, no cross-claimant leakage, and no auto-deny. For its evaluation framework: Latency: response time against the “few seconds” requirement. Which metric, grading method and reason fit best?",
+o:["End-to-end p95 response time per claim, measured by code in the test harness and in production, because timing is a number and the tail breaks the limit",
+"Average model-call time only, measured by code, because the model is the one component the team controls and the rest of the pipeline is out of scope",
+"An LLM judge's rating of how responsive each reply feels, because perceived speed depends on the content and a judge can read the content of a reply",
+"Adjuster survey scores on perceived speed, collected weekly, because the people who use the system are the best judges of whether it feels fast enough"],
+a:[0],e:"Latency is measured, not interpreted: code-based timing on the whole request path, with the tail (p95) rather than the average because the limit is broken by slow cases. Judges and surveys add cost and interpretation to a quantity that is already a number."},
+{d:14,q:"A regional insurer's Claude system extracts claim fields, summarizes the narrative for an adjuster, and flags possible fraud, under a few-second limit, a per-claim cost ceiling, no cross-claimant leakage, and no auto-deny. For its evaluation framework: Safety: summary faithfulness and no auto-deny. Which grading methods fit the two behaviors?",
+o:["Faithfulness by an LLM judge calibrated against human-graded samples; no auto-deny by a code check that no output or action ever sets a denial",
+"Faithfulness by code-based string overlap with the narrative; no auto-deny by an LLM judge that reads each flag and decides whether it implies a denial",
+"Both by human review of every summary and every flag, because safety behaviors should only ever be graded by a person and never by an automated check",
+"Both by one LLM judge, because a judge covers every behavior and a single grader keeps the framework simple to run, report and maintain after launch"],
+a:[0],e:"Whether a summary is faithful needs interpretation, so use a model judge and calibrate it against human samples. No auto-deny is binary and checkable: assert in code that no output or downstream action records a denial. Human review of everything is the last resort, not the default."},
+{d:14,q:"A regional insurer's Claude system extracts claim fields, summarizes the narrative for an adjuster, and flags possible fraud, under a few-second limit, a per-claim cost ceiling, no cross-claimant leakage, and no auto-deny. For its evaluation framework: Security: no cross-claimant data leakage. Which metric, grading method and reason fit best?",
+o:["Seeded canary values from other claimants' records, checked by code for any appearance in an output, because leakage is a binary and searchable failure",
+"An LLM judge asked whether each summary seems to mention anyone else, because a judge can recognize indirect references that a text search would miss",
+"A human spot-check of one percent of summaries each month, because leakage is rare and a small sample is enough to show whether the rate is rising",
+"A system-prompt instruction not to mention other claimants, verified on a sample by a judge, because the instruction alone prevents the leak at the source"],
+a:[0],e:"Leakage is a binary failure you can test for deterministically: plant distinctive values from claimant A in the context of claimant B and assert they never appear. A prompt instruction is not a control, and samples miss rare events; isolation must also be enforced server-side."},
+{d:14,q:"A regional insurer's Claude system extracts claim fields, summarizes the narrative for an adjuster, and flags possible fraud, under a few-second limit, a per-claim cost ceiling, no cross-claimant leakage, and no auto-deny. For its evaluation framework: Cost: per-claim spend against the defined ceiling. Which metric, grading method and reason fit best?",
+o:["Cost per claim computed by code from logged input and output tokens at current pricing, with alerts above the ceiling, because token counts are exact",
+"The monthly invoice divided by claims processed, reviewed by finance each quarter, because the invoice is the authoritative record of what was spent",
+"Estimated cost from average prompt length at design time, checked once before launch, because claim sizes vary little from one claim to the next one",
+"A weekly human look at the billing dashboard to decide whether spend feels acceptable, because acceptable cost is a business judgment and not a metric"],
+a:[0],e:"Cost is arithmetic on logged token counts and current prices, so a code-based per-claim metric with an alert threshold catches overruns when they start. A quarterly invoice or one-off estimate finds them too late; the ceiling is a per-claim number, not a feeling."}
   ]
 });

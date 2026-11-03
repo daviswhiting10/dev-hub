@@ -14,6 +14,6 @@ window.HUB_TESTS = {
       description: "Standalone-item practice for the Claude Certified Architect – Professional: 63 questions per exam, weighted like the official guide (v1.0, July 2026), with domain accuracy and drills.",
       pill: "CCAR-P", explain: true, domains: [11, 12, 13, 14, 15, 16, 17],
       lead: "Standalone-item tests modeled on the CCAR-P exam guide: 63 questions, seven domains, no scenarios.",
-      banks: [9, 10, 11, 12], questions: 205 }
+      banks: [9, 10, 11, 12], questions: 210 }
   ]
 };

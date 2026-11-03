@@ -1,5 +1,7 @@
 // Index of available briefings, newest first. Maintained by agents/run.mjs.
 window.BRIEFING_INDEX = [
+  "2026-11-03",
+  "2026-11-02",
   "2026-10-31",
   "2026-10-30",
   "2026-10-29",
@@ -14,5 +16,5 @@ window.BRIEFING_INDEX = [
   "2026-10-19",
   "2026-10-18",
   "2026-10-17",
-  "2026-10-16"
+  "2026-10-16",
 ];

@@ -1,0 +1,68 @@
+// Business-models briefing 2026-11-02 — written by muse-cron. Data only.
+window.BUSINESS = window.BUSINESS || [];
+window.BUSINESS.push({
+  "date": "2026-11-02",
+  "headline": "Verification becomes the product: outcome pricing, take-rate math, and the verified solo playbook",
+  "models": [
+    {
+      "name": "Verified outcomes: price the result, let the buyer check",
+      "what_it_is": "AI agents are moving from seats to outcome-based pricing — Intercom Fin charges $0.99 per resolved outcome, Zendesk $1.50–$2.00 per resolution. The fight is over who defines 'resolved.'",
+      "why_emerging": "Vendors define the outcome and bill their own count; buyers are pushing back — 51% of orgs monitor only uptime, just 23% check answer quality (VentureBeat survey, June 2026). Trust needs buyer-side verification.",
+      "technique": "Agree the outcome definition and a baseline with the team doing the work before signing; the buyer samples billed resolutions monthly; a return-within-a-week reverses the charge. Wyrework calls it 'return on intelligence': a price is only real if the business can see and check it.",
+      "who": "Wyrework (CMO Song); pricing benchmarks from Intercom Fin and Zendesk",
+      "source": "Wyrework",
+      "url": "https://wyrework.ai/insights/outcome-based-pricing-for-ai-only-works-if-you-can-check-the-outcome",
+      "for_venture": "The venture's wedge is a verified record — price it per verified measurable or per testing day, with the club director (not the platform) as the verifier. The record becomes the billable unit."
+    },
+    {
+      "name": "The incumbent's full-stack march",
+      "what_it_is": "TeamSnap shipped across the whole stack in 2026: an Auto-Scheduler (July), standalone invoicing without registration (June), custom registration eligibility (Sept), mobile task assignment (Oct) — plus exclusive XbotGo AI camera streaming (April).",
+      "why_emerging": "The incumbent's moat is no longer one feature — it is the release train. Every quarter it absorbs another adjacent job (scheduling, payments, video), raising the bar for point tools.",
+      "technique": "Watch the launch-notes cadence, not the marketing; each release closes a wedge a challenger might have used. Compete where the incumbent is not shipping — or partner into its gaps.",
+      "who": "TeamSnap (TeamSnap ONE); XbotGo (exclusive camera partner)",
+      "source": "TeamSnap",
+      "url": "https://teamsnapone.launchnotes.io/",
+      "for_venture": "TeamSnap owns schedule/payments/comms — don't fight there. The development record (verified measurables, coach ratings) is the gap in its 2026 releases; wedge there, sequence to schedule/chat/payments later per the draft."
+    },
+    {
+      "name": "Platform payments: know your take rate",
+      "what_it_is": "Marketplaces monetize via take rates on payment flow. Stripe Connect is the default rail (2.9% + $0.30); Express/Custom add $2 per active account plus 0.25% per payout.",
+      "why_emerging": "As platforms scale, the payments margin becomes the business — PayFac-as-a-service (Finix) lets platforms keep 20–40 bps of processing margin instead of just layering an app fee on Stripe's blended rate.",
+      "technique": "Rule of thumb for leaving Stripe Connect: 500+ merchants, $100M+ annual GMV, or payments at 20%+ of revenue opportunity. Below that, launch speed beats margin. Track the effective fee rate (all fees divided by money in), not the sticker rate.",
+      "who": "Finix (PayFac-as-a-Service); Stripe Connect (default rail)",
+      "source": "ArtsylTech",
+      "url": "https://www.artsyltech.com/blog/best-stripe-connect-alternatives-saas-payments",
+      "for_venture": "Matches the draft's math: a Stripe Connect take (~2% on top of 2.9% + $0.30) as the retention layer, with ACH (0.8%, capped at $5) as the margin lever once club collections scale."
+    },
+    {
+      "name": "Learn-by-watching coworkers",
+      "what_it_is": "Munich startup Marble Cognition builds AI coworkers that learn a company's processes by watching employees do the work, then turn that into process maps agents can execute. Raised a $3.75M pre-seed co-led by Heartcore Capital and Seedcamp.",
+      "why_emerging": "The bottleneck for agent deployment is process knowledge locked in people's heads; recording work is cheaper than interviewing for it. It was a crowded week for agent funding (Minicor raised $3.8M for legacy-desktop agents last month).",
+      "technique": "Instrument the work (record screens and processes) → extract the process map → hand the map to agents that carry out the job. Sell the coworker, not the tool. Named customers so far: EGYM, Mutares, Enam.",
+      "who": "Marble Cognition ($3.75M pre-seed; Heartcore, Seedcamp)",
+      "source": "Tech Insider",
+      "url": "https://tech-insider.org/marble-cognition-3-75m-pre-seed-ai-coworkers-munich-2026/",
+      "for_venture": "Watch a coach run a testing day, codify the capture workflow into the platform — coach ratings from a voice memo, measurables from a stopwatch — so any club can run one without Davis in the room."
+    },
+    {
+      "name": "Boring tech + rented AI: the verified solo playbook",
+      "what_it_is": "Pieter Levels runs Photo AI as a solo founder: one 40,870-line index.php, one server, GPU APIs for the AI, paid-only from day one — $105K/mo revenue, $80K/mo profit (~76% margin), zero employees.",
+      "why_emerging": "Solo Founder Index (2,500 companies): AI-augmented solo founders generate ~3x the revenue and are 2x as likely to reach profitability; the tool stack costs $40–500/mo. The model reliably breaks around $50–150K MRR — but below that, one person is enough.",
+      "technique": "Boring stack (PHP + SQLite), no custom models (API AI via Replicate, now part of Cloudflare), no free tier, one server, brutal simplicity. As of Oct 2026 he builds it with Claude Code; the product has expanded into AI-agent video editing.",
+      "who": "Pieter Levels (Photo AI, ~$1.26M run rate solo)",
+      "source": "andrew.ooo",
+      "url": "https://andrew.ooo/posts/pieter-levels-photo-ai-solo-founder/",
+      "for_venture": "Don't build models — rent them (APIs), keep the stack boring, charge from day one. The venture's value is the verified record, not the infrastructure under it."
+    },
+    {
+      "name": "Agent infrastructure: vaults and forges for agent fleets",
+      "what_it_is": "As coding agents multiply, a picks-and-shovels layer is forming: Infisical's Agent Vault lets agents access systems without exposing raw keys; Entire (ex-GitHub CEO Dohmke) is an agent-first git forge replacing PRs with agent-scored 'Trails.'",
+      "why_emerging": "Agent swarms create new requirements — secret management per agent identity, session storage, review flows for machine-written code. Investors are funding the plumbing before the apps.",
+      "technique": "Sell to platform teams: privileged-access tooling priced per agent identity, and hosting purpose-built for agent sessions (codebase graphs to cut tokens, continuous memory across agents). Infisical's $40M Series B at a reported $600M valuation is the latest marker.",
+      "who": "Infisical ($40M Series B, $600M valuation); Entire (Thomas Dohmke)",
+      "source": "AI Agent Store",
+      "url": "https://aiagentstore.ai/ai-agent-news/topic/startups"
+    }
+  ],
+  "signal": "Verification is becoming the product: verified outcomes, verified records, verified economics. The winners sell what the buyer can check — and price it per check."
+});

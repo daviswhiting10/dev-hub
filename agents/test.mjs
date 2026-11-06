@@ -40,7 +40,8 @@ await t("dry run writes a valid briefing, updates index, applies only valid stra
   assert.equal(unsourced.confidence, "low", "high confidence without sources is downgraded");
   assert.ok(b.items.every((i) => /^2026-10-18-\d+$/.test(i.id) || i.id === "2026-10-18-w"));
   const idx = loadWindowFile("data/briefings/index.js", r.root).BRIEFING_INDEX;
-  assert.ok(idx.includes("2026-10-18") && idx.includes("2026-10-16")); // real briefings newer than the test date may already be in the repo's index
+  assert.ok(idx.includes("2026-10-18"), "dry-run date added to index");
+  assert.ok(idx.length >= 2, "existing index entries preserved"); // never assert on a specific old date: the index is capped at 60 entries (run.mjs), so old dates age out
   assert.deepEqual(J(idx), J([...idx].sort().reverse()), "index is newest first");
   const s = loadWindowFile("data/strategy.js", r.root).HUB_STRATEGY;
   assert.equal(s.version, v0 + 1); assert.equal(r.applied.length, 1);

@@ -1,0 +1,69 @@
+// Emerging business models briefing 2026-11-06. Maintained by muse-cron.
+window.BUSINESS = window.BUSINESS || [];
+window.BUSINESS.push({
+  "date": "2026-11-06",
+  "headline": "Youth-sports AI raises $16.5M, TeamSnap takes the award, and agent commerce gets its first receipts",
+  "models": [
+    {
+      "for_venture": "Otto Pilot is the exact shape of the venture's future assistant — but it answers admin questions, not development data. The verified measurables wedge is still unclaimed; move before an AI assistant claims the whole back office.",
+      "name": "Otto Sport AI: $16.5M for the AI youth-club assistant",
+      "source": "SGB Media Online",
+      "technique": "Ship the assistant as the wedge: train it on the club's own website and knowledge base so it answers real parent questions from day one, then sell the full management suite behind it. Offer it standalone too, so a club can adopt the AI without switching platforms — and meet it at renewal time.",
+      "url": "https://sgbonline.com/otto-sport-ai-raises-16-5-million-in-seed-funding/",
+      "what_it_is": "Otto Sport AI, a youth sports management platform, raised a $16.5M seed co-led by Mamba Growth Equity and Rally Ventures. Its Otto Pilot is an AI chat assistant trained on the club's own website and knowledge base, also sold as a standalone product.",
+      "who": "Otto Sport AI; Mamba Growth Equity, Rally Ventures",
+      "why_emerging": "Youth sports is the next vertical where an AI assistant earns its keep: every club runs on the same repetitive admin — schedules, questions, forms — and the assistant that knows the club's own documents answers before a volunteer has to."
+    },
+    {
+      "for_venture": "The incumbent's moat is volume and bundling, not development data. The wedge stays the same: be the record TeamSnap ONE doesn't keep, adopted alongside it.",
+      "name": "TeamSnap ONE takes Youth Sports Platform of the Year",
+      "source": "Buying Sandlot",
+      "technique": "Bundle everything into one platform and let the usage numbers do the selling: 14M messages and 1.2M scheduled games are proof of lock-in no feature list can match. Collect the awards as third-party validation, then sell the bundle to the next league that wants the same completeness.",
+      "url": "https://www.buyingsandlot.com/p/youth-sport-leaders-clean-up-with-new-tech-awards",
+      "what_it_is": "TeamSnap ONE was named Youth Sports Platform of the Year at the inaugural SportsTech Breakthrough Awards, announced Nov 3. TeamSnap said organizations sent over 14 million messages and scheduled over 1.2 million games and practices in the platform's first year.",
+      "who": "TeamSnap; SportsTech Breakthrough Awards",
+      "why_emerging": "The incumbents are consolidating their story around one bundled platform, and the industry is now handing out awards for it — scale and completeness are the moat, and every rival pitch gets measured against the bundle."
+    },
+    {
+      "for_venture": "Consolidation leaves seams: every spin-out and acquisition is a renewal-time switching window. The venture's pitch lands best when a club's incumbent is mid-reshuffle.",
+      "name": "PlayMetrics spins out eCamps to sharpen its focus",
+      "source": "Dealroom",
+      "technique": "Buy the category, then prune it: acquire the broad asset, keep the core operations software, and spin out the adjacent business to a buyer who wants it. The discipline is in the focus — one platform, one customer — even if it means giving up revenue lines.",
+      "url": "https://dealroom.co/news/170018-ecamps-spins-out-of-playmetrics-in-ceo-led-buyout/",
+      "what_it_is": "PlayMetrics spun out eCamps, its youth sports camps and showcases business, in a CEO-led buyout announced Nov 5, on undisclosed terms. The carve-out sharpens its focus on core youth sports operations software, after it acquired substantially all SportsEngine assets in May 2026.",
+      "who": "PlayMetrics; eCamps (CEO Charley Biggs)",
+      "why_emerging": "Consolidation creates seams: the acquirer sheds the parts that don't fit the core platform, and each carve-out is a moment when the customers of the spun-out business — and the acquired one — re-evaluate what they run on."
+    },
+    {
+      "for_venture": "Agent commerce is real infrastructure with tiny demand: build payments for humans first and treat agent checkout as a later layer on the same Stripe Connect rails.",
+      "name": "Agent commerce gets its first receipts",
+      "source": "FourWeekMBA",
+      "technique": "Build the rails first and measure honestly: Firmly plugs checkout into the agent's channel, Snaplii pre-funds a wallet the agent can spend from, and both sell to merchants and platforms, not consumers. The honest metric is agent transactions, and Uber just published the first one — tiny, but now a baseline.",
+      "url": "https://fourweekmba.com/ai-agent-shopping-firms-raise-30m-as-uber-logs-4-agent-rides/",
+      "what_it_is": "Two agent-commerce startups each raised $15M on Nov 5: Firmly (Series A, J.P. Morgan Payments, Mastercard) extends merchant checkout into AI assistants; Snaplii is a prepaid wallet for agents. Uber's CFO counted four agent-booked rides in a Halloween week of ~320M trips.",
+      "who": "Firmly; Snaplii; Uber",
+      "why_emerging": "The infrastructure for agents to buy things is being funded before the demand exists — the bet is that checkout and wallets are the toll booth, and the receipts so far (four Uber rides) show how early it still is."
+    },
+    {
+      "for_venture": "When the club platform's agent starts doing admin work, it needs a governed computer to act through — Phaze is the picks-and-shovels version of that layer; note the audit-log design.",
+      "name": "Phaze: remote computers for people — and agents",
+      "source": "Startupbooted",
+      "technique": "Sell the access layer, not the agent: one remote machine, reachable by a person or by software, with the agent inheriting the user's own permissions and every action audit-logged. Ship one worked example — an IT support agent that fixes what it can and escalates the rest — and let IT teams see the guardrails before the autonomy.",
+      "url": "https://www.startupbooted.com/phaze-raises-8-75m-seed-led-by-a16z-to-give-people-and-ai-agents-access-to-computers",
+      "what_it_is": "Phaze, a remote computing startup from the team behind Parsec, raised an $8.75M seed led by a16z. It gives people and AI agents remote access to powerful computers, and its MCP server lets agents operate a machine under enterprise sign-in, directory sync and audit logs.",
+      "who": "Phaze (ex-Parsec founders); a16z, Indie, NextView",
+      "why_emerging": "Agents need a computer to act through, and the enterprise won't hand them the keys to a laptop — the remote, permissioned workstation is the safe middle ground, and the Parsec team's pedigree makes it credible."
+    },
+    {
+      "for_venture": "Agents touching club data will need the same guardrails Sentra sells enterprises: the verified record is only trustworthy if access is logged and scoped. Build that in from day one.",
+      "name": "Sentra's $150M: guarding data from autonomous agents",
+      "source": "TechStartups",
+      "technique": "Sell the control plane for the agent era: identify sensitive information, manage access rights, and integrate with the enterprise systems agents already touch. The pitch is prevention, not cleanup — reduce the risk before an autonomous agent leaks something a human never would have.",
+      "url": "https://techstartups.com/2026/11/05/startup-funding-news-today-november-5-2026-bit-bio-sand-ai-sentra-pliant-more/",
+      "what_it_is": "Sentra, a cybersecurity startup, raised $150M led by Capital One Ventures to protect enterprise data from increasingly autonomous AI agents. As agents analyze customer information and run operations, Sentra controls what sensitive data they can reach before exposure happens.",
+      "who": "Sentra; Capital One Ventures",
+      "why_emerging": "The governance gap from yesterday's briefing is now a $150M funding line: enterprises deployed agents first and are now buying the controls — access, identity, data protection — after the fact."
+    }
+  ],
+  "signal": "Consolidation sharpens the incumbents while AI assistants move into the back office — the opening is still the data nobody else keeps: the verified development record."
+});

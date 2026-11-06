@@ -30,8 +30,10 @@ await t("dry run writes a valid briefing, updates index, applies only valid stra
   const b = loadWindowFile("data/briefings/2026-10-18.js", r.root).BRIEFINGS[0];
   assert.equal(b.date, "2026-10-18");
   assert.match(b.tldr, /Fixture tl;dr/); assert.match(b.for_you, /transition/);
-  const titles = b.items.map((i) => i.title);
-  assert.ok(!titles.includes("How your daily briefing works"), "duplicate of a recent title must be dropped");
+  // NOTE: dedup is covered by the cleanBriefing unit test below. This test used to assert the
+  // fixture title "How your daily briefing works" was dropped, but that only held while the
+  // 2026-10-16 briefing (the only one containing it) was among the 14 most recent files —
+  // once it aged out, the assertion failed and blocked every workflow run.
   const first = b.items[0];
   assert.deepEqual(J(first.sources.map((s) => s.url)), ["https://example.com/fixture-agents-story"], "only URLs the researcher retrieved may remain");
   const unsourced = b.items.find((i) => /Unsourced/.test(i.title));
@@ -54,6 +56,15 @@ await t("dry run writes a valid briefing, updates index, applies only valid stra
   // repo data untouched by dry runs
   const real = path.join(ROOT, "data/briefings/2026-10-18.js"); // a real briefing for this date may exist; the dry run must not have changed it
   if (fs.existsSync(real)) assert.ok(!/Fixture tl;dr/.test(fs.readFileSync(real, "utf8")), "dry run must not write into the repo");
+});
+
+await t("cleanBriefing drops titles duplicated from recent briefings", () => {
+  const raw = { items: [
+    { title: "How your daily briefing works", summary: "s", why: "w", tags: [], confidence: "medium", sources: [{ title: "t", url: "https://example.com/a" }] },
+    { title: "Something brand new", summary: "s", why: "w", tags: [], confidence: "medium", sources: [{ title: "t", url: "https://example.com/b" }] },
+  ]};
+  const out = cleanBriefing(raw, { date: "2026-10-18", allowedUrls: new Set(["https://example.com/a", "https://example.com/b"]), limits: { maxItems: 8 }, recentTitles: ["How your daily briefing works"] });
+  assert.deepEqual(J(out.items.map((i) => i.title)), ["Something brand new"], "duplicate title dropped, new title kept");
 });
 
 await t("critique limits: at most 5 changes, query caps, ops allow-list", () => {

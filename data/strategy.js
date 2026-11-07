@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 10,
-  "updated": "2026-10-31",
+  "version": 11,
+  "updated": "2026-11-07",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -67,7 +67,8 @@ window.HUB_STRATEGY = {
         "AI agent incident security report",
         "AI agents escaping control or misbehaving case study",
         "AI agent sandbox escape disclosure lab incident regulator advisory",
-        "AI agent security survey primary research unauthorized actions enterprise CISO report"
+        "AI agent security survey primary research unauthorized actions enterprise CISO report",
+        "AI agent sandbox isolation open source project foundation announcement primary source"
       ]
     },
     {
@@ -269,6 +270,19 @@ window.HUB_STRATEGY = {
           "beat": "dev-tools",
           "value": "Claude Code latest release notes changelog github.com anthropics claude-code",
           "reason": "A version-agnostic query will keep picking up new releases such as 2.1.310 without manual edits, and the reader has no feedback yet that would justify a bigger change."
+        }
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "version": 11,
+      "summary": "The briefing has only 2 items, below the minItems of 5, so it is thin. Both items fit the agent-safety and frontier-labs interests. The first is a follow-up to the recent OpenAI sandbox-escape items, so it is only partly new. Both items rely on secondary, medium or low confidence sourcing. There is ",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "agent-safety",
+          "value": "AI agent sandbox isolation open source project foundation announcement primary source",
+          "reason": "Both of today's items came from secondary coverage with medium or low confidence, and the recent titles already repeat the OpenAI sandbox-escape story, so a query aimed at primary announcements may fi"
         }
       ]
     }

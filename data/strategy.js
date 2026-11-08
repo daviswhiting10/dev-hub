@@ -2,8 +2,8 @@
 // (add/drop queries and sources, reweight topics; max 5 changes per run) and logs every change in `changelog`.
 // Everything is committed to git, so any change is diffable and revertable.
 window.HUB_STRATEGY = {
-  "version": 11,
-  "updated": "2026-11-07",
+  "version": 12,
+  "updated": "2026-11-08",
   "limits": {
     "maxItems": 8,
     "minItems": 5,
@@ -21,7 +21,8 @@ window.HUB_STRATEGY = {
         "new MCP servers and agent frameworks",
         "multi-agent systems production lessons",
         "agent framework release OpenAI Agents SDK LangGraph new version production",
-        "MCP server or agent framework release this week github.com"
+        "MCP server or agent framework release this week github.com",
+        "MCP specification update or new agent framework release November 2026 github.com modelcontextprotocol"
       ]
     },
     {
@@ -68,7 +69,8 @@ window.HUB_STRATEGY = {
         "AI agents escaping control or misbehaving case study",
         "AI agent sandbox escape disclosure lab incident regulator advisory",
         "AI agent security survey primary research unauthorized actions enterprise CISO report",
-        "AI agent sandbox isolation open source project foundation announcement primary source"
+        "AI agent sandbox isolation open source project foundation announcement primary source",
+        "METR OR Redwood Research report AI agent monitoring evaluation findings"
       ]
     },
     {
@@ -283,6 +285,25 @@ window.HUB_STRATEGY = {
           "beat": "agent-safety",
           "value": "AI agent sandbox isolation open source project foundation announcement primary source",
           "reason": "Both of today's items came from secondary coverage with medium or low confidence, and the recent titles already repeat the OpenAI sandbox-escape story, so a query aimed at primary announcements may fi"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-08",
+      "version": 12,
+      "summary": "Briefing has only 4 items, below the minItems of 5. Two items are headline-only, low-confidence WSJ pieces. The OpenAI sandbox item partly repeats earlier coverage, since the Oct. 29 post and the 30-minute replay were already in recent titles. The Claude Code release item is relevant and fresh. Noth",
+      "changes": [
+        {
+          "op": "add_query",
+          "beat": "agents-mcp",
+          "value": "MCP specification update or new agent framework release November 2026 github.com modelcontextprotocol",
+          "reason": "Only one agents-mcp-tagged item (a Claude Code build) appeared today, which is thin for a weight-3 beat."
+        },
+        {
+          "op": "add_query",
+          "beat": "agent-safety",
+          "value": "METR OR Redwood Research report AI agent monitoring evaluation findings",
+          "reason": "Today's safety item turned on outside critiques from METR and Redwood, and the briefing only reported them secondhand."
         }
       ]
     }

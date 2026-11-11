@@ -1,5 +1,6 @@
 // Index of business-models briefings, newest first. Maintained by muse-cron.
 window.BUSINESS_INDEX = [
+  {"date": "2026-11-11", "headline": "ChatGPT becomes a storefront, agents learn to query the whole database, and governance gets funded"},
   {"date": "2026-11-06", "headline": "Youth-sports AI raises $16.5M, TeamSnap takes the award, and agent commerce gets its first receipts"},
   {"date": "2026-11-05", "headline": "Stripe Connect dues, facility-operator wedges, and vertical agents: the money follows the workflow"},
   {"date": "2026-11-04", "headline": "Free platforms, verified identities, and selling proof: youth-sports monetization moves plus the indie outcome playbook"},
@@ -12,3 +13,4 @@ window.BUSINESS_INDEX = [
   {"date": "2026-10-21", "headline": "Agents go to work: marketing to machines, robots as APIs, and selling outcomes not seats."},
   {"date": "2026-10-20", "headline": "The agent economy is splitting into sellable layers: eyes, memory, and evals."},
 ];
+

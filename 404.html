@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dev Hub</title>
+<script>
+  // GitHub Pages serves this file for any path that doesn't exist. Dev Hub routes with #/view, so a path such as
+  // /dev-hub/tests (from an old bookmark, history entry or typed URL) is redirected to /dev-hub/#/tests.
+  (function () {
+    var m = location.pathname.match(/^(.*?\/dev-hub\/)([^/]+)\/?$/);
+    var views = ["today", "tests", "roadmap", "map", "whiteboard", "trading"];
+    if (m && views.indexOf(m[2]) >= 0) location.replace(m[1] + "#/" + m[2] + location.search);
+    else if (/^(.*?\/dev-hub\/)/.test(location.pathname)) document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("home").href = location.pathname.match(/^(.*?\/dev-hub\/)/)[1];
+    });
+  })();
+</script>
+<style>body{font:16px/1.5 Georgia,serif;background:#FBFAF6;color:#1C1A16;margin:0;padding:64px 16px;text-align:center}a{color:#9E2318}</style>
+</head>
+<body>
+<h1>Page not found</h1>
+<p><a id="home" href="/dev-hub/">Go to Dev Hub</a></p>
+</body>
+</html>

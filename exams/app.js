@@ -41,7 +41,7 @@
   // The key is derived in the browser from the password with PBKDF2-SHA-256; nothing is stored or sent anywhere.
   function b64(s) { var bin = atob(s), out = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out; }
   function unlock(bundleUrl) {
-    app.innerHTML = '<div class="x-wrap"><span class="x-pill"><span class="x-dot"></span>CCAR-P · Private practice exams</span><h1 class="x-h1">Locked</h1>' +
+    app.innerHTML = '<div class="x-wrap"><a class="x-muted x-small" href="../#/tests">← Dev Hub</a><br><span class="x-pill"><span class="x-dot"></span>CCAR-P · Private practice exams</span><h1 class="x-h1">Locked</h1>' +
       '<p class="x-lead">The questions are encrypted. Enter the password to decrypt them in this tab. Nothing is saved; reloading the page locks it again.</p>' +
       '<form id="unlockForm" class="x-row" autocomplete="off"><input id="pw" type="password" autocomplete="off" spellcheck="false" aria-label="Password" ' +
       'style="font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:2px;background:var(--panel);color:var(--text);min-width:260px;flex:1;max-width:420px">' +
@@ -62,7 +62,7 @@
           return new Response(stream).json();
         });
       }).then(function (data) {
-        pass = null; setExams(data.exams); home();
+        pass = null; setExams(data.exams); home("replace");
       }).catch(function (err) {
         pass = null; btn.disabled = false; msg.classList.add("warn");
         msg.textContent = err && err.name === "OperationError" ? "Wrong password." : "Could not unlock: " + (err && err.message || err);
@@ -84,37 +84,50 @@
       }));
     }).then(function (list) {
       setExams(list);
-      home();
+      home("replace");
     }).catch(function (err) {
       app.innerHTML = '<div class="x-wrap"><h1 class="x-h1">Could not load the exams</h1><p class="x-lead">' + esc(err.message) + "</p></div>";
     });
   }
 
   // ---------------- home ----------------
-  function home() {
+  // Each screen is a browser-history entry, so Back steps through the exam instead of leaving the page.
+  function nav(st, replace) {
+    var url = "#" + st.s + (st.i != null ? "-" + (st.i + 1) : "");
+    try { history[replace ? "replaceState" : "pushState"](st, "", url); } catch (e) { /* file:// */ }
+  }
+  var hosted = !!document.documentElement.getAttribute("data-bundle");
+  function hubLink() { return hosted ? '<a class="x-muted x-small" href="../#/tests">← Dev Hub</a><br>' : ""; }
+
+  function home(fromPop) {
     stopTimer(); run = null; window.scrollTo(0, 0);
+    if (fromPop !== true) nav({ s: "home" }, fromPop === "replace");
     var cards = exams.map(function (ex, i) {
       var doms = {}; ex.questions.forEach(function (q) { doms[q.domain] = (doms[q.domain] || 0) + 1; });
       var tags = Object.keys(doms).sort().map(function (d) { return '<span class="x-tag">D' + d + " · " + doms[d] + "</span>"; }).join("");
       return '<div class="x-card x-test"><div><h2>' + esc(ex.title) + '</h2><div class="x-muted x-small">' + esc(ex.subtitle || "") + '</div><div class="x-tags"><span class="x-tag">' + ex.questions.length + " questions</span>" + tags + "</div></div>" +
         '<button class="btn primary" data-start="' + i + '">Start</button></div>';
     }).join("");
-    app.innerHTML = '<div class="x-wrap"><span class="x-pill"><span class="x-dot"></span>CCAR-P · Unofficial practice · Private</span>' +
+    app.innerHTML = '<div class="x-wrap">' + hubLink() + '<span class="x-pill"><span class="x-dot"></span>CCAR-P · Unofficial practice · Private</span>' +
       '<h1 class="x-h1">Practice exams</h1>' +
       '<p class="x-lead">Modeled on the Claude Certified Architect – Professional exam: 63 standalone items, multiple choice and multiple response, 120 minutes.</p>' +
-      '<div class="x-row" style="margin-bottom:18px"><span class="x-muted x-small">Timer</span><div class="x-seg" id="timerSeg"><button data-t="1" class="' + (timerOn ? "on" : "") + '">120 min</button><button data-t="0" class="' + (timerOn ? "" : "on") + '">Off</button></div></div>' +
+      '<div class="x-row" style="margin-bottom:6px"><span class="x-muted x-small">Mode</span><div class="x-seg" id="timerSeg"><button data-t="1" class="' + (timerOn ? "on" : "") + '">Exam · 120 min</button><button data-t="0" class="' + (timerOn ? "" : "on") + '">Practice · no timer</button></div></div>' +
+      '<p class="x-muted x-small" style="margin:0 0 18px">' + (timerOn ? "Exam mode: timed, and answers are revealed only in the review after you submit." : "Practice mode: no timer, and each answer is checked as soon as you choose it, with the rationale.") + "</p>" +
       '<div class="x-cards">' + (cards || '<div class="x-card">No exams in data/exams.json yet.</div>') + "</div>" +
       '<div class="x-note">Scoring here is all-or-nothing per item and reported as percent correct. The real exam reports a <b>scaled score from 100 to 1,000 with a pass mark of 720</b>, so the percent shown here is only a rough estimate of readiness.</div>' +
       '<p class="x-muted x-small">Progress is kept in memory only. Reloading or closing this tab ends the attempt.</p></div>';
-    app.querySelectorAll("[data-t]").forEach(function (b) { b.onclick = function () { timerOn = b.getAttribute("data-t") === "1"; home(); }; });
+    app.querySelectorAll("[data-t]").forEach(function (b) { b.onclick = function () { timerOn = b.getAttribute("data-t") === "1"; home("replace"); }; });
     app.querySelectorAll("[data-start]").forEach(function (b) { b.onclick = function () { start(exams[+b.getAttribute("data-start")]); }; });
   }
 
   // ---------------- running an exam ----------------
   function start(ex) {
+    paused = null;
     run = { ex: ex, i: 0, picks: ex.questions.map(function () { return []; }), flags: ex.questions.map(function () { return false; }),
-      started: Date.now(), limit: timerOn ? EXAM_MINUTES * 60 : 0, done: false, gridOpen: false, hint: "" };
+      started: Date.now(), limit: timerOn ? EXAM_MINUTES * 60 : 0, done: false, gridOpen: false, hint: "",
+      practice: !timerOn, revealed: ex.questions.map(function () { return false; }) };
     if (run.limit) startTimer();
+    nav({ s: "q", i: 0 });
     question();
   }
   function startTimer() {
@@ -131,21 +144,35 @@
     var ex = run.ex, q = ex.questions[run.i], n = ex.questions.length, picked = run.picks[run.i], k = need(q);
     var answered = run.picks.filter(function (p) { return p.length; }).length;
     var left = run.limit ? run.limit - (Date.now() - run.started) / 1000 : 0;
+    var shown = run.practice && run.revealed[run.i];
     var opts = q.options.map(function (o, j) {
       var on = picked.indexOf(j) >= 0;
+      if (shown) {
+        var isC = q.correct.indexOf(j) >= 0;
+        return '<div class="x-opt' + (isC ? " correct" : on ? " wrong" : "") + '" aria-disabled="true"><span class="x-key">' + LETTERS[j] + '</span><span class="x-txt">' + esc(o) + (on ? '<span class="x-yours">your answer</span>' : "") + "</span></div>";
+      }
       return '<button class="x-opt' + (on ? " sel" : "") + '" data-o="' + j + '" role="' + (k > 1 ? "checkbox" : "radio") + '" aria-checked="' + on + '"><span class="x-key">' + LETTERS[j] + '</span><span class="x-txt">' + esc(o) + "</span></button>";
     }).join("");
+    var ok = shown && isRight(q, picked);
+    var feedback = shown ? '<div class="x-explain"><div class="x-verdict ' + (ok ? "ok" : "bad") + '">' + (ok ? "Correct" : "Incorrect · correct answer: " + q.correct.map(function (c) { return LETTERS[c]; }).join(", ")) + "</div>" + esc(q.rationale) + "</div>" : "";
+    var tally = "";
+    if (run.practice) {
+      var seen = 0, good = 0; run.revealed.forEach(function (r, j) { if (r) { seen++; if (isRight(ex.questions[j], run.picks[j])) good++; } });
+      tally = '<span class="x-timer">' + good + " / " + seen + " correct</span>";
+    }
     var grid = run.gridOpen ? '<div class="x-card" style="margin-top:22px"><div class="x-row between"><b>All questions</b><span class="x-muted x-small">' + answered + " of " + n + " answered · " + run.flags.filter(Boolean).length + ' flagged</span></div><div class="x-grid">' +
-      ex.questions.map(function (_, j) { return '<button class="x-cell' + (run.picks[j].length ? " ans" : "") + (run.flags[j] ? " flag" : "") + (j === run.i ? " cur" : "") + '" data-go="' + j + '">' + (j + 1) + "</button>"; }).join("") +
+      ex.questions.map(function (qq, j) {
+        var st = run.practice && run.revealed[j] ? (isRight(qq, run.picks[j]) ? " r-ok" : " r-bad") : (run.picks[j].length ? " ans" : "");
+        return '<button class="x-cell' + st + (run.flags[j] ? " flag" : "") + (j === run.i ? " cur" : "") + '" data-go="' + j + '">' + (j + 1) + "</button>"; }).join("") +
       '</div><div class="x-legend"><span style="--sw:var(--panel2)">Answered</span><span style="--sw:#fff">Unanswered</span><span style="--sw:var(--warn)">Flagged</span></div></div>' : "";
     app.innerHTML =
       '<div class="x-topbar"><div class="x-inner"><b class="x-small">' + esc(ex.title) + '</b><span class="x-muted x-small">Question ' + (run.i + 1) + " of " + n + "</span><span class=\"x-spacer\"></span>" +
-      (run.limit ? '<span class="x-timer' + (left < 600 ? " low" : "") + '" id="timer">' + fmt(left) + "</span>" : "") +
-      '<button class="btn small ghost" id="gridBtn">' + (run.gridOpen ? "Hide grid" : "Question grid") + '</button><button class="btn small" id="submitBtn">Submit exam</button></div>' +
+      (run.limit ? '<span class="x-timer' + (left < 600 ? " low" : "") + '" id="timer">' + fmt(left) + "</span>" : tally) +
+      '<button class="btn small ghost" id="gridBtn">' + (run.gridOpen ? "Hide grid" : "Question grid") + '</button><button class="btn small" id="submitBtn">' + (run.practice ? "End practice" : "Submit exam") + "</button></div>" +
       '<div class="x-inner x-thin"><div class="x-progress"><div style="width:' + (answered / n * 100) + '%"></div></div></div></div>' +
       '<div class="x-wrap"><div class="x-qtext">' + esc(q.stem) + "</div>" +
       '<p class="x-instr' + (run.hint ? " warn" : "") + '">' + (run.hint || (k > 1 ? "Select " + (WORDS[k] || k) + " · " + picked.length + " of " + k + " selected" : "Select ONE")) + "</p>" +
-      '<div class="x-opts">' + opts + "</div>" +
+      '<div class="x-opts">' + opts + "</div>" + feedback +
       '<div class="x-navrow"><button class="btn" id="prevBtn"' + (run.i ? "" : " disabled") + '>← Previous</button>' +
       '<button class="btn x-flagbtn' + (run.flags[run.i] ? " on" : "") + '" id="flagBtn">' + (run.flags[run.i] ? "⚑ Flagged" : "⚐ Flag for review") + "</button>" +
       (run.i < n - 1 ? '<button class="btn primary" id="nextBtn">Next →</button>' : '<button class="btn primary" id="endBtn">Finish</button>') + "</div>" +
@@ -162,22 +189,23 @@
     if (byId("endBtn")) byId("endBtn").onclick = confirmSubmit;
   }
   function byId(id) { return document.getElementById(id); }
-  function go(j) { if (j < 0 || j >= run.ex.questions.length) return; run.i = j; question(); window.scrollTo(0, 0); }
+  function go(j, fromPop) { if (!run || j < 0 || j >= run.ex.questions.length) return; run.i = j; if (!fromPop) nav({ s: "q", i: j }); question(); window.scrollTo(0, 0); }
   function toggleFlag() { run.flags[run.i] = !run.flags[run.i]; question(); }
   function choose(j) {
     var q = run.ex.questions[run.i], p = run.picks[run.i], k = need(q), at = p.indexOf(j);
-    if (j >= q.options.length) return;
+    if (j >= q.options.length || (run.practice && run.revealed[run.i])) return;
     if (k === 1) run.picks[run.i] = at >= 0 ? [] : [j];
     else if (at >= 0) p.splice(at, 1);
     else if (p.length < k) p.push(j);
     else run.hint = "You can select only " + (WORDS[k] || k) + ". Clear one choice first.";
+    if (run.practice && run.picks[run.i].length === k) run.revealed[run.i] = true;   // practice: check as soon as the answer is complete
     question();
   }
 
   function confirmSubmit() {
     var un = run.picks.filter(function (p, j) { return p.length !== need(run.ex.questions[j]); }).length, fl = run.flags.filter(Boolean).length;
     var bg = document.createElement("div"); bg.className = "x-modal-bg";
-    bg.innerHTML = '<div class="x-modal" role="dialog" aria-modal="true"><h2>Submit the exam?</h2><p>' +
+    bg.innerHTML = '<div class="x-modal" role="dialog" aria-modal="true"><h2>' + (run.practice ? "End this practice session?" : "Submit the exam?") + "</h2><p>" +
       (un ? un + " question" + (un > 1 ? "s are" : " is") + " unanswered or incomplete (scored as wrong). " : "Every question is answered. ") +
       (fl ? fl + " flagged for review." : "") + '</p><div class="x-row"><button class="btn primary" id="yesBtn">Submit</button><button class="btn ghost" id="noBtn">Keep working</button></div></div>';
     document.body.appendChild(bg);
@@ -189,9 +217,11 @@
   function submit(timedOut) {
     stopTimer();
     run.done = true; run.timedOut = timedOut; run.used = (Date.now() - run.started) / 1000;
-    results();
+    nav({ s: "results" });
+    results(true);
   }
-  function results() {
+  function results(fromPop) {
+    if (fromPop !== true) nav({ s: "results" });
     window.scrollTo(0, 0);
     var qs = run.ex.questions, right = 0, by = {};
     qs.forEach(function (q, j) {
@@ -203,7 +233,7 @@
       var p = Math.round(by[d].ok / by[d].n * 100), col = p >= 72 ? "var(--ok)" : p >= 60 ? "var(--warn)" : "var(--bad)";
       return '<div class="x-dom"><div class="x-dom-top"><span class="x-dom-name">Domain ' + d + ": " + esc(DOMAINS[d]) + '</span><span class="x-muted">' + by[d].ok + " / " + by[d].n + " · <b>" + p + '%</b></span></div><div class="x-bar-row"><div class="x-track"><div class="x-fill" style="width:' + p + "%;background:" + col + '"></div></div></div></div>';
     }).join("");
-    app.innerHTML = '<div class="x-wrap"><span class="x-pill"><span class="x-dot"></span>Score report · ' + esc(run.ex.title) + "</span>" +
+    app.innerHTML = '<div class="x-wrap"><span class="x-pill"><span class="x-dot"></span>' + (run.practice ? "Practice results · " : "Score report · ") + esc(run.ex.title) + "</span>" +
       (run.timedOut ? '<p class="x-instr warn">Time expired, so the exam was submitted automatically.</p>' : "") +
       '<div class="x-card" style="margin-top:14px"><div class="x-score"><div class="x-big">' + pct + '%</div><div><div><b>' + right + " of " + qs.length + "</b> correct</div>" +
       '<div class="x-muted x-small">Time used ' + fmt(run.used) + (run.limit ? " of " + fmt(run.limit) : "") + " · " + run.flags.filter(Boolean).length + " flagged</div></div></div>" +
@@ -213,10 +243,11 @@
       '<button class="btn ghost" id="againBtn">Retake</button><button class="btn ghost" id="homeBtn">All exams</button></div></div>';
     app.querySelectorAll("[data-rv]").forEach(function (b) { b.onclick = function () { review(b.getAttribute("data-rv")); }; });
     byId("againBtn").onclick = function () { start(run.ex); };
-    byId("homeBtn").onclick = home;
+    byId("homeBtn").onclick = function () { home(); };
   }
 
-  function review(filter) {
+  function review(filter, fromPop) {
+    if (fromPop !== true) nav({ s: "review", f: filter });
     window.scrollTo(0, 0);
     var qs = run.ex.questions;
     var items = qs.map(function (q, j) {
@@ -239,9 +270,24 @@
       (items || '<p class="x-muted" style="margin-top:20px">Nothing to show for this filter.</p>') +
       '<div class="x-navrow"><button class="btn primary" id="backBtn">Back to score report</button><button class="btn ghost" id="homeBtn">All exams</button></div></div>';
     app.querySelectorAll("[data-rv]").forEach(function (b) { b.onclick = function () { review(b.getAttribute("data-rv")); }; });
-    byId("backBtn").onclick = results;
-    byId("homeBtn").onclick = home;
+    byId("backBtn").onclick = function () { results(); };
+    byId("homeBtn").onclick = function () { home(); };
   }
+
+  // Back / Forward: move between screens of the current attempt.
+  window.addEventListener("popstate", function (e) {
+    var st = e.state;
+    if (!st || !exams.length) return;
+    var m = document.querySelector(".x-modal-bg"); if (m) m.remove();
+    if (st.s === "q" && run && !run.done) return go(st.i, true);
+    if (st.s === "results" && run && run.done) return results(true);
+    if (st.s === "review" && run && run.done) return review(st.f || "all", true);
+    if (st.s === "q" && run && run.done) return results(true);
+    if (st.s === "q" && !run && paused && st.i < paused.ex.questions.length) { run = paused; paused = null; if (run.limit) startTimer(); return go(st.i, true); }
+    if (run && !run.done) paused = run;   // Back past question 1: keep the attempt so Forward can resume it
+    home(true);
+  });
+  var paused = null;
 
   // ---------------- keyboard ----------------
   document.addEventListener("keydown", function (e) {

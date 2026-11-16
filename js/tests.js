@@ -164,6 +164,11 @@
       var best = hist.length ? Math.max.apply(null, hist.map(function (a) { return a.pct; })) : null;
       var count = banks.reduce(function (n, b) { return n + b.questions.length; }, 0) || +su.questions || 0;
       var prog = st.inProgress && ids.indexOf(String(st.inProgress.bank)) >= 0;
+      // A suite with `href` lives outside this site (e.g. the private, locally served CCAR-P exams): link out, no local progress.
+      if (su.href && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(su.href)) {
+        return '<a class="suite" href="' + esc(su.href) + '" target="_blank" rel="noopener"><div class="eyebrow">' + esc(su.eyebrow || "External") + '</div><h2 class="tight">' + esc(su.title) + "</h2><p>" + esc(su.description || "") + "</p>" +
+          '<div class="suite-prog small">' + esc(su.note || "") + "</div></a>";
+      }
       return '<a class="suite" href="#/tests?suite=' + encodeURIComponent(su.id) + '"><div class="eyebrow">' + (banks.length || ids.length) + " tests · " + count + ' questions</div><h2 class="tight">' + esc(su.title) + "</h2><p>" + esc(su.description || "") + "</p>" +
         '<div class="suite-prog small">' + (hist.length ? "Attempted " + Object.keys(tried).length + " of " + banks.length + " · Best " + best + "%" : "Not attempted yet") + (prog ? " · in progress" : "") + "</div></a>";
     }).join("");

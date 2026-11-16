@@ -6,3 +6,8 @@ node_modules/
 .idea/
 .vscode/
 dev-hub-backup-*.json
+
+# Course quiz banks: private, never commit (repo is public)
+quizzes/
+# Private exam app (separate private repo, never part of dev-hub)
+ccar-p-exams/
